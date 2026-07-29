@@ -1,102 +1,91 @@
-import type {Route} from './+types/collections.all';
+import {getPaginationVariables} from '@shopify/hydrogen';
 import {useLoaderData} from 'react-router';
-import {getPaginationVariables, Image, Money} from '@shopify/hydrogen';
+import type {Route} from './+types/collections.all';
+import {ProductCard} from '~/components/catalog/product-card';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
-import {ProductItem} from '~/components/ProductItem';
-import type {CollectionItemFragment} from 'storefrontapi.generated';
+import {getRoastPresentation} from '~/lib/coffee/presentation';
+import {COFFEE_PRODUCT_CARD_FRAGMENT} from '~/lib/shopify/catalog-fragments';
+import type {CoffeeProductCardFragment} from 'storefrontapi.generated';
 
-export const meta: Route.MetaFunction = () => {
-  return [{title: `Hydrogen | Products`}];
-};
+export const meta: Route.MetaFunction = () => [
+  {title: 'Shop coffee | Just Plain Coffee'},
+  {
+    name: 'description',
+    content:
+      'Shop the complete Just Plain Coffee range: straightforward specialty coffee in a very good-looking carton.',
+  },
+];
 
-export async function loader(args: Route.LoaderArgs) {
-  // Start fetching non-critical data without blocking time to first byte
-  const deferredData = loadDeferredData(args);
-
-  // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args);
-
-  return {...deferredData, ...criticalData};
-}
-
-/**
- * Load data necessary for rendering content above the fold. This is the critical data
- * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
- */
-async function loadCriticalData({context, request}: Route.LoaderArgs) {
-  const {storefront} = context;
-  const paginationVariables = getPaginationVariables(request, {
-    pageBy: 8,
+export async function loader({context, request}: Route.LoaderArgs) {
+  const paginationVariables = getPaginationVariables(request, {pageBy: 12});
+  const {products} = await context.storefront.query(CATALOG_QUERY, {
+    variables: paginationVariables,
   });
 
-  const [{products}] = await Promise.all([
-    storefront.query(CATALOG_QUERY, {
-      variables: {...paginationVariables},
-    }),
-    // Add other queries here, so that they are loaded in parallel
-  ]);
   return {products};
 }
 
-/**
- * Load data for rendering content below the fold. This data is deferred and will be
- * fetched after the initial page load. If it's unavailable, the page should still 200.
- * Make sure to not throw any errors here, as it will cause the page to 500.
- */
-function loadDeferredData({context}: Route.LoaderArgs) {
-  return {};
-}
-
-export default function Collection() {
+export default function AllProducts() {
   const {products} = useLoaderData<typeof loader>();
 
   return (
-    <div className="collection">
-      <h1>Products</h1>
-      <PaginatedResourceSection<CollectionItemFragment>
-        connection={products}
-        resourcesClassName="products-grid"
+    <main>
+      <section className="px-5 py-16 md:px-10 md:py-24">
+        <div className="mx-auto max-w-7xl rounded-4xl bg-orange-200 px-7 py-14 text-center md:px-14 md:py-20">
+          <p className="text-sm font-bold tracking-[0.14em] text-orange-900/70 uppercase">
+            The collection
+          </p>
+          <h1 className="mt-4 text-6xl leading-none md:text-8xl">
+            Four coffees. Zero regrets.
+          </h1>
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-orange-900/75">
+            Straightforward coffee with nothing hiding in the back. The only
+            hard part is picking a cap color.
+          </p>
+        </div>
+      </section>
+
+      <section
+        aria-labelledby="catalog-heading"
+        className="mx-auto max-w-7xl px-5 pb-20 md:px-10 md:pb-28"
       >
-        {({node: product, index}) => (
-          <ProductItem
-            key={product.id}
-            product={product}
-            loading={index < 8 ? 'eager' : undefined}
-          />
-        )}
-      </PaginatedResourceSection>
-    </div>
+        <h2 className="sr-only" id="catalog-heading">
+          Coffee catalog
+        </h2>
+        <PaginatedResourceSection<CoffeeProductCardFragment>
+          connection={products}
+          resourcesClassName="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+        >
+          {({node: product}) => (
+            <ProductCard
+              key={product.id}
+              presentation={getRoastPresentation({
+                title: product.title,
+                tags: product.tags,
+              })}
+              product={product}
+            />
+          )}
+        </PaginatedResourceSection>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 pb-20 md:px-10 md:pb-28">
+        <div className="flex flex-col gap-5 rounded-4xl bg-neutral-900 p-8 text-neutral-100 md:flex-row md:items-center md:justify-between md:p-12">
+          <p className="font-display text-3xl md:text-5xl">
+            Can&apos;t decide? It&apos;s Medium. It&apos;s always Medium.
+          </p>
+          <a
+            className="inline-flex h-12 shrink-0 items-center justify-center rounded-full bg-orange-500 px-7 font-bold transition hover:bg-orange-600"
+            href="#catalog-heading"
+          >
+            Find Medium
+          </a>
+        </div>
+      </section>
+    </main>
   );
 }
 
-const COLLECTION_ITEM_FRAGMENT = `#graphql
-  fragment MoneyCollectionItem on MoneyV2 {
-    amount
-    currencyCode
-  }
-  fragment CollectionItem on Product {
-    id
-    handle
-    title
-    featuredImage {
-      id
-      altText
-      url
-      width
-      height
-    }
-    priceRange {
-      minVariantPrice {
-        ...MoneyCollectionItem
-      }
-      maxVariantPrice {
-        ...MoneyCollectionItem
-      }
-    }
-  }
-` as const;
-
-// NOTE: https://shopify.dev/docs/api/storefront/latest/objects/product
 const CATALOG_QUERY = `#graphql
   query Catalog(
     $country: CountryCode
@@ -106,9 +95,14 @@ const CATALOG_QUERY = `#graphql
     $startCursor: String
     $endCursor: String
   ) @inContext(country: $country, language: $language) {
-    products(first: $first, last: $last, before: $startCursor, after: $endCursor) {
+    products(
+      first: $first
+      last: $last
+      before: $startCursor
+      after: $endCursor
+    ) {
       nodes {
-        ...CollectionItem
+        ...CoffeeProductCard
       }
       pageInfo {
         hasPreviousPage
@@ -118,5 +112,5 @@ const CATALOG_QUERY = `#graphql
       }
     }
   }
-  ${COLLECTION_ITEM_FRAGMENT}
+  ${COFFEE_PRODUCT_CARD_FRAGMENT}
 ` as const;

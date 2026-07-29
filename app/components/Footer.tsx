@@ -1,129 +1,56 @@
-import {Suspense} from 'react';
-import {Await, NavLink} from 'react-router';
-import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
+import {Link} from 'react-router';
 
-interface FooterProps {
-  footer: Promise<FooterQuery | null>;
-  header: HeaderQuery;
-  publicStoreDomain: string;
-}
-
-export function Footer({
-  footer: footerPromise,
-  header,
-  publicStoreDomain,
-}: FooterProps) {
+export function Footer() {
   return (
-    <Suspense>
-      <Await resolve={footerPromise}>
-        {(footer) => (
-          <footer className="footer">
-            {footer?.menu && header.shop.primaryDomain?.url && (
-              <FooterMenu
-                menu={footer.menu}
-                primaryDomainUrl={header.shop.primaryDomain.url}
-                publicStoreDomain={publicStoreDomain}
-              />
-            )}
-          </footer>
-        )}
-      </Await>
-    </Suspense>
+    <footer className="rounded-t-3xl bg-neutral-900 px-5 py-14 text-neutral-100 md:px-10 md:pt-16 md:pb-9">
+      <div className="mx-auto grid max-w-[1240px] gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:gap-12">
+        <div>
+          <div className="font-display text-3xl">Just Plain</div>
+          <p className="mt-3 max-w-[32ch] text-neutral-300">
+            Specialty-grade organic coffee with nothing added, nothing
+            performed, in a carton.
+          </p>
+        </div>
+        <FooterColumn title="Shop">
+          <Link to="/collections/all">Light</Link>
+          <Link to="/collections/all">Medium</Link>
+          <Link to="/collections/all">Dark</Link>
+          <Link to="/collections/all">Decaf</Link>
+        </FooterColumn>
+        <FooterColumn title="Company">
+          <Link to="/#sourcing">Sourcing documentation</Link>
+          <Link to="/policies">Organic certification</Link>
+          <Link to="/policies">Shipping and returns</Link>
+          <Link to="/pages/contact">Contact</Link>
+        </FooterColumn>
+        <FooterColumn title="Certification">
+          <span className="w-max rounded-full border border-neutral-100/35 px-4 py-2 text-xs font-bold">
+            USDA Organic
+          </span>
+          <span className="text-xs text-neutral-300">
+            Certifier and cert number listed at launch.
+          </span>
+        </FooterColumn>
+      </div>
+      <div className="mx-auto mt-10 flex max-w-[1240px] flex-col justify-between gap-2 border-t border-neutral-100/15 pt-5 text-xs text-neutral-300 sm:flex-row">
+        <span>© 2026 Just Plain Coffee</span>
+        <span>It is coffee. You make it hot.</span>
+      </div>
+    </footer>
   );
 }
 
-function FooterMenu({
-  menu,
-  primaryDomainUrl,
-  publicStoreDomain,
+function FooterColumn({
+  title,
+  children,
 }: {
-  menu: FooterQuery['menu'];
-  primaryDomainUrl: FooterProps['header']['shop']['primaryDomain']['url'];
-  publicStoreDomain: string;
+  title: string;
+  children: React.ReactNode;
 }) {
   return (
-    <nav className="footer-menu" role="navigation">
-      {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
-        if (!item.url) return null;
-        // if the url is internal, we strip the domain
-        const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
-        const isExternal = !url.startsWith('/');
-        return isExternal ? (
-          <a href={url} key={item.id} rel="noopener noreferrer" target="_blank">
-            {item.title}
-          </a>
-        ) : (
-          <NavLink
-            end
-            key={item.id}
-            prefetch="intent"
-            style={activeLinkStyle}
-            to={url}
-          >
-            {item.title}
-          </NavLink>
-        );
-      })}
-    </nav>
+    <div className="flex flex-col gap-2.5">
+      <strong className="text-xs text-neutral-300">{title}</strong>
+      {children}
+    </div>
   );
-}
-
-const FALLBACK_FOOTER_MENU = {
-  id: 'gid://shopify/Menu/199655620664',
-  items: [
-    {
-      id: 'gid://shopify/MenuItem/461633060920',
-      resourceId: 'gid://shopify/ShopPolicy/23358046264',
-      tags: [],
-      title: 'Privacy Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/privacy-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633093688',
-      resourceId: 'gid://shopify/ShopPolicy/23358013496',
-      tags: [],
-      title: 'Refund Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/refund-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633126456',
-      resourceId: 'gid://shopify/ShopPolicy/23358111800',
-      tags: [],
-      title: 'Shipping Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/shipping-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633159224',
-      resourceId: 'gid://shopify/ShopPolicy/23358079032',
-      tags: [],
-      title: 'Terms of Service',
-      type: 'SHOP_POLICY',
-      url: '/policies/terms-of-service',
-      items: [],
-    },
-  ],
-};
-
-function activeLinkStyle({
-  isActive,
-  isPending,
-}: {
-  isActive: boolean;
-  isPending: boolean;
-}) {
-  return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'white',
-  };
 }

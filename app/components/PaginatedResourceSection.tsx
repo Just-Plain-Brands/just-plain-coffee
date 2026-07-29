@@ -28,7 +28,7 @@ export function PaginatedResourceSection<NodesType>({
               {isLoading ? (
                 'Loading...'
               ) : (
-                <span>
+                <span className="mx-auto mb-8 flex w-fit rounded-full border border-neutral-300 px-5 py-2 text-sm font-bold">
                   <span aria-hidden="true">↑</span> Load previous
                 </span>
               )}
@@ -48,7 +48,7 @@ export function PaginatedResourceSection<NodesType>({
               {isLoading ? (
                 'Loading...'
               ) : (
-                <span>
+                <span className="mx-auto mt-10 flex w-fit rounded-full bg-neutral-900 px-6 py-3 text-sm font-bold text-neutral-100">
                   Load more <span aria-hidden="true">↓</span>
                 </span>
               )}

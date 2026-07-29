@@ -1,4 +1,4 @@
-import {redirect, useLoaderData} from 'react-router';
+import {Link, useLoaderData} from 'react-router';
 import type {Route} from './+types/products.$handle';
 import {
   getSelectedProductOptions,
@@ -8,14 +8,20 @@ import {
   getAdjacentAndFirstAvailableVariants,
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
+import {CartonIllustration} from '~/components/catalog/carton-illustration/carton-illustration';
 import {ProductPrice} from '~/components/ProductPrice';
-import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
+import {buttonVariants} from '~/components/ui/button';
+import {getRoastPresentation} from '~/lib/coffee/presentation';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 export const meta: Route.MetaFunction = ({data}) => {
   return [
-    {title: `Hydrogen | ${data?.product.title ?? ''}`},
+    {title: `${data?.product.title ?? 'Coffee'} | Just Plain Coffee`},
+    {
+      name: 'description',
+      content: data?.product.seo.description ?? data?.product.description,
+    },
     {
       rel: 'canonical',
       href: `/products/${data?.product.handle}`,
@@ -96,30 +102,106 @@ export default function Product() {
   });
 
   const {title, descriptionHtml} = product;
+  const presentation = getRoastPresentation({
+    title,
+    tags: product.tags,
+  });
 
   return (
-    <div className="product">
-      <ProductImage image={selectedVariant?.image} />
-      <div className="product-main">
-        <h1>{title}</h1>
-        <ProductPrice
-          price={selectedVariant?.price}
-          compareAtPrice={selectedVariant?.compareAtPrice}
-        />
-        <br />
-        <ProductForm
-          productOptions={productOptions}
-          selectedVariant={selectedVariant}
-        />
-        <br />
-        <br />
-        <p>
-          <strong>Description</strong>
-        </p>
-        <br />
-        <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-        <br />
-      </div>
+    <main>
+      <section className="mx-auto grid max-w-7xl gap-10 px-5 py-12 md:px-10 md:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+        <div
+          className="sticky top-36 grid min-h-[580px] place-items-center overflow-hidden rounded-4xl"
+          style={{backgroundColor: presentation.tintColor}}
+        >
+          <div
+            aria-hidden="true"
+            className="absolute font-display text-[clamp(6rem,16vw,12rem)] leading-none"
+            style={{color: presentation.wordColor}}
+          >
+            {presentation.shortName}.
+          </div>
+          <div className="relative h-[490px] w-[333px] rotate-2">
+            <CartonIllustration
+              className="origin-top-left scale-[0.98]"
+              presentation={presentation}
+            />
+          </div>
+        </div>
+
+        <div className="py-3 lg:py-8">
+          <p className="text-sm font-bold tracking-[0.14em] text-orange-700 uppercase">
+            Organic coffee · {presentation.shortName} roast
+          </p>
+          <h1 className="mt-4 text-6xl leading-none md:text-8xl">{title}</h1>
+          <div className="mt-5 text-2xl font-bold">
+            <ProductPrice
+              compareAtPrice={selectedVariant?.compareAtPrice}
+              price={selectedVariant?.price}
+            />
+          </div>
+          <p className="mt-6 max-w-xl text-xl leading-relaxed text-neutral-700">
+            {presentation.description} One ingredient. Nothing performed.
+          </p>
+
+          <div className="mt-9 rounded-3xl bg-neutral-100 p-6 md:p-8">
+            <ProductForm
+              productOptions={productOptions}
+              selectedVariant={selectedVariant}
+            />
+            <p className="mt-4 text-center text-sm text-neutral-600">
+              Roasted to order · Ships in 1–2 business days
+            </p>
+          </div>
+
+          <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-3xl bg-neutral-300 sm:grid-cols-3">
+            {[
+              ['Origin', presentation.origin],
+              ['Format', '12 oz carton'],
+              ['Coffee', 'Whole bean'],
+            ].map(([label, value]) => (
+              <div className="bg-neutral-100 p-5" key={label}>
+                <dt className="text-xs font-bold tracking-[0.12em] text-neutral-600 uppercase">
+                  {label}
+                </dt>
+                <dd className="mt-2 font-semibold">{value}</dd>
+              </div>
+            ))}
+          </dl>
+
+          {descriptionHtml ? (
+            <div className="mt-10 border-t border-neutral-300 pt-8">
+              <h2 className="text-3xl">The details</h2>
+              <div
+                className="mt-4 max-w-none space-y-4 leading-relaxed text-neutral-700"
+                dangerouslySetInnerHTML={{__html: descriptionHtml}}
+              />
+            </div>
+          ) : null}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 pb-20 md:px-10 md:pb-28">
+        <div className="flex flex-col gap-5 rounded-4xl bg-green-900 p-8 text-green-100 md:flex-row md:items-center md:justify-between md:p-12">
+          <div>
+            <h2 className="text-4xl md:text-5xl">Want to compare caps?</h2>
+            <p className="mt-3 text-green-100/70">
+              See the complete roast range. No personality quiz required.
+            </p>
+          </div>
+          <Link
+            className={buttonVariants({
+              className:
+                'h-12 rounded-full bg-green-100 px-7 text-base text-green-900 hover:bg-green-200',
+            })}
+            prefetch="intent"
+            to="/collections/all"
+          >
+            Shop all coffee
+          </Link>
+        </div>
+      </section>
+
       <Analytics.ProductView
         data={{
           products: [
@@ -135,7 +217,7 @@ export default function Product() {
           ],
         }}
       />
-    </div>
+    </main>
   );
 }
 
@@ -180,6 +262,7 @@ const PRODUCT_FRAGMENT = `#graphql
   fragment Product on Product {
     id
     title
+    tags
     vendor
     handle
     descriptionHtml

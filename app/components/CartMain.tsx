@@ -45,7 +45,7 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
   const withDiscount =
     cart &&
     Boolean(cart?.discountCodes?.filter((code) => code.applicable)?.length);
-  const className = `cart-main ${withDiscount ? 'with-discount' : ''}`;
+  const className = withDiscount ? 'pb-4' : '';
   const cartHasItems = cart?.totalQuantity ? cart.totalQuantity > 0 : false;
   const childrenMap = getLineItemChildrenMap(cart?.lines?.nodes ?? []);
 
@@ -55,12 +55,15 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
       aria-label={layout === 'page' ? 'Cart page' : 'Cart drawer'}
     >
       <CartEmpty hidden={linesCount} layout={layout} />
-      <div className="cart-details">
+      <div className="mt-2">
         <p id="cart-lines" className="sr-only">
           Line items
         </p>
         <div>
-          <ul aria-labelledby="cart-lines">
+          <ul
+            aria-labelledby="cart-lines"
+            className="divide-y divide-neutral-300"
+          >
             {(cart?.lines?.nodes ?? []).map((line) => {
               // we do not render non-parent lines at the root of the cart
               if (
@@ -94,15 +97,18 @@ function CartEmpty({
 }) {
   const {close} = useAside();
   return (
-    <div hidden={hidden}>
-      <br />
-      <p>
-        Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
-        started!
+    <div className="py-14 text-center" hidden={hidden}>
+      <p className="font-display text-3xl">Very plain in here.</p>
+      <p className="mx-auto mt-3 max-w-sm text-neutral-600">
+        You haven&rsquo;t added anything yet. Let&rsquo;s fix that.
       </p>
-      <br />
-      <Link to="/collections" onClick={close} prefetch="viewport">
-        Continue shopping →
+      <Link
+        className="mt-7 inline-flex h-11 items-center rounded-full bg-primary px-6 font-bold text-primary-foreground"
+        to="/collections/all"
+        onClick={close}
+        prefetch="viewport"
+      >
+        Shop coffee
       </Link>
     </div>
   );

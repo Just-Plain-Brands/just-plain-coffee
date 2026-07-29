@@ -5,92 +5,55 @@ import {
   useAnalytics,
   useOptimisticCart,
 } from '@shopify/hydrogen';
-import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
+import type {CartApiQueryFragment} from 'storefrontapi.generated';
+import {MenuIcon, SearchIcon, ShoppingBagIcon} from 'lucide-react';
 import {useAside} from '~/components/Aside';
+import {Button} from '~/components/ui/button';
 
 interface HeaderProps {
-  header: HeaderQuery;
   cart: Promise<CartApiQueryFragment | null>;
   isLoggedIn: Promise<boolean>;
-  publicStoreDomain: string;
 }
 
 type Viewport = 'desktop' | 'mobile';
 
-export function Header({
-  header,
-  isLoggedIn,
-  cart,
-  publicStoreDomain,
-}: HeaderProps) {
-  const {shop, menu} = header;
+export function Header({isLoggedIn, cart}: HeaderProps) {
   return (
-    <header className="header">
-      <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
-      </NavLink>
-      <HeaderMenu
-        menu={menu}
-        viewport="desktop"
-        primaryDomainUrl={header.shop.primaryDomain.url}
-        publicStoreDomain={publicStoreDomain}
-      />
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+    <header className="sticky top-0 z-40 bg-background px-5 py-3 md:px-10 md:py-4">
+      <div className="mx-auto flex max-w-[1240px] items-center gap-5 rounded-full bg-neutral-100 py-2.5 pr-3 pl-6 shadow-soft">
+        <NavLink
+          className="mr-auto font-display text-xl leading-none no-underline md:text-[22px]"
+          end
+          prefetch="intent"
+          to="/"
+        >
+          Just Plain
+        </NavLink>
+        <HeaderMenu viewport="desktop" />
+        <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+      </div>
     </header>
   );
 }
 
-export function HeaderMenu({
-  menu,
-  primaryDomainUrl,
-  viewport,
-  publicStoreDomain,
-}: {
-  menu: HeaderProps['header']['menu'];
-  primaryDomainUrl: HeaderProps['header']['shop']['primaryDomain']['url'];
-  viewport: Viewport;
-  publicStoreDomain: HeaderProps['publicStoreDomain'];
-}) {
-  const className = `header-menu-${viewport}`;
+export function HeaderMenu({viewport}: {viewport: Viewport}) {
   const {close} = useAside();
+  const className =
+    viewport === 'desktop'
+      ? 'hidden items-center gap-6 text-sm font-semibold md:flex'
+      : 'flex flex-col gap-5 text-xl font-semibold';
 
   return (
-    <nav className={className} role="navigation">
-      {viewport === 'mobile' && (
-        <NavLink
-          end
-          onClick={close}
-          prefetch="intent"
-          style={activeLinkStyle}
-          to="/"
-        >
-          Home
-        </NavLink>
-      )}
-      {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
-        if (!item.url) return null;
-
-        // if the url is internal, we strip the domain
-        const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
-        return (
-          <NavLink
-            className="header-menu-item"
-            end
-            key={item.id}
-            onClick={close}
-            prefetch="intent"
-            style={activeLinkStyle}
-            to={url}
-          >
-            {item.title}
-          </NavLink>
-        );
-      })}
+    <nav aria-label={`${viewport} navigation`} className={className}>
+      <NavLink onClick={close} prefetch="intent" to="/collections/all">
+        Shop
+      </NavLink>
+      <NavLink onClick={close} prefetch="intent" to="/collections/all">
+        Subscribe
+      </NavLink>
+      <NavLink onClick={close} to="/#the-box">
+        The box
+      </NavLink>
     </nav>
   );
 }
@@ -100,12 +63,19 @@ function HeaderCtas({
   cart,
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
-    <nav className="header-ctas" role="navigation">
-      <HeaderMenuMobileToggle />
-      <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
+    <nav
+      aria-label="Store utilities"
+      className="flex items-center gap-1 md:gap-2"
+    >
+      <MobileMenuToggle />
+      <NavLink
+        className="hidden text-sm font-semibold lg:block"
+        prefetch="intent"
+        to="/account"
+      >
         <Suspense fallback="Sign in">
           <Await resolve={isLoggedIn} errorElement="Sign in">
-            {(isLoggedIn) => (isLoggedIn ? 'Account' : 'Sign in')}
+            {(loggedIn) => (loggedIn ? 'Account' : 'Sign in')}
           </Await>
         </Suspense>
       </NavLink>
@@ -115,117 +85,76 @@ function HeaderCtas({
   );
 }
 
-function HeaderMenuMobileToggle() {
+function MobileMenuToggle() {
   const {open} = useAside();
+
   return (
-    <button
-      className="header-menu-mobile-toggle reset"
+    <Button
+      aria-label="Open menu"
+      className="md:hidden"
       onClick={() => open('mobile')}
+      size="icon"
+      variant="ghost"
     >
-      <h3>☰</h3>
-    </button>
+      <MenuIcon />
+    </Button>
   );
 }
 
 function SearchToggle() {
   const {open} = useAside();
+
   return (
-    <button className="reset" onClick={() => open('search')}>
-      Search
-    </button>
+    <Button
+      aria-label="Search"
+      className="hidden sm:inline-flex"
+      onClick={() => open('search')}
+      size="icon"
+      variant="ghost"
+    >
+      <SearchIcon />
+    </Button>
   );
 }
 
-function CartBadge({count}: {count: number}) {
+function CartButton({count}: {count: number}) {
   const {open} = useAside();
   const {publish, shop, cart, prevCart} = useAnalytics();
 
   return (
-    <a
-      href="/cart"
-      onClick={(e) => {
-        e.preventDefault();
+    <Button
+      aria-label={`Open cart with ${count} items`}
+      className="h-10 rounded-full px-4 font-display text-sm"
+      onClick={() => {
         open('cart');
         publish('cart_viewed', {
           cart,
           prevCart,
           shop,
-          url: window.location.href || '',
-        } as CartViewPayload);
+          url: window.location.href,
+        } satisfies CartViewPayload);
       }}
     >
-      Cart <span aria-label={`(items: ${count})`}>{count}</span>
-    </a>
+      <ShoppingBagIcon data-icon="inline-start" />
+      <span className="hidden sm:inline">Cart</span>
+      <span>({count})</span>
+    </Button>
   );
 }
 
 function CartToggle({cart}: Pick<HeaderProps, 'cart'>) {
   return (
-    <Suspense fallback={<CartBadge count={0} />}>
+    <Suspense fallback={<CartButton count={0} />}>
       <Await resolve={cart}>
-        <CartBanner />
+        <CartButtonWithData />
       </Await>
     </Suspense>
   );
 }
 
-function CartBanner() {
+function CartButtonWithData() {
   const originalCart = useAsyncValue() as CartApiQueryFragment | null;
   const cart = useOptimisticCart(originalCart);
-  return <CartBadge count={cart?.totalQuantity ?? 0} />;
-}
 
-const FALLBACK_HEADER_MENU = {
-  id: 'gid://shopify/Menu/199655587896',
-  items: [
-    {
-      id: 'gid://shopify/MenuItem/461609500728',
-      resourceId: null,
-      tags: [],
-      title: 'Collections',
-      type: 'HTTP',
-      url: '/collections',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609533496',
-      resourceId: null,
-      tags: [],
-      title: 'Blog',
-      type: 'HTTP',
-      url: '/blogs/journal',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609566264',
-      resourceId: null,
-      tags: [],
-      title: 'Policies',
-      type: 'HTTP',
-      url: '/policies',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609599032',
-      resourceId: 'gid://shopify/Page/92591030328',
-      tags: [],
-      title: 'About',
-      type: 'PAGE',
-      url: '/pages/about',
-      items: [],
-    },
-  ],
-};
-
-function activeLinkStyle({
-  isActive,
-  isPending,
-}: {
-  isActive: boolean;
-  isPending: boolean;
-}) {
-  return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'black',
-  };
+  return <CartButton count={cart?.totalQuantity ?? 0} />;
 }

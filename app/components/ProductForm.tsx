@@ -7,6 +7,7 @@ import type {
 import {AddToCartButton} from './AddToCartButton';
 import {useAside} from './Aside';
 import type {ProductFragment} from 'storefrontapi.generated';
+import {cn} from '~/lib/utils';
 
 export function ProductForm({
   productOptions,
@@ -18,15 +19,17 @@ export function ProductForm({
   const navigate = useNavigate();
   const {open} = useAside();
   return (
-    <div className="product-form">
+    <div>
       {productOptions.map((option) => {
         // If there is only a single value in the option values, don't display the option
         if (option.optionValues.length === 1) return null;
 
         return (
-          <div className="product-options" key={option.name}>
-            <h5>{option.name}</h5>
-            <div className="product-options-grid">
+          <fieldset className="mb-6" key={option.name}>
+            <legend className="mb-3 text-sm font-bold tracking-[0.1em] uppercase">
+              {option.name}
+            </legend>
+            <div className="flex flex-wrap gap-2">
               {option.optionValues.map((value) => {
                 const {
                   name,
@@ -46,18 +49,18 @@ export function ProductForm({
                   // as an anchor tag
                   return (
                     <Link
-                      className="product-options-item"
+                      className={cn(
+                        'min-w-20 rounded-full border px-4 py-2 text-center text-sm font-bold transition',
+                        selected
+                          ? 'border-neutral-900 bg-neutral-900 text-neutral-100'
+                          : 'border-neutral-300 bg-background hover:border-neutral-900',
+                        !available && 'opacity-40',
+                      )}
                       key={option.name + name}
                       prefetch="intent"
                       preventScrollReset
                       replace
                       to={`/products/${handle}?${variantUriQuery}`}
-                      style={{
-                        border: selected
-                          ? '1px solid black'
-                          : '1px solid transparent',
-                        opacity: available ? 1 : 0.3,
-                      }}
                     >
                       <ProductOptionSwatch swatch={swatch} name={name} />
                     </Link>
@@ -71,16 +74,14 @@ export function ProductForm({
                   return (
                     <button
                       type="button"
-                      className={`product-options-item${
-                        exists && !selected ? ' link' : ''
-                      }`}
+                      className={cn(
+                        'min-w-20 rounded-full border px-4 py-2 text-sm font-bold transition',
+                        selected
+                          ? 'border-neutral-900 bg-neutral-900 text-neutral-100'
+                          : 'border-neutral-300 bg-background hover:border-neutral-900',
+                        !available && 'opacity-40',
+                      )}
                       key={option.name + name}
-                      style={{
-                        border: selected
-                          ? '1px solid black'
-                          : '1px solid transparent',
-                        opacity: available ? 1 : 0.3,
-                      }}
                       disabled={!exists}
                       onClick={() => {
                         if (!selected) {
@@ -97,11 +98,11 @@ export function ProductForm({
                 }
               })}
             </div>
-            <br />
-          </div>
+          </fieldset>
         );
       })}
       <AddToCartButton
+        className="h-13 w-full text-base"
         disabled={!selectedVariant || !selectedVariant.availableForSale}
         onClick={() => {
           open('cart');
@@ -137,14 +138,16 @@ function ProductOptionSwatch({
   if (!image && !color) return name;
 
   return (
-    <div
-      aria-label={name}
-      className="product-option-label-swatch"
-      style={{
-        backgroundColor: color || 'transparent',
-      }}
-    >
-      {!!image && <img src={image} alt={name} />}
+    <div className="inline-flex items-center gap-2">
+      <span
+        aria-hidden="true"
+        className="size-4 rounded-full border border-neutral-300 bg-cover bg-center"
+        style={{
+          backgroundColor: color || 'transparent',
+          backgroundImage: image ? `url(${image})` : undefined,
+        }}
+      />
+      <span>{name}</span>
     </div>
   );
 }

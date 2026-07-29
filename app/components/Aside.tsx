@@ -1,11 +1,18 @@
 import {
   createContext,
   type ReactNode,
+  useCallback,
   useContext,
-  useEffect,
+  useMemo,
   useState,
 } from 'react';
-import {useId} from 'react';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '~/components/ui/sheet';
 
 type AsideType = 'search' | 'cart' | 'mobile' | 'closed';
 type AsideContextValue = {
@@ -35,42 +42,30 @@ export function Aside({
 }) {
   const {type: activeType, close} = useAside();
   const expanded = type === activeType;
-  const id = useId();
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    if (expanded) {
-      document.addEventListener(
-        'keydown',
-        function handler(event: KeyboardEvent) {
-          if (event.key === 'Escape') {
-            close();
-          }
-        },
-        {signal: abortController.signal},
-      );
-    }
-    return () => abortController.abort();
-  }, [close, expanded]);
 
   return (
-    <div
-      aria-modal
-      className={`overlay ${expanded ? 'expanded' : ''}`}
-      role="dialog"
-      aria-labelledby={id}
+    <Sheet
+      open={expanded}
+      onOpenChange={(open) => {
+        if (!open) close();
+      }}
     >
-      <button className="close-outside" onClick={close} />
-      <aside>
-        <header>
-          <h3 id={id}>{heading}</h3>
-          <button className="close reset" onClick={close} aria-label="Close">
-            &times;
-          </button>
-        </header>
-        <main>{children}</main>
-      </aside>
-    </div>
+      <SheetContent className="w-full max-w-[430px] gap-0 border-0 bg-background p-0 sm:max-w-[430px]">
+        <SheetHeader className="border-b border-border px-7 py-6">
+          <SheetTitle className="font-display text-2xl font-normal">
+            {heading}
+          </SheetTitle>
+          <SheetDescription className="sr-only">
+            {type === 'cart'
+              ? 'Review and update your shopping cart.'
+              : `Just Plain Coffee ${type}.`}
+          </SheetDescription>
+        </SheetHeader>
+        <div className="min-h-0 flex-1 overflow-y-auto px-7 py-6">
+          {children}
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }
 
@@ -78,15 +73,14 @@ const AsideContext = createContext<AsideContextValue | null>(null);
 
 Aside.Provider = function AsideProvider({children}: {children: ReactNode}) {
   const [type, setType] = useState<AsideType>('closed');
+  const close = useCallback(() => setType('closed'), []);
+  const contextValue = useMemo(
+    () => ({type, open: setType, close}),
+    [close, type],
+  );
 
   return (
-    <AsideContext.Provider
-      value={{
-        type,
-        open: setType,
-        close: () => setType('closed'),
-      }}
-    >
+    <AsideContext.Provider value={contextValue}>
       {children}
     </AsideContext.Provider>
   );

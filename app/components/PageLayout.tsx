@@ -14,6 +14,9 @@ import {
   SearchFormPredictive,
 } from '~/components/SearchFormPredictive';
 import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
+import {AnnouncementBar} from '~/components/layout/announcement-bar';
+import {Button} from '~/components/ui/button';
+import {Input} from '~/components/ui/input';
 
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
@@ -27,30 +30,17 @@ interface PageLayoutProps {
 export function PageLayout({
   cart,
   children = null,
-  footer,
-  header,
   isLoggedIn,
-  publicStoreDomain,
 }: PageLayoutProps) {
   return (
     <Aside.Provider>
       <CartAside cart={cart} />
       <SearchAside />
-      <MobileMenuAside header={header} publicStoreDomain={publicStoreDomain} />
-      {header && (
-        <Header
-          header={header}
-          cart={cart}
-          isLoggedIn={isLoggedIn}
-          publicStoreDomain={publicStoreDomain}
-        />
-      )}
-      <main>{children}</main>
-      <Footer
-        footer={footer}
-        header={header}
-        publicStoreDomain={publicStoreDomain}
-      />
+      <MobileMenuAside />
+      <AnnouncementBar />
+      <Header cart={cart} isLoggedIn={isLoggedIn} />
+      <main className="min-h-[60vh]">{children}</main>
+      <Footer />
     </Aside.Provider>
   );
 }
@@ -73,23 +63,24 @@ function SearchAside() {
   const queriesDatalistId = useId();
   return (
     <Aside type="search" heading="SEARCH">
-      <div className="predictive-search">
-        <br />
+      <div className="flex flex-col gap-6">
         <SearchFormPredictive>
           {({fetchResults, goToSearch, inputRef}) => (
-            <>
-              <input
+            <div className="flex gap-2">
+              <Input
+                className="h-11 rounded-full bg-neutral-100 px-5"
+                list={queriesDatalistId}
                 name="q"
                 onChange={fetchResults}
                 onFocus={fetchResults}
                 placeholder="Search"
                 ref={inputRef}
                 type="search"
-                list={queriesDatalistId}
               />
-              &nbsp;
-              <button onClick={goToSearch}>Search</button>
-            </>
+              <Button className="h-11 rounded-full" onClick={goToSearch}>
+                Search
+              </Button>
+            </div>
           )}
         </SearchFormPredictive>
 
@@ -151,24 +142,10 @@ function SearchAside() {
   );
 }
 
-function MobileMenuAside({
-  header,
-  publicStoreDomain,
-}: {
-  header: PageLayoutProps['header'];
-  publicStoreDomain: PageLayoutProps['publicStoreDomain'];
-}) {
+function MobileMenuAside() {
   return (
-    header.menu &&
-    header.shop.primaryDomain?.url && (
-      <Aside type="mobile" heading="MENU">
-        <HeaderMenu
-          menu={header.menu}
-          viewport="mobile"
-          primaryDomainUrl={header.shop.primaryDomain.url}
-          publicStoreDomain={publicStoreDomain}
-        />
-      </Aside>
-    )
+    <Aside type="mobile" heading="Menu">
+      <HeaderMenu viewport="mobile" />
+    </Aside>
   );
 }
