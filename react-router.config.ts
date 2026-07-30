@@ -2,7 +2,7 @@ import type {Config} from '@react-router/dev/config';
 import {hydrogenPreset} from '@shopify/hydrogen/react-router-preset';
 
 /**
- * React Router 7.9.x Configuration for Hydrogen
+ * React Router 7.16 Configuration for Hydrogen
  *
  * This configuration uses the official Hydrogen preset to provide optimal
  * React Router settings for Shopify Oxygen deployment. The preset enables
@@ -10,4 +10,8 @@ import {hydrogenPreset} from '@shopify/hydrogen/react-router-preset';
  */
 export default {
   presets: [hydrogenPreset()],
+  future: {
+    v8_passThroughRequests: true,
+    v8_trailingSlashAwareDataRequests: true,
+  },
 } satisfies Config;
