@@ -21,13 +21,14 @@ export function Header({isLoggedIn, cart}: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 bg-background px-5 py-3 md:px-10 md:py-4">
       <div className="mx-auto flex max-w-[1240px] items-center gap-5 rounded-full bg-neutral-100 py-2.5 pr-3 pl-6 shadow-soft">
+        <MobileMenuToggle />
         <NavLink
           className="mr-auto font-display text-xl leading-none no-underline md:text-[22px]"
           end
           prefetch="intent"
           to="/"
         >
-          Just Plain
+          Just Plain Coffee
         </NavLink>
         <HeaderMenu viewport="desktop" />
         <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
@@ -67,7 +68,6 @@ function HeaderCtas({
       aria-label="Store utilities"
       className="flex items-center gap-1 md:gap-2"
     >
-      <MobileMenuToggle />
       <NavLink
         className="hidden text-sm font-semibold lg:block"
         prefetch="intent"

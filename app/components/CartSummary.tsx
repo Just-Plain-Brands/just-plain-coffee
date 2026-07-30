@@ -1,6 +1,6 @@
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import type {CartLayout} from '~/components/CartMain';
-import {CartForm, Money, type OptimisticCart} from '@shopify/hydrogen';
+import {CartForm, Money, useOptimisticCart, type OptimisticCart} from '@shopify/hydrogen';
 import {useEffect, useId, useRef} from 'react';
 import {useFetcher} from 'react-router';
 
@@ -15,10 +15,6 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
       ? 'mt-8 rounded-3xl bg-neutral-100 p-6 md:p-8'
       : 'mt-5 border-t border-neutral-300 pt-5';
   const summaryId = useId();
-  const discountsHeadingId = useId();
-  const discountCodeInputId = useId();
-  const giftCardHeadingId = useId();
-  const giftCardInputId = useId();
 
   return (
     <div aria-labelledby={summaryId} className={className}>
@@ -38,19 +34,22 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
           )}
         </dd>
       </dl>
-      <CartDiscounts
-        discountCodes={cart?.discountCodes}
-        discountsHeadingId={discountsHeadingId}
-        discountCodeInputId={discountCodeInputId}
-      />
-      <CartGiftCard
-        giftCardCodes={cart?.appliedGiftCards}
-        giftCardHeadingId={giftCardHeadingId}
-        giftCardInputId={giftCardInputId}
-      />
       <CartCheckoutActions checkoutUrl={cart?.checkoutUrl} />
     </div>
   );
+}
+type CartSummaryAsyncProps = {
+  cart: CartApiQueryFragment | null;
+  layout: CartLayout;
+};
+
+export function CartSummaryAsync({cart: originalCart, layout}: CartSummaryAsyncProps) {
+  const cart = useOptimisticCart(originalCart);
+  const cartHasItems = cart?.totalQuantity ? cart.totalQuantity > 0 : false;
+
+  if (!cartHasItems) return null
+
+  return  <CartSummary cart={cart} layout={layout} />
 }
 
 function CartCheckoutActions({checkoutUrl}: {checkoutUrl?: string}) {

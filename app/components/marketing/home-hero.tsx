@@ -56,7 +56,7 @@ function HomeHeroContent({
       style={{backgroundColor: presentation.tintColor}}
     >
       <p className="text-sm font-bold tracking-[0.16em] text-neutral-700">
-        PICK YOUR PLAIN
+        PICK YOUR ROAST
       </p>
       <div className="relative grid min-h-96 flex-1 place-items-center">
         <div

@@ -19,12 +19,12 @@ export function ProductCard({product, presentation}: ProductCardProps) {
     <article className="group flex flex-col gap-4 rounded-3xl bg-neutral-100 p-5 transition duration-200 hover:-translate-y-1.5 hover:-rotate-1 hover:shadow-soft">
       <Link
         aria-label={`View ${product.title}`}
-        className="flex min-h-64 items-end justify-center overflow-hidden rounded-2xl bg-orange-100"
+        className="flex items-end justify-center overflow-hidden rounded-2xl bg-orange-100 h-[268px]"
         prefetch="intent"
         to={`/products/${product.handle}`}
       >
         <CartonIllustration
-          className="origin-bottom scale-[0.48] transition duration-300 group-hover:scale-[0.51]"
+          className="origin-bottom scale-[0.48] transition duration-300 group-hover:scale-[0.55]"
           pill="12 OZ"
           presentation={presentation}
         />

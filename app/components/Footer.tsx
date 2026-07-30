@@ -5,7 +5,7 @@ export function Footer() {
     <footer className="rounded-t-3xl bg-neutral-900 px-5 py-14 text-neutral-100 md:px-10 md:pt-16 md:pb-9">
       <div className="mx-auto grid max-w-[1240px] gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:gap-12">
         <div>
-          <div className="font-display text-3xl">Just Plain</div>
+          <div className="font-display text-3xl">Just Plain Coffee</div>
           <p className="mt-3 max-w-[32ch] text-neutral-300">
             Specialty-grade organic coffee with nothing added, nothing
             performed, in a carton.

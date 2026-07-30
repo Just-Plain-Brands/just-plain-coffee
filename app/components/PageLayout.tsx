@@ -17,6 +17,7 @@ import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
 import {AnnouncementBar} from '~/components/layout/announcement-bar';
 import {Button} from '~/components/ui/button';
 import {Input} from '~/components/ui/input';
+import { CartSummaryAsync } from './CartSummary';
 
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
@@ -47,7 +48,13 @@ export function PageLayout({
 
 function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
   return (
-    <Aside type="cart" heading="CART">
+    <Aside type="cart" heading="CART" footer={<Suspense fallback={<p>Loading cart ...</p>}>
+        <Await resolve={cart}>
+          {(cart) => {
+            return <CartSummaryAsync cart={cart} layout="aside" />;
+          }}
+        </Await>
+      </Suspense>}>
       <Suspense fallback={<p>Loading cart ...</p>}>
         <Await resolve={cart}>
           {(cart) => {

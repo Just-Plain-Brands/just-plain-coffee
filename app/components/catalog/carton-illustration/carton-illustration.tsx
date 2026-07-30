@@ -32,7 +32,7 @@ export function CartonIllustration({
           <div className="jpc-carton-social">
             @JUSTPLAINCOFFEE
             <br />
-            JUSTPLAIN.COFFEE
+            JUSTPLAINCOFFEE.COM
           </div>
         </div>
         <div className="jpc-carton-front">
