@@ -1,7 +1,7 @@
 ---
-description: 
-globs: 
-alwaysApply: true
+description: React Router import conventions for the Hydrogen storefront
+globs: apps/storefront/**/*.{ts,tsx}
+alwaysApply: false
 ---
 
 # React Router Import Rule for Hydrogen
