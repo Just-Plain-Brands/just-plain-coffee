@@ -71,10 +71,7 @@ export default function Homepage() {
               Specialty grade
             </div>
             <div className="h-[420px] w-[285px]">
-              <CartonIllustration
-                className="origin-top-left scale-[0.84]"
-                presentation={ROAST_PRESENTATIONS.medium}
-              />
+              <CartonIllustration className="origin-top-left scale-[0.84]" />
             </div>
             <div className="absolute right-8 bottom-8 rotate-6 rounded-full bg-neutral-900 px-5 py-3 font-bold text-neutral-100 shadow-soft">
               Yes, it&apos;s a carton.
@@ -102,11 +99,7 @@ export default function Homepage() {
                 key={presentation.id}
                 style={{transform: `rotate(${(index - 1.5) * 2}deg)`}}
               >
-                <CartonIllustration
-                  className="origin-top-left scale-[0.52]"
-                  pill="12 OZ"
-                  presentation={presentation}
-                />
+                <CartonIllustration className="origin-top-left scale-[0.52]" />
               </div>
             ))}
           </div>
@@ -150,10 +143,7 @@ export default function Homepage() {
           <div className="relative grid min-h-[480px] place-items-center overflow-hidden bg-green-300">
             <div className="absolute inset-8 rounded-3xl border-2 border-dashed border-green-900/25" />
             <div className="h-[390px] w-[265px] rotate-3">
-              <CartonIllustration
-                className="origin-top-left scale-[0.78]"
-                presentation={ROAST_PRESENTATIONS.decaf}
-              />
+              <CartonIllustration className="origin-top-left scale-[0.78]" />
             </div>
           </div>
           <div className="p-8 md:p-14">

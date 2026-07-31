@@ -67,10 +67,7 @@ function HomeHeroContent({
           {presentation.shortName}.
         </div>
         <div className="relative h-[375px] w-[255px] animate-carton-bob">
-          <CartonIllustration
-            className="origin-top-left scale-75"
-            presentation={presentation}
-          />
+          <CartonIllustration className="origin-top-left scale-75" />
         </div>
       </div>
       <div className="mt-4 flex flex-wrap justify-center gap-2">

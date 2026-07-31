@@ -111,21 +111,18 @@ export default function Product() {
     <main>
       <section className="mx-auto grid max-w-7xl gap-10 px-5 py-12 md:px-10 md:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
         <div
-          className="sticky top-36 grid min-h-[580px] place-items-center overflow-hidden rounded-4xl"
+          className="relative lg:sticky lg:top-36 grid min-h-[580px] place-items-center overflow-hidden rounded-4xl"
           style={{backgroundColor: presentation.tintColor}}
         >
           <div
             aria-hidden="true"
-            className="absolute font-display text-[clamp(6rem,16vw,12rem)] leading-none"
+            className="absolute font-display text-[clamp(6rem,16vw,12rem)] leading-none -rotate-8"
             style={{color: presentation.wordColor}}
           >
             {presentation.shortName}.
           </div>
           <div className="relative h-[490px] w-[333px] rotate-2">
-            <CartonIllustration
-              className="origin-top-left scale-[0.98]"
-              presentation={presentation}
-            />
+            <CartonIllustration className="origin-top-left scale-[0.98]" />
           </div>
         </div>
 

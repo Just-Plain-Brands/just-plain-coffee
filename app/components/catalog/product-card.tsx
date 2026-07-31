@@ -25,8 +25,6 @@ export function ProductCard({product, presentation}: ProductCardProps) {
       >
         <CartonIllustration
           className="origin-bottom scale-[0.48] transition duration-300 group-hover:scale-[0.55]"
-          pill="12 OZ"
-          presentation={presentation}
         />
       </Link>
       <div>
