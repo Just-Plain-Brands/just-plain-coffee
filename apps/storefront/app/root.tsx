@@ -10,12 +10,15 @@ import {
   ScrollRestoration,
   useRouteLoaderData,
 } from 'react-router';
-import type {Route} from './+types/root';
+
 import favicon from '~/assets/favicon.svg';
-import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
-import tailwindCss from './styles/tailwind.css?url';
-import {PageLayout} from './components/PageLayout';
 import {Toaster} from '~/components/ui/sonner';
+import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
+
+import type {Route} from './+types/root';
+import {PageLayout} from './components/PageLayout';
+
+import tailwindCss from './styles/tailwind.css?url';
 
 export type RootLoader = typeof loader;
 

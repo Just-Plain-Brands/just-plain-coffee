@@ -1,23 +1,25 @@
-import {Await, Link} from 'react-router';
 import {Suspense, useId} from 'react';
+import {Await, Link} from 'react-router';
 import type {
   CartApiQueryFragment,
   FooterQuery,
   HeaderQuery,
 } from 'storefrontapi.generated';
+
 import {Aside} from '~/components/Aside';
+import {CartMain} from '~/components/CartMain';
 import {Footer} from '~/components/Footer';
 import {Header, HeaderMenu} from '~/components/Header';
-import {CartMain} from '~/components/CartMain';
+import {AnnouncementBar} from '~/components/layout/announcement-bar';
 import {
   SEARCH_ENDPOINT,
   SearchFormPredictive,
 } from '~/components/SearchFormPredictive';
 import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
-import {AnnouncementBar} from '~/components/layout/announcement-bar';
 import {Button} from '~/components/ui/button';
 import {Input} from '~/components/ui/input';
-import { CartSummaryAsync } from './CartSummary';
+
+import {CartSummaryAsync} from './CartSummary';
 
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
@@ -48,13 +50,19 @@ export function PageLayout({
 
 function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
   return (
-    <Aside type="cart" heading="CART" footer={<Suspense fallback={<p>Loading cart ...</p>}>
-        <Await resolve={cart}>
-          {(cart) => {
-            return <CartSummaryAsync cart={cart} layout="aside" />;
-          }}
-        </Await>
-      </Suspense>}>
+    <Aside
+      type="cart"
+      heading="CART"
+      footer={
+        <Suspense fallback={<p>Loading cart ...</p>}>
+          <Await resolve={cart}>
+            {(cart) => {
+              return <CartSummaryAsync cart={cart} layout="aside" />;
+            }}
+          </Await>
+        </Suspense>
+      }
+    >
       <Suspense fallback={<p>Loading cart ...</p>}>
         <Await resolve={cart}>
           {(cart) => {

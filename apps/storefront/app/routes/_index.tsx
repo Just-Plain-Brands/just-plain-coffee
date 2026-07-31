@@ -1,5 +1,5 @@
 import {Link, useLoaderData} from 'react-router';
-import type {Route} from './+types/_index';
+
 import {CartonIllustration} from '~/components/catalog/carton-illustration/carton-illustration';
 import {ProductCard} from '~/components/catalog/product-card';
 import {HomeHero} from '~/components/marketing/home-hero';
@@ -9,6 +9,8 @@ import {
   ROAST_PRESENTATIONS,
 } from '~/lib/coffee/presentation';
 import {COFFEE_PRODUCT_CARD_FRAGMENT} from '~/lib/shopify/catalog-fragments';
+
+import type {Route} from './+types/_index';
 
 export const meta: Route.MetaFunction = () => [
   {title: 'Just Plain Coffee | Specialty coffee without the performance'},
@@ -219,7 +221,7 @@ export default function Homepage() {
             }`}
             key={byline}
           >
-            <blockquote className="text-xl font-semibold leading-relaxed">
+            <blockquote className="text-xl leading-relaxed font-semibold">
               {quote}
             </blockquote>
             <figcaption className="mt-8 text-sm font-bold text-neutral-700">

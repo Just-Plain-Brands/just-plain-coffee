@@ -40,9 +40,11 @@ workspace packages and do not participate in the application build graph.
 ## Root tooling
 
 pnpm owns dependency installation, workspace linking, and `pnpm-lock.yaml`.
-Turborepo owns task scheduling, dependency ordering, and caching. Root scripts
-provide stable entry points; their implementations remain in each workspace's
-`package.json`.
+Turborepo owns task scheduling, dependency ordering, and caching. Oxlint and
+Oxfmt provide repository-wide linting and formatting. Lefthook applies those
+checks to staged files and runs the full verification workflow before pushes.
+Root scripts provide stable entry points; application-specific implementations
+remain in each workspace's `package.json`.
 
 Hydrogen's lockfile check only inspects the application directory. The
 storefront build disables that check because the committed workspace lockfile

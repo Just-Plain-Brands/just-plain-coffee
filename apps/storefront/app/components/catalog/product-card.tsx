@@ -1,6 +1,7 @@
 import {Money} from '@shopify/hydrogen';
 import {Link} from 'react-router';
 import type {CoffeeProductCardFragment} from 'storefrontapi.generated';
+
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import {CartonIllustration} from '~/components/catalog/carton-illustration/carton-illustration';
@@ -19,13 +20,11 @@ export function ProductCard({product, presentation}: ProductCardProps) {
     <article className="group flex flex-col gap-4 rounded-3xl bg-neutral-100 p-5 transition duration-200 hover:-translate-y-1.5 hover:-rotate-1 hover:shadow-soft">
       <Link
         aria-label={`View ${product.title}`}
-        className="flex items-end justify-center overflow-hidden rounded-2xl bg-orange-100 h-[268px]"
+        className="flex h-[268px] items-end justify-center overflow-hidden rounded-2xl bg-orange-100"
         prefetch="intent"
         to={`/products/${product.handle}`}
       >
-        <CartonIllustration
-          className="origin-bottom scale-[0.48] transition duration-300 group-hover:scale-[0.55]"
-        />
+        <CartonIllustration className="origin-bottom scale-[0.48] transition duration-300 group-hover:scale-[0.55]" />
       </Link>
       <div>
         <div className="flex items-baseline justify-between gap-2">

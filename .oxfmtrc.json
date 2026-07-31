@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "arrowParens": "always",
+  "bracketSpacing": false,
+  "ignorePatterns": [
+    "assets/**",
+    "**/.react-router/**",
+    "**/build/**",
+    "**/dist/**",
+    "**/*.generated.d.ts",
+    "**/*.graphql.d.ts",
+    "**/*.graphql.ts"
+  ],
+  "printWidth": 80,
+  "singleQuote": true,
+  "sortImports": true,
+  "sortPackageJson": {
+    "sortScripts": true
+  },
+  "sortTailwindcss": {
+    "functions": ["cn", "clsx", "cva", "twMerge"],
+    "stylesheet": "./apps/storefront/app/styles/tailwind.css"
+  },
+  "trailingComma": "all"
+}

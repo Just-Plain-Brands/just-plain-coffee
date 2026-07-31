@@ -6,6 +6,7 @@ import {
   useMemo,
   useState,
 } from 'react';
+
 import {
   Sheet,
   SheetClose,
@@ -15,7 +16,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from '~/components/ui/sheet';
-import { Button } from './ui/button';
+
+import {Button} from './ui/button';
 
 type AsideType = 'search' | 'cart' | 'mobile' | 'closed';
 type AsideContextValue = {
@@ -55,31 +57,30 @@ export function Aside({
         if (!open) close();
       }}
     >
-      <SheetContent className="w-full max-w-[430px] gap-0 border-0 bg-transparent p-0 sm:max-w-[430px] p-4 border-none shadow-none" showCloseButton={false}>
-        <div className='bg-background rounded-lg h-full shadow-md flex flex-col overflow-hidden'>
-        <SheetHeader className="border-b border-border px-7 py-6">
-          <div className='flex'>
-            <div className='flex-1'>
-          <SheetTitle className="font-display text-2xl font-normal">
-            {heading}
-          </SheetTitle>
-          <SheetDescription className="sr-only">
-            {type === 'cart'
-              ? 'Review and update your shopping cart.'
-              : `Just Plain Coffee ${type}.`}
-          </SheetDescription>
+      <SheetContent
+        className="w-full max-w-[430px] gap-0 border-0 border-none bg-transparent p-0 p-4 shadow-none sm:max-w-[430px]"
+        showCloseButton={false}
+      >
+        <div className="flex h-full flex-col overflow-hidden rounded-lg bg-background shadow-md">
+          <SheetHeader className="border-b border-border px-7 py-6">
+            <div className="flex">
+              <div className="flex-1">
+                <SheetTitle className="font-display text-2xl font-normal">
+                  {heading}
+                </SheetTitle>
+                <SheetDescription className="sr-only">
+                  {type === 'cart'
+                    ? 'Review and update your shopping cart.'
+                    : `Just Plain Coffee ${type}.`}
+                </SheetDescription>
+              </div>
+              <SheetClose render={<Button variant="ghost">Close</Button>} />
+            </div>
+          </SheetHeader>
+          <div className="min-h-0 flex-1 overflow-y-auto px-7 py-6">
+            {children}
           </div>
-          <SheetClose render={<Button variant="ghost">Close</Button>} />
-          </div>
-        </SheetHeader>
-        <div className="min-h-0 flex-1 overflow-y-auto px-7 py-6">
-          {children}
-        </div>
-        {footer ? (
-          <SheetFooter>
-            {footer}
-        </SheetFooter>
-      ) : null}
+          {footer ? <SheetFooter>{footer}</SheetFooter> : null}
         </div>
       </SheetContent>
     </Sheet>

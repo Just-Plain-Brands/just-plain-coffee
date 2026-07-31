@@ -1,0 +1,93 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "error"
+  },
+  "env": {
+    "browser": true,
+    "builtin": true,
+    "node": true
+  },
+  "ignorePatterns": [
+    "**/.react-router/**",
+    "**/build/**",
+    "**/dist/**",
+    "**/*.generated.d.ts",
+    "**/*.graphql.d.ts",
+    "**/*.graphql.ts"
+  ],
+  "options": {
+    "reportUnusedDisableDirectives": "error",
+    "typeAware": true
+  },
+  "plugins": [
+    "eslint",
+    "import",
+    "jest",
+    "jsx-a11y",
+    "oxc",
+    "react",
+    "typescript"
+  ],
+  "rules": {
+    "eslint/no-case-declarations": "off",
+    "eslint/no-console": [
+      "warn",
+      {
+        "allow": ["warn", "error"]
+      }
+    ],
+    "eslint/no-useless-escape": "off",
+    "eslint/no-use-before-define": "off",
+    "eslint/object-shorthand": [
+      "error",
+      "always",
+      {
+        "avoidQuotes": true
+      }
+    ],
+    "jsx-a11y/autocomplete-valid": "off",
+    "jsx-a11y/control-has-associated-label": "off",
+    "jsx-a11y/prefer-tag-over-role": "off",
+    "react/display-name": "off",
+    "react/no-array-index-key": "warn",
+    "react/react-in-jsx-scope": "off",
+    "typescript/no-empty-function": "off",
+    "typescript/no-empty-interface": "off",
+    "typescript/no-empty-object-type": "off",
+    "typescript/no-explicit-any": "off",
+    "typescript/no-floating-promises": "error",
+    "typescript/no-misused-promises": "error",
+    "typescript/no-base-to-string": "off",
+    "typescript/no-non-null-asserted-optional-chain": "off",
+    "typescript/no-non-null-assertion": "off",
+    "typescript/no-redundant-type-constituents": "off",
+    "typescript/no-useless-default-assignment": "off",
+    "typescript/no-unused-vars": "off",
+    "typescript/unbound-method": "off"
+  },
+  "settings": {
+    "react": {
+      "formComponents": ["Form"],
+      "linkComponents": [
+        {
+          "name": "Link",
+          "linkAttribute": "to"
+        },
+        {
+          "name": "NavLink",
+          "linkAttribute": "to"
+        }
+      ],
+      "version": "19.2.8"
+    }
+  },
+  "overrides": [
+    {
+      "files": ["**/*.server.*"],
+      "rules": {
+        "react/rules-of-hooks": "off"
+      }
+    }
+  ]
+}

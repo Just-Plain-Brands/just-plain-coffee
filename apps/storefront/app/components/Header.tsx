@@ -1,12 +1,13 @@
-import {Suspense} from 'react';
-import {Await, NavLink, useAsyncValue} from 'react-router';
 import {
   type CartViewPayload,
   useAnalytics,
   useOptimisticCart,
 } from '@shopify/hydrogen';
-import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {MenuIcon, SearchIcon, ShoppingBagIcon} from 'lucide-react';
+import {Suspense} from 'react';
+import {Await, NavLink, useAsyncValue} from 'react-router';
+import type {CartApiQueryFragment} from 'storefrontapi.generated';
+
 import {useAside} from '~/components/Aside';
 import {Button} from '~/components/ui/button';
 

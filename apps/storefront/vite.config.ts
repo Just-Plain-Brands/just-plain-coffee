@@ -1,9 +1,10 @@
 import {fileURLToPath} from 'node:url';
-import {defineConfig} from 'vite';
+
+import {reactRouter} from '@react-router/dev/vite';
 import {hydrogen} from '@shopify/hydrogen/vite';
 import {oxygen} from '@shopify/mini-oxygen/vite';
-import {reactRouter} from '@react-router/dev/vite';
 import tailwindcss from '@tailwindcss/vite';
+import {defineConfig} from 'vite';
 
 export default defineConfig({
   plugins: [tailwindcss(), hydrogen(), oxygen(), reactRouter()],

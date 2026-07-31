@@ -1,20 +1,28 @@
 {
   "name": "just-plain-coffee",
   "private": true,
-  "packageManager": "pnpm@11.9.0",
   "scripts": {
     "build": "turbo run build",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck",
     "codegen": "turbo run codegen --filter=@just-plain-coffee/storefront",
     "dev": "turbo run dev --filter=@just-plain-coffee/storefront",
     "dev:all": "turbo run dev",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
     "lint": "turbo run lint",
+    "lint:fix": "oxlint --fix .",
     "preview": "turbo run preview --filter=@just-plain-coffee/storefront",
     "typecheck": "turbo run typecheck"
+  },
+  "devDependencies": {
+    "lefthook": "^2.1.10",
+    "oxfmt": "^0.61.0",
+    "oxlint": "^1.76.0",
+    "oxlint-tsgolint": "^7.0.2001",
+    "turbo": "^2.10.7"
   },
   "engines": {
     "node": "^22.22.0 || ^24.0.0"
   },
-  "devDependencies": {
-    "turbo": "^2.10.7"
-  }
+  "packageManager": "pnpm@11.9.0"
 }

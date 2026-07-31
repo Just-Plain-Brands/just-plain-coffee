@@ -1,11 +1,13 @@
 import {getPaginationVariables} from '@shopify/hydrogen';
 import {useLoaderData} from 'react-router';
-import type {Route} from './+types/collections.all';
+import type {CoffeeProductCardFragment} from 'storefrontapi.generated';
+
 import {ProductCard} from '~/components/catalog/product-card';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {getRoastPresentation} from '~/lib/coffee/presentation';
 import {COFFEE_PRODUCT_CARD_FRAGMENT} from '~/lib/shopify/catalog-fragments';
-import type {CoffeeProductCardFragment} from 'storefrontapi.generated';
+
+import type {Route} from './+types/collections.all';
 
 export const meta: Route.MetaFunction = () => [
   {title: 'Shop coffee | Just Plain Coffee'},

@@ -1,6 +1,10 @@
-import {useLoaderData} from 'react-router';
-import type {Route} from './+types/search';
 import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
+import {useLoaderData} from 'react-router';
+import type {
+  RegularSearchQuery,
+  PredictiveSearchQuery,
+} from 'storefrontapi.generated';
+
 import {SearchForm} from '~/components/SearchForm';
 import {SearchResults} from '~/components/SearchResults';
 import {
@@ -8,10 +12,8 @@ import {
   type PredictiveSearchReturn,
   getEmptyPredictiveSearchResult,
 } from '~/lib/search';
-import type {
-  RegularSearchQuery,
-  PredictiveSearchQuery,
-} from 'storefrontapi.generated';
+
+import type {Route} from './+types/search';
 
 export const meta: Route.MetaFunction = () => {
   return [{title: `Hydrogen | Search`}];

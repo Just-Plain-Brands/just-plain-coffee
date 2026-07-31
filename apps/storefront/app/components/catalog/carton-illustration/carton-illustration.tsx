@@ -4,9 +4,7 @@ interface CartonIllustrationProps {
   className?: string;
 }
 
-export function CartonIllustration({
-  className,
-}: CartonIllustrationProps) {
+export function CartonIllustration({className}: CartonIllustrationProps) {
   return (
     <img
       alt="Just Plain Coffee carton"

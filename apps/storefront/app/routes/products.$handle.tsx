@@ -1,5 +1,3 @@
-import {Link, useLoaderData} from 'react-router';
-import type {Route} from './+types/products.$handle';
 import {
   getSelectedProductOptions,
   Analytics,
@@ -8,12 +6,16 @@ import {
   getAdjacentAndFirstAvailableVariants,
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
+import {Link, useLoaderData} from 'react-router';
+
 import {CartonIllustration} from '~/components/catalog/carton-illustration/carton-illustration';
-import {ProductPrice} from '~/components/ProductPrice';
 import {ProductForm} from '~/components/ProductForm';
+import {ProductPrice} from '~/components/ProductPrice';
 import {buttonVariants} from '~/components/ui/button';
 import {getRoastPresentation} from '~/lib/coffee/presentation';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+
+import type {Route} from './+types/products.$handle';
 
 export const meta: Route.MetaFunction = ({data}) => {
   return [
@@ -111,12 +113,12 @@ export default function Product() {
     <main>
       <section className="mx-auto grid max-w-7xl gap-10 px-5 py-12 md:px-10 md:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
         <div
-          className="relative lg:sticky lg:top-36 grid min-h-[580px] place-items-center overflow-hidden rounded-4xl"
+          className="relative grid min-h-[580px] place-items-center overflow-hidden rounded-4xl lg:sticky lg:top-36"
           style={{backgroundColor: presentation.tintColor}}
         >
           <div
             aria-hidden="true"
-            className="absolute font-display text-[clamp(6rem,16vw,12rem)] leading-none -rotate-8"
+            className="absolute -rotate-8 font-display text-[clamp(6rem,16vw,12rem)] leading-none"
             style={{color: presentation.wordColor}}
           >
             {presentation.shortName}.

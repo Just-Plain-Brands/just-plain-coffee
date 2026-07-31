@@ -13,7 +13,6 @@
   ],
   "exclude": ["node_modules", "dist", "build"],
   "compilerOptions": {
-    "baseUrl": ".",
     "types": [
       "@shopify/oxygen-workers-types",
       "react-router",
@@ -21,7 +20,9 @@
       "vite/client"
     ],
     "paths": {
-      "~/*": ["app/*"]
+      "~/*": ["./app/*"],
+      "customer-accountapi.generated": ["./customer-accountapi.generated.d.ts"],
+      "storefrontapi.generated": ["./storefrontapi.generated.d.ts"]
     },
     "rootDirs": [".", "./.react-router/types"],
     "composite": false,

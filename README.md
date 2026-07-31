@@ -25,6 +25,9 @@ Run commands from the repository root:
 ```bash
 pnpm install
 pnpm dev
+pnpm check
+pnpm format
+pnpm format:check
 pnpm typecheck
 pnpm lint
 pnpm build
@@ -32,3 +35,7 @@ pnpm build
 
 `pnpm dev` starts only the storefront. `pnpm dev:all` will start every
 workspace development task once additional applications are present.
+
+Oxlint and Oxfmt provide repository-wide linting and formatting. Lefthook
+formats and lints staged files before commits, then runs the complete checks and
+production build before pushes.

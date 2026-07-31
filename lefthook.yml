@@ -1,0 +1,17 @@
+pre-commit:
+  jobs:
+    - name: format staged files
+      glob: '*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,json,jsonc,json5,css,scss,less,pcss,postcss,graphql,gql,graphqls,toml,html,htm,md,markdown,mdx,yml,yaml}'
+      run: pnpm exec oxfmt --no-error-on-unmatched-pattern {staged_files}
+      stage_fixed: true
+    - name: lint staged source files
+      glob: '*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}'
+      run: pnpm exec oxlint --fix {staged_files}
+      stage_fixed: true
+
+pre-push:
+  jobs:
+    - name: repository checks
+      run: pnpm check
+    - name: production build
+      run: pnpm build

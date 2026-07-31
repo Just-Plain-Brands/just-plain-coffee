@@ -1,5 +1,6 @@
-import {type FetcherWithComponents} from 'react-router';
 import {CartForm, type OptimisticCartLineInput} from '@shopify/hydrogen';
+import {type FetcherWithComponents} from 'react-router';
+
 import {Button} from '~/components/ui/button';
 import {cn} from '~/lib/utils';
 

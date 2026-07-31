@@ -1,9 +1,11 @@
-import {Link, useLoaderData} from 'react-router';
-import type {Route} from './+types/blogs.$blogHandle._index';
 import {Image, getPaginationVariables} from '@shopify/hydrogen';
+import {Link, useLoaderData} from 'react-router';
 import type {ArticleItemFragment} from 'storefrontapi.generated';
+
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+
+import type {Route} from './+types/blogs.$blogHandle._index';
 
 export const meta: Route.MetaFunction = ({data}) => {
   return [{title: `Hydrogen | ${data?.blog.title ?? ''} blog`}];

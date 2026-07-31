@@ -1,23 +1,28 @@
 # Dependency Compatibility Review
 
+> Historical note: the TypeScript and lint-tooling recommendations in this
+> review were superseded on 2026-07-31. The repository now runs the TypeScript 7
+> compiler alongside the TypeScript 6 compatibility API and uses Oxlint instead
+> of ESLint.
+
 Date: 2026-07-29
 
 This review uses published package metadata and official upstream documentation rather than remembered version information.
 
 ## Decisions
 
-| Area | Decision | Evidence |
-| --- | --- | --- |
-| React | Upgrade to React and React DOM 19.2.8, with matching React 19 types | Hydrogen 2026.4.4 accepts `^19.2.3` in its React peer range. A Shopify maintainer also confirmed that Hydrogen 2025.7.3 introduced React 19 support. |
-| React Router | Stay on 7.16.0 | Hydrogen 2026.4.4 requires `react-router` and `@react-router/dev` `~7.16.0`. Router 8.3.0 is outside that supported range. |
-| Router 8 preparation | Enable the two supported Router 8 request-semantics future flags, remove the unused `react-router-dom` compatibility package, and require Node 22.22+ | React Router recommends adopting future flags before the major upgrade. Router 8 removes the `react-router-dom` re-export package and requires Node 22.22+. |
-| Shopify CLI | Upgrade the project-local CLI from 3.93.2 to 4.5.2 | 4.5.2 is the current published CLI. Its `shopify hydrogen` commands were verified locally after installation. |
-| Vite | Keep 8.1.5 | It is current and Hydrogen accepts Vite 8. |
-| TypeScript | Keep 5.9.3 | TypeScript 7 is outside `@typescript-eslint/parser` 8.65's `<6.1.0` peer range and outside the supported React Router 7 toolchain. |
-| GraphQL | Keep 16.14.2 | GraphQL 17 is outside the peer ranges of the installed GraphQL Code Generator 5 and GraphQL Config 5 packages. |
-| ESLint | Keep the ESLint 9 toolchain | Current `eslint-plugin-react` and `eslint-plugin-import` peer ranges do not include ESLint 10. Upgrading only the core would create an unsupported lint graph. |
-| Hydrogen code generation | Keep Codegen CLI 5.0.2 and Hydrogen Codegen 0.3.3 | These are the exact versions used by the current Hydrogen skeleton/toolchain. A Codegen 7-only upgrade would split the project from Hydrogen's supported baseline. |
-| Tailwind and shadcn | Keep Tailwind CSS 4.3.3, `@tailwindcss/vite` 4.3.3, Base UI 1.6.0, and shadcn 4.16.0 | These resolve to their current published versions and declare compatibility with the installed React/Vite versions. |
+| Area                     | Decision                                                                                                                                              | Evidence                                                                                                                                                           |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| React                    | Upgrade to React and React DOM 19.2.8, with matching React 19 types                                                                                   | Hydrogen 2026.4.4 accepts `^19.2.3` in its React peer range. A Shopify maintainer also confirmed that Hydrogen 2025.7.3 introduced React 19 support.               |
+| React Router             | Stay on 7.16.0                                                                                                                                        | Hydrogen 2026.4.4 requires `react-router` and `@react-router/dev` `~7.16.0`. Router 8.3.0 is outside that supported range.                                         |
+| Router 8 preparation     | Enable the two supported Router 8 request-semantics future flags, remove the unused `react-router-dom` compatibility package, and require Node 22.22+ | React Router recommends adopting future flags before the major upgrade. Router 8 removes the `react-router-dom` re-export package and requires Node 22.22+.        |
+| Shopify CLI              | Upgrade the project-local CLI from 3.93.2 to 4.5.2                                                                                                    | 4.5.2 is the current published CLI. Its `shopify hydrogen` commands were verified locally after installation.                                                      |
+| Vite                     | Keep 8.1.5                                                                                                                                            | It is current and Hydrogen accepts Vite 8.                                                                                                                         |
+| TypeScript               | Keep 5.9.3                                                                                                                                            | TypeScript 7 is outside `@typescript-eslint/parser` 8.65's `<6.1.0` peer range and outside the supported React Router 7 toolchain.                                 |
+| GraphQL                  | Keep 16.14.2                                                                                                                                          | GraphQL 17 is outside the peer ranges of the installed GraphQL Code Generator 5 and GraphQL Config 5 packages.                                                     |
+| ESLint                   | Keep the ESLint 9 toolchain                                                                                                                           | Current `eslint-plugin-react` and `eslint-plugin-import` peer ranges do not include ESLint 10. Upgrading only the core would create an unsupported lint graph.     |
+| Hydrogen code generation | Keep Codegen CLI 5.0.2 and Hydrogen Codegen 0.3.3                                                                                                     | These are the exact versions used by the current Hydrogen skeleton/toolchain. A Codegen 7-only upgrade would split the project from Hydrogen's supported baseline. |
+| Tailwind and shadcn      | Keep Tailwind CSS 4.3.3, `@tailwindcss/vite` 4.3.3, Base UI 1.6.0, and shadcn 4.16.0                                                                  | These resolve to their current published versions and declare compatibility with the installed React/Vite versions.                                                |
 
 ## React 19 conclusion
 

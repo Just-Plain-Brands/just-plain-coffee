@@ -1,8 +1,14 @@
-import type {CartApiQueryFragment} from 'storefrontapi.generated';
-import type {CartLayout} from '~/components/CartMain';
-import {CartForm, Money, useOptimisticCart, type OptimisticCart} from '@shopify/hydrogen';
+import {
+  CartForm,
+  Money,
+  useOptimisticCart,
+  type OptimisticCart,
+} from '@shopify/hydrogen';
 import {useEffect, useId, useRef} from 'react';
 import {useFetcher} from 'react-router';
+import type {CartApiQueryFragment} from 'storefrontapi.generated';
+
+import type {CartLayout} from '~/components/CartMain';
 
 type CartSummaryProps = {
   cart: OptimisticCart<CartApiQueryFragment | null>;
@@ -43,13 +49,16 @@ type CartSummaryAsyncProps = {
   layout: CartLayout;
 };
 
-export function CartSummaryAsync({cart: originalCart, layout}: CartSummaryAsyncProps) {
+export function CartSummaryAsync({
+  cart: originalCart,
+  layout,
+}: CartSummaryAsyncProps) {
   const cart = useOptimisticCart(originalCart);
   const cartHasItems = cart?.totalQuantity ? cart.totalQuantity > 0 : false;
 
-  if (!cartHasItems) return null
+  if (!cartHasItems) return null;
 
-  return  <CartSummary cart={cart} layout={layout} />
+  return <CartSummary cart={cart} layout={layout} />;
 }
 
 function CartCheckoutActions({checkoutUrl}: {checkoutUrl?: string}) {
