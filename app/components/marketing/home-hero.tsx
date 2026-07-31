@@ -58,18 +58,6 @@ function HomeHeroContent({
       <p className="text-sm font-bold tracking-[0.16em] text-neutral-700">
         PICK YOUR ROAST
       </p>
-      <div className="relative grid min-h-96 flex-1 place-items-center">
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 grid place-items-center font-display text-[clamp(5.25rem,22vw,13rem)] leading-none select-none"
-          style={{color: presentation.wordColor}}
-        >
-          {presentation.shortName}.
-        </div>
-        <div className="relative h-[375px] w-[255px] animate-carton-bob">
-          <CartonIllustration className="origin-top-left scale-75" />
-        </div>
-      </div>
       <div className="mt-4 flex flex-wrap justify-center gap-2">
         {selections.map((selection, index) => {
           const isSelected = selection.product.id === product.id;
@@ -94,6 +82,18 @@ function HomeHeroContent({
             </button>
           );
         })}
+      </div>
+      <div className="relative grid min-h-96 flex-1 place-items-center">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 grid place-items-center font-display text-[clamp(5.25rem,22vw,13rem)] leading-none select-none"
+          style={{color: presentation.wordColor}}
+        >
+          {presentation.shortName}.
+        </div>
+        <div className="relative h-[375px] w-[255px] animate-carton-bob">
+          <CartonIllustration className="origin-top-left scale-75" />
+        </div>
       </div>
       <p className="mx-auto mt-5 mb-5 max-w-[56ch] text-lg text-neutral-700">
         {presentation.description} Specialty grade, single origin. Roasted to
