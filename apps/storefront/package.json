@@ -5,10 +5,12 @@
   "type": "module",
   "sideEffects": false,
   "scripts": {
-    "build": "shopify hydrogen build --codegen --no-lockfile-check",
-    "codegen": "shopify hydrogen codegen && react-router typegen",
-    "dev": "shopify hydrogen dev --codegen",
+    "build": "pnpm graphql:schema && shopify hydrogen build --codegen --no-lockfile-check",
+    "codegen": "pnpm graphql:schema && shopify hydrogen codegen && react-router typegen",
+    "dev": "pnpm graphql:schema && shopify hydrogen dev --codegen",
+    "graphql:schema": "node ./scripts/generate-graphql-schemas.mjs",
     "lint": "oxlint --config ../../.oxlintrc.json .",
+    "postinstall": "pnpm graphql:schema",
     "preview": "shopify hydrogen preview",
     "typecheck": "react-router typegen && tsc --noEmit"
   },
@@ -49,6 +51,7 @@
     "graphql-config": "^5.0.3",
     "shadcn": "^4.16.0",
     "storybook": "10.5.5",
+    "ts-node": "^10.9.2",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "vite": "^8.0.1"
   },

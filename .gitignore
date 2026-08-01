@@ -12,6 +12,7 @@ storybook-static/
 !.env.example
 .shopify/
 .react-router/
+apps/storefront/.graphql/
 *.tsbuildinfo
 .DS_Store
 .idea/

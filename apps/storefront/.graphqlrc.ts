@@ -1,4 +1,3 @@
-import {getSchema} from '@shopify/hydrogen-codegen';
 import type {IGraphQLConfig} from 'graphql-config';
 
 /**
@@ -9,7 +8,7 @@ import type {IGraphQLConfig} from 'graphql-config';
 const graphqlConfig: IGraphQLConfig = {
   projects: {
     default: {
-      schema: getSchema('storefront'),
+      schema: './.graphql/storefront.schema.json',
       documents: [
         './*.{ts,tsx,js,jsx}',
         './app/**/*.{ts,tsx,js,jsx}',
@@ -18,7 +17,7 @@ const graphqlConfig: IGraphQLConfig = {
     },
 
     customer: {
-      schema: getSchema('customer-account'),
+      schema: './.graphql/customer-account.schema.json',
       documents: ['./app/graphql/customer-account/*.{ts,tsx,js,jsx}'],
     },
 
