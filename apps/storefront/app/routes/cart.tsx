@@ -2,7 +2,7 @@ import type {CartQueryDataReturn} from '@shopify/hydrogen';
 import {CartForm} from '@shopify/hydrogen';
 import {useLoaderData, data, type HeadersFunction} from 'react-router';
 
-import {CartMain} from '~/components/CartMain';
+import {CartMain} from '~/components/cart/CartMain';
 
 import type {Route} from './+types/cart';
 

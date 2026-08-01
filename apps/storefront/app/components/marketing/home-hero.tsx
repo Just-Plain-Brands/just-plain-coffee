@@ -2,8 +2,8 @@ import {useState} from 'react';
 import {Link} from 'react-router';
 import type {CoffeeProductCardFragment} from 'storefrontapi.generated';
 
-import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
+import {AddToCartButton} from '~/components/cart/AddToCartButton';
 import {CartonIllustration} from '~/components/catalog/carton-illustration/carton-illustration';
 import {buttonVariants} from '~/components/ui/button';
 import {

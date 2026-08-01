@@ -6,10 +6,9 @@ import type {
 import {Link, useNavigate} from 'react-router';
 import type {ProductFragment} from 'storefrontapi.generated';
 
+import {useAside} from '~/components/Aside';
+import {AddToCartButton} from '~/components/cart/AddToCartButton';
 import {cn} from '~/lib/utils';
-
-import {AddToCartButton} from './AddToCartButton';
-import {useAside} from './Aside';
 
 export function ProductForm({
   productOptions,

@@ -9,8 +9,8 @@ import {
 import {Link, useLoaderData} from 'react-router';
 
 import {CartonIllustration} from '~/components/catalog/carton-illustration/carton-illustration';
-import {ProductForm} from '~/components/ProductForm';
-import {ProductPrice} from '~/components/ProductPrice';
+import {ProductForm} from '~/components/product/ProductForm';
+import {ProductPrice} from '~/components/product/ProductPrice';
 import {buttonVariants} from '~/components/ui/button';
 import {getRoastPresentation} from '~/lib/coffee/presentation';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';

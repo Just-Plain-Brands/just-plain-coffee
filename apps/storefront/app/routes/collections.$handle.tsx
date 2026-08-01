@@ -3,7 +3,7 @@ import {redirect, useLoaderData} from 'react-router';
 import type {ProductItemFragment} from 'storefrontapi.generated';
 
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
-import {ProductItem} from '~/components/ProductItem';
+import {ProductItem} from '~/components/product/ProductItem';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 import type {Route} from './+types/collections.$handle';

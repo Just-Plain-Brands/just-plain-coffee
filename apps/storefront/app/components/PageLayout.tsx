@@ -7,7 +7,8 @@ import type {
 } from 'storefrontapi.generated';
 
 import {Aside} from '~/components/Aside';
-import {CartMain} from '~/components/CartMain';
+import {CartMain} from '~/components/cart/CartMain';
+import {CartSummaryAsync} from '~/components/cart/CartSummary';
 import {Footer} from '~/components/Footer';
 import {Header, HeaderMenu} from '~/components/Header';
 import {AnnouncementBar} from '~/components/layout/announcement-bar';
@@ -18,8 +19,6 @@ import {
 import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
 import {Button} from '~/components/ui/button';
 import {Input} from '~/components/ui/input';
-
-import {CartSummaryAsync} from './CartSummary';
 
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
