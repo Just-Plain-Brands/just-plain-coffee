@@ -40,6 +40,7 @@
     "@shopify/hydrogen-codegen": "0.3.3",
     "@shopify/mini-oxygen": "4.2.0",
     "@shopify/oxygen-workers-types": "^4.1.6",
+    "@storybook/react-vite": "10.5.5",
     "@tailwindcss/vite": "^4.1.6",
     "@total-typescript/ts-reset": "^0.6.1",
     "@types/react": "^19.2.17",
@@ -47,6 +48,7 @@
     "@typescript/native": "npm:typescript@^7.0.2",
     "graphql-config": "^5.0.3",
     "shadcn": "^4.16.0",
+    "storybook": "10.5.5",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "vite": "^8.0.1"
   },

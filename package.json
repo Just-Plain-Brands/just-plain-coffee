@@ -12,6 +12,8 @@
     "lint": "turbo run lint",
     "lint:fix": "oxlint --fix .",
     "preview": "turbo run preview --filter=@just-plain-coffee/storefront",
+    "storybook": "turbo run dev --filter=@just-plain-coffee/storybook",
+    "storybook:build": "turbo run build --filter=@just-plain-coffee/storybook",
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {

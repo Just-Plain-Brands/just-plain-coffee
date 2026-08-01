@@ -6,18 +6,19 @@ top-level directory has one responsibility.
 ## Applications
 
 `apps` contains independently runnable or deployable applications. The current
-Shopify Hydrogen application lives at `apps/storefront`. Storybook will be
-added later as `apps/storybook` so it can be developed and deployed
-independently from the storefront.
+Shopify Hydrogen application lives at `apps/storefront`. Storybook lives at
+`apps/storybook` so it can be developed and deployed independently while its
+stories remain beside the storefront components they document.
 
 Every application owns its runtime dependencies, build configuration,
 environment variables, generated files, and deployable public assets.
 
 ## Packages
 
-`packages` contains code with more than one application consumer. When
-Storybook is introduced, reusable visual modules can move into `packages/ui`
-and be referenced with the pnpm `workspace:` protocol.
+`packages` contains code with more than one product application consumer.
+Reusable visual modules can move into `packages/ui` and be referenced with the
+pnpm `workspace:` protocol when that second consumer exists. Storybook alone
+does not require extracting components from their owning application.
 
 Do not create generic `shared`, `common`, or `utils` packages. A package should
 have a deliberate interface and at least two real consumers.
