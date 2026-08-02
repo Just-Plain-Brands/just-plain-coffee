@@ -130,7 +130,7 @@ export default function Product() {
             className="absolute -rotate-8 font-display text-[clamp(6rem,16vw,12rem)] leading-none"
             style={{color: presentation.primaryColor}}
           >
-            {presentation.shortName}.
+            {presentation.accentName}.
           </div>
           <div className="relative h-[490px] w-[333px] rotate-2">
             {product.featuredImage ? (
@@ -149,7 +149,7 @@ export default function Product() {
 
         <div className="py-3 lg:py-8">
           <p className="text-sm font-bold tracking-[0.14em] text-orange-700 uppercase">
-            Organic coffee · {presentation.shortName} roast
+            {presentation.eyebrow}
           </p>
           <h1 className="mt-4 text-6xl leading-none md:text-8xl">{title}</h1>
           <div className="mt-5 text-2xl font-bold">

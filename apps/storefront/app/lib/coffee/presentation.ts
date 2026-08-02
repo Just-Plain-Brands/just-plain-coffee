@@ -15,6 +15,12 @@ export interface RoastPresentation {
   primaryColor: string;
 }
 
+export interface ProductPresentation extends RoastPresentation {
+  accentName: string;
+  displayName: string;
+  eyebrow: string;
+}
+
 export const ROAST_PRESENTATIONS = {
   light: {
     id: 'light',
@@ -95,11 +101,17 @@ export function getProductPresentation({
   tagline?: string | null;
   tintColor?: string | null;
   primaryColor?: string | null;
-}): RoastPresentation {
+}): ProductPresentation {
   const fallbackPresentation = getRoastPresentation({title, tags, fallback});
+  const isBundle = tags.some((tag) => tag.toLowerCase() === 'bundle');
 
   return {
     ...fallbackPresentation,
+    accentName: isBundle ? 'Bundle' : fallbackPresentation.shortName,
+    displayName: isBundle ? title : fallbackPresentation.shortName,
+    eyebrow: isBundle
+      ? 'Organic coffee · Bundle'
+      : `Organic coffee · ${fallbackPresentation.shortName} roast`,
     tagline: tagline ?? fallbackPresentation.tagline,
     tintColor: tintColor ?? fallbackPresentation.tintColor,
     primaryColor: primaryColor ?? fallbackPresentation.primaryColor,

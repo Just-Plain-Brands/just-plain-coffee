@@ -5,11 +5,11 @@ import type {CoffeeProductCardFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
 import {AddToCartButton} from '~/components/cart/AddToCartButton';
 import {CartonIllustration} from '~/components/catalog/carton-illustration/carton-illustration';
-import type {RoastPresentation} from '~/lib/coffee/presentation';
+import type {ProductPresentation} from '~/lib/coffee/presentation';
 
 interface ProductCardProps {
   product: CoffeeProductCardFragment;
-  presentation: RoastPresentation;
+  presentation: ProductPresentation;
 }
 
 export function ProductCard({product, presentation}: ProductCardProps) {
@@ -37,7 +37,7 @@ export function ProductCard({product, presentation}: ProductCardProps) {
       </Link>
       <div>
         <div className="flex items-baseline justify-between gap-2">
-          <h3 className="text-xl">{presentation.shortName}</h3>
+          <h3 className="text-xl">{presentation.displayName}</h3>
           <strong>
             <Money data={product.priceRange.minVariantPrice} />
           </strong>
