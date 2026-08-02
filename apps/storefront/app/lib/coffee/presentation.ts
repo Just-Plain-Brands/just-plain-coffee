@@ -87,6 +87,10 @@ export function getRoastPresentation({
   return ROAST_PRESENTATIONS[roastId ?? fallback];
 }
 
+export function isBundleProduct(tags: string[]): boolean {
+  return tags.some((tag) => tag.toLowerCase() === 'bundle');
+}
+
 export function getProductPresentation({
   title,
   tags = [],
@@ -103,7 +107,7 @@ export function getProductPresentation({
   primaryColor?: string | null;
 }): ProductPresentation {
   const fallbackPresentation = getRoastPresentation({title, tags, fallback});
-  const isBundle = tags.some((tag) => tag.toLowerCase() === 'bundle');
+  const isBundle = isBundleProduct(tags);
 
   return {
     ...fallbackPresentation,

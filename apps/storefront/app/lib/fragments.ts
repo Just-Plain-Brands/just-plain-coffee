@@ -59,6 +59,16 @@ export const CART_QUERY_FRAGMENT = `#graphql
         id
       }
     }
+    sellingPlanAllocation {
+      sellingPlan {
+        id
+        name
+        options {
+          name
+          value
+        }
+      }
+    }
   }
   fragment CartLineComponent on ComponentizableCartLine {
     id
@@ -111,6 +121,16 @@ export const CART_QUERY_FRAGMENT = `#graphql
     }
     lineComponents {
       ...CartLine
+    }
+    sellingPlanAllocation {
+      sellingPlan {
+        id
+        name
+        options {
+          name
+          value
+        }
+      }
     }
   }
   fragment CartApiQuery on Cart {

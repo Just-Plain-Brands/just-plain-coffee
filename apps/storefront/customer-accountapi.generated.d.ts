@@ -477,6 +477,153 @@ export type CustomerOrdersQuery = {
   };
 };
 
+export type SubscriptionContractCancelMutationVariables =
+  CustomerAccountAPI.Exact<{
+    subscriptionContractId: CustomerAccountAPI.Scalars['ID']['input'];
+  }>;
+
+export type SubscriptionContractCancelMutation = {
+  subscriptionContractCancel?: CustomerAccountAPI.Maybe<{
+    contract?: CustomerAccountAPI.Maybe<
+      Pick<CustomerAccountAPI.SubscriptionContract, 'id' | 'status'>
+    >;
+    userErrors: Array<
+      Pick<
+        CustomerAccountAPI.SubscriptionContractStatusUpdateUserError,
+        'field' | 'message'
+      >
+    >;
+  }>;
+};
+
+export type SubscriptionBillingPolicyFragment = Pick<
+  CustomerAccountAPI.SubscriptionBillingPolicy,
+  'interval'
+> & {
+  intervalCount?: CustomerAccountAPI.Maybe<
+    Pick<CustomerAccountAPI.Count, 'count' | 'precision'>
+  >;
+};
+
+export type SubscriptionDiscountFragment = Pick<
+  CustomerAccountAPI.SubscriptionDiscount,
+  'id' | 'title'
+> & {
+  value:
+    | ({__typename: 'SubscriptionDiscountFixedAmountValue'} & {
+        amount: Pick<CustomerAccountAPI.MoneyV2, 'amount' | 'currencyCode'>;
+      })
+    | ({__typename: 'SubscriptionDiscountPercentageValue'} & Pick<
+        CustomerAccountAPI.SubscriptionDiscountPercentageValue,
+        'percentage'
+      >);
+};
+
+export type SubscriptionContractFragment = Pick<
+  CustomerAccountAPI.SubscriptionContract,
+  | 'id'
+  | 'status'
+  | 'createdAt'
+  | 'nextBillingDate'
+  | 'appEligibleForCustomerActions'
+> & {
+  billingPolicy: Pick<
+    CustomerAccountAPI.SubscriptionBillingPolicy,
+    'interval'
+  > & {
+    intervalCount?: CustomerAccountAPI.Maybe<
+      Pick<CustomerAccountAPI.Count, 'count' | 'precision'>
+    >;
+  };
+  discounts?: CustomerAccountAPI.Maybe<{
+    nodes: Array<
+      Pick<CustomerAccountAPI.SubscriptionDiscount, 'id' | 'title'> & {
+        value:
+          | ({__typename: 'SubscriptionDiscountFixedAmountValue'} & {
+              amount: Pick<
+                CustomerAccountAPI.MoneyV2,
+                'amount' | 'currencyCode'
+              >;
+            })
+          | ({__typename: 'SubscriptionDiscountPercentageValue'} & Pick<
+              CustomerAccountAPI.SubscriptionDiscountPercentageValue,
+              'percentage'
+            >);
+      }
+    >;
+  }>;
+  lines: {
+    nodes: Array<
+      Pick<CustomerAccountAPI.SubscriptionLine, 'id' | 'name' | 'quantity'> & {
+        currentPrice: Pick<
+          CustomerAccountAPI.MoneyV2,
+          'amount' | 'currencyCode'
+        >;
+      }
+    >;
+  };
+};
+
+export type SubscriptionsContractsQueryVariables = CustomerAccountAPI.Exact<{
+  [key: string]: never;
+}>;
+
+export type SubscriptionsContractsQuery = {
+  customer: {
+    subscriptionContracts: {
+      nodes: Array<
+        Pick<
+          CustomerAccountAPI.SubscriptionContract,
+          | 'id'
+          | 'status'
+          | 'createdAt'
+          | 'nextBillingDate'
+          | 'appEligibleForCustomerActions'
+        > & {
+          billingPolicy: Pick<
+            CustomerAccountAPI.SubscriptionBillingPolicy,
+            'interval'
+          > & {
+            intervalCount?: CustomerAccountAPI.Maybe<
+              Pick<CustomerAccountAPI.Count, 'count' | 'precision'>
+            >;
+          };
+          discounts?: CustomerAccountAPI.Maybe<{
+            nodes: Array<
+              Pick<CustomerAccountAPI.SubscriptionDiscount, 'id' | 'title'> & {
+                value:
+                  | ({__typename: 'SubscriptionDiscountFixedAmountValue'} & {
+                      amount: Pick<
+                        CustomerAccountAPI.MoneyV2,
+                        'amount' | 'currencyCode'
+                      >;
+                    })
+                  | ({__typename: 'SubscriptionDiscountPercentageValue'} & Pick<
+                      CustomerAccountAPI.SubscriptionDiscountPercentageValue,
+                      'percentage'
+                    >);
+              }
+            >;
+          }>;
+          lines: {
+            nodes: Array<
+              Pick<
+                CustomerAccountAPI.SubscriptionLine,
+                'id' | 'name' | 'quantity'
+              > & {
+                currentPrice: Pick<
+                  CustomerAccountAPI.MoneyV2,
+                  'amount' | 'currencyCode'
+                >;
+              }
+            >;
+          };
+        }
+      >;
+    };
+  };
+};
+
 export type CustomerUpdateMutationVariables = CustomerAccountAPI.Exact<{
   customer: CustomerAccountAPI.CustomerUpdateInput;
   language?: CustomerAccountAPI.InputMaybe<CustomerAccountAPI.LanguageCode>;
@@ -516,6 +663,10 @@ interface GeneratedQueryTypes {
     return: CustomerOrdersQuery;
     variables: CustomerOrdersQueryVariables;
   };
+  '#graphql\n  query SubscriptionsContracts {\n    customer {\n      subscriptionContracts(first: 100) {\n        nodes {\n          ...SubscriptionContract\n        }\n      }\n    }\n  }\n  #graphql\n  fragment SubscriptionBillingPolicy on SubscriptionBillingPolicy {\n    interval\n    intervalCount {\n      count\n      precision\n    }\n  }\n\n  fragment SubscriptionDiscount on SubscriptionDiscount {\n    id\n    title\n    value {\n      __typename\n      ... on SubscriptionDiscountFixedAmountValue {\n        amount {\n          amount\n          currencyCode\n        }\n      }\n      ... on SubscriptionDiscountPercentageValue {\n        percentage\n      }\n    }\n  }\n\n  fragment SubscriptionContract on SubscriptionContract {\n    id\n    status\n    createdAt\n    nextBillingDate\n    appEligibleForCustomerActions\n    billingPolicy {\n      ...SubscriptionBillingPolicy\n    }\n    discounts(first: 20) {\n      nodes {\n        ...SubscriptionDiscount\n      }\n    }\n    lines(first: 100) {\n      nodes {\n        id\n        name\n        quantity\n        currentPrice {\n          amount\n          currencyCode\n        }\n      }\n    }\n  }\n\n': {
+    return: SubscriptionsContractsQuery;
+    variables: SubscriptionsContractsQueryVariables;
+  };
 }
 
 interface GeneratedMutationTypes {
@@ -530,6 +681,10 @@ interface GeneratedMutationTypes {
   '#graphql\n  mutation customerAddressCreate(\n    $address: CustomerAddressInput!\n    $defaultAddress: Boolean\n    $language: LanguageCode\n  ) @inContext(language: $language) {\n    customerAddressCreate(\n      address: $address\n      defaultAddress: $defaultAddress\n    ) {\n      customerAddress {\n        id\n      }\n      userErrors {\n        code\n        field\n        message\n      }\n    }\n  }\n': {
     return: CustomerAddressCreateMutation;
     variables: CustomerAddressCreateMutationVariables;
+  };
+  '#graphql\n  mutation SubscriptionContractCancel($subscriptionContractId: ID!) {\n    subscriptionContractCancel(\n      subscriptionContractId: $subscriptionContractId\n    ) {\n      contract {\n        id\n        status\n      }\n      userErrors {\n        field\n        message\n      }\n    }\n  }\n': {
+    return: SubscriptionContractCancelMutation;
+    variables: SubscriptionContractCancelMutationVariables;
   };
   '#graphql\n  mutation customerUpdate(\n    $customer: CustomerUpdateInput!\n    $language: LanguageCode\n  ) @inContext(language: $language) {\n    customerUpdate(input: $customer) {\n      customer {\n        firstName\n        lastName\n        emailAddress {\n          emailAddress\n        }\n        phoneNumber {\n          phoneNumber\n        }\n      }\n      userErrors {\n        code\n        field\n        message\n      }\n    }\n  }\n': {
     return: CustomerUpdateMutation;

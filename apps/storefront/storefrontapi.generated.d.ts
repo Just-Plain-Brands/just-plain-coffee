@@ -39,6 +39,11 @@ export type CartLineFragment = Pick<
   parentRelationship?: StorefrontAPI.Maybe<{
     parent: Pick<StorefrontAPI.CartLine, 'id'>;
   }>;
+  sellingPlanAllocation?: StorefrontAPI.Maybe<{
+    sellingPlan: Pick<StorefrontAPI.SellingPlan, 'id' | 'name'> & {
+      options: Array<Pick<StorefrontAPI.SellingPlanOption, 'name' | 'value'>>;
+    };
+  }>;
 };
 
 export type CartLineComponentFragment = Pick<
@@ -107,8 +112,20 @@ export type CartLineComponentFragment = Pick<
       parentRelationship?: StorefrontAPI.Maybe<{
         parent: Pick<StorefrontAPI.CartLine, 'id'>;
       }>;
+      sellingPlanAllocation?: StorefrontAPI.Maybe<{
+        sellingPlan: Pick<StorefrontAPI.SellingPlan, 'id' | 'name'> & {
+          options: Array<
+            Pick<StorefrontAPI.SellingPlanOption, 'name' | 'value'>
+          >;
+        };
+      }>;
     }
   >;
+  sellingPlanAllocation?: StorefrontAPI.Maybe<{
+    sellingPlan: Pick<StorefrontAPI.SellingPlan, 'id' | 'name'> & {
+      options: Array<Pick<StorefrontAPI.SellingPlanOption, 'name' | 'value'>>;
+    };
+  }>;
 };
 
 export type CartApiQueryFragment = Pick<
@@ -169,6 +186,13 @@ export type CartApiQueryFragment = Pick<
           };
           parentRelationship?: StorefrontAPI.Maybe<{
             parent: Pick<StorefrontAPI.CartLine, 'id'>;
+          }>;
+          sellingPlanAllocation?: StorefrontAPI.Maybe<{
+            sellingPlan: Pick<StorefrontAPI.SellingPlan, 'id' | 'name'> & {
+              options: Array<
+                Pick<StorefrontAPI.SellingPlanOption, 'name' | 'value'>
+              >;
+            };
           }>;
         })
       | (Pick<StorefrontAPI.ComponentizableCartLine, 'id' | 'quantity'> & {
@@ -246,8 +270,22 @@ export type CartApiQueryFragment = Pick<
               parentRelationship?: StorefrontAPI.Maybe<{
                 parent: Pick<StorefrontAPI.CartLine, 'id'>;
               }>;
+              sellingPlanAllocation?: StorefrontAPI.Maybe<{
+                sellingPlan: Pick<StorefrontAPI.SellingPlan, 'id' | 'name'> & {
+                  options: Array<
+                    Pick<StorefrontAPI.SellingPlanOption, 'name' | 'value'>
+                  >;
+                };
+              }>;
             }
           >;
+          sellingPlanAllocation?: StorefrontAPI.Maybe<{
+            sellingPlan: Pick<StorefrontAPI.SellingPlan, 'id' | 'name'> & {
+              options: Array<
+                Pick<StorefrontAPI.SellingPlanOption, 'name' | 'value'>
+              >;
+            };
+          }>;
         })
     >;
   };
@@ -837,6 +875,49 @@ export type ProductVariantFragment = Pick<
   unitPrice?: StorefrontAPI.Maybe<
     Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
   >;
+  sellingPlanAllocations: {
+    nodes: Array<{
+      checkoutChargeAmount: Pick<
+        StorefrontAPI.MoneyV2,
+        'amount' | 'currencyCode'
+      >;
+      remainingBalanceChargeAmount: Pick<
+        StorefrontAPI.MoneyV2,
+        'amount' | 'currencyCode'
+      >;
+      priceAdjustments: Array<{
+        compareAtPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+        perDeliveryPrice: Pick<
+          StorefrontAPI.MoneyV2,
+          'amount' | 'currencyCode'
+        >;
+        price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+      }>;
+      sellingPlan: Pick<
+        StorefrontAPI.SellingPlan,
+        'id' | 'name' | 'recurringDeliveries'
+      > & {
+        options: Array<Pick<StorefrontAPI.SellingPlanOption, 'name' | 'value'>>;
+      };
+    }>;
+  };
+};
+
+export type ProductSellingPlanAllocationFragment = {
+  checkoutChargeAmount: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+  remainingBalanceChargeAmount: Pick<
+    StorefrontAPI.MoneyV2,
+    'amount' | 'currencyCode'
+  >;
+  priceAdjustments: Array<{
+    compareAtPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+    perDeliveryPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+    price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+  }>;
+  sellingPlan: Pick<
+    StorefrontAPI.SellingPlan,
+    'id' | 'name' | 'recurringDeliveries'
+  > & {options: Array<Pick<StorefrontAPI.SellingPlanOption, 'name' | 'value'>>};
 };
 
 export type ProductFragment = Pick<
@@ -892,6 +973,40 @@ export type ProductFragment = Pick<
               unitPrice?: StorefrontAPI.Maybe<
                 Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
               >;
+              sellingPlanAllocations: {
+                nodes: Array<{
+                  checkoutChargeAmount: Pick<
+                    StorefrontAPI.MoneyV2,
+                    'amount' | 'currencyCode'
+                  >;
+                  remainingBalanceChargeAmount: Pick<
+                    StorefrontAPI.MoneyV2,
+                    'amount' | 'currencyCode'
+                  >;
+                  priceAdjustments: Array<{
+                    compareAtPrice: Pick<
+                      StorefrontAPI.MoneyV2,
+                      'amount' | 'currencyCode'
+                    >;
+                    perDeliveryPrice: Pick<
+                      StorefrontAPI.MoneyV2,
+                      'amount' | 'currencyCode'
+                    >;
+                    price: Pick<
+                      StorefrontAPI.MoneyV2,
+                      'amount' | 'currencyCode'
+                    >;
+                  }>;
+                  sellingPlan: Pick<
+                    StorefrontAPI.SellingPlan,
+                    'id' | 'name' | 'recurringDeliveries'
+                  > & {
+                    options: Array<
+                      Pick<StorefrontAPI.SellingPlanOption, 'name' | 'value'>
+                    >;
+                  };
+                }>;
+              };
             }
           >;
           swatch?: StorefrontAPI.Maybe<
@@ -929,6 +1044,37 @@ export type ProductFragment = Pick<
       unitPrice?: StorefrontAPI.Maybe<
         Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
       >;
+      sellingPlanAllocations: {
+        nodes: Array<{
+          checkoutChargeAmount: Pick<
+            StorefrontAPI.MoneyV2,
+            'amount' | 'currencyCode'
+          >;
+          remainingBalanceChargeAmount: Pick<
+            StorefrontAPI.MoneyV2,
+            'amount' | 'currencyCode'
+          >;
+          priceAdjustments: Array<{
+            compareAtPrice: Pick<
+              StorefrontAPI.MoneyV2,
+              'amount' | 'currencyCode'
+            >;
+            perDeliveryPrice: Pick<
+              StorefrontAPI.MoneyV2,
+              'amount' | 'currencyCode'
+            >;
+            price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+          }>;
+          sellingPlan: Pick<
+            StorefrontAPI.SellingPlan,
+            'id' | 'name' | 'recurringDeliveries'
+          > & {
+            options: Array<
+              Pick<StorefrontAPI.SellingPlanOption, 'name' | 'value'>
+            >;
+          };
+        }>;
+      };
     }
   >;
   adjacentVariants: Array<
@@ -953,6 +1099,37 @@ export type ProductFragment = Pick<
       unitPrice?: StorefrontAPI.Maybe<
         Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
       >;
+      sellingPlanAllocations: {
+        nodes: Array<{
+          checkoutChargeAmount: Pick<
+            StorefrontAPI.MoneyV2,
+            'amount' | 'currencyCode'
+          >;
+          remainingBalanceChargeAmount: Pick<
+            StorefrontAPI.MoneyV2,
+            'amount' | 'currencyCode'
+          >;
+          priceAdjustments: Array<{
+            compareAtPrice: Pick<
+              StorefrontAPI.MoneyV2,
+              'amount' | 'currencyCode'
+            >;
+            perDeliveryPrice: Pick<
+              StorefrontAPI.MoneyV2,
+              'amount' | 'currencyCode'
+            >;
+            price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+          }>;
+          sellingPlan: Pick<
+            StorefrontAPI.SellingPlan,
+            'id' | 'name' | 'recurringDeliveries'
+          > & {
+            options: Array<
+              Pick<StorefrontAPI.SellingPlanOption, 'name' | 'value'>
+            >;
+          };
+        }>;
+      };
     }
   >;
   seo: Pick<StorefrontAPI.Seo, 'description' | 'title'>;
@@ -1028,6 +1205,43 @@ export type ProductQuery = {
                   unitPrice?: StorefrontAPI.Maybe<
                     Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
                   >;
+                  sellingPlanAllocations: {
+                    nodes: Array<{
+                      checkoutChargeAmount: Pick<
+                        StorefrontAPI.MoneyV2,
+                        'amount' | 'currencyCode'
+                      >;
+                      remainingBalanceChargeAmount: Pick<
+                        StorefrontAPI.MoneyV2,
+                        'amount' | 'currencyCode'
+                      >;
+                      priceAdjustments: Array<{
+                        compareAtPrice: Pick<
+                          StorefrontAPI.MoneyV2,
+                          'amount' | 'currencyCode'
+                        >;
+                        perDeliveryPrice: Pick<
+                          StorefrontAPI.MoneyV2,
+                          'amount' | 'currencyCode'
+                        >;
+                        price: Pick<
+                          StorefrontAPI.MoneyV2,
+                          'amount' | 'currencyCode'
+                        >;
+                      }>;
+                      sellingPlan: Pick<
+                        StorefrontAPI.SellingPlan,
+                        'id' | 'name' | 'recurringDeliveries'
+                      > & {
+                        options: Array<
+                          Pick<
+                            StorefrontAPI.SellingPlanOption,
+                            'name' | 'value'
+                          >
+                        >;
+                      };
+                    }>;
+                  };
                 }
               >;
               swatch?: StorefrontAPI.Maybe<
@@ -1065,6 +1279,37 @@ export type ProductQuery = {
           unitPrice?: StorefrontAPI.Maybe<
             Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
           >;
+          sellingPlanAllocations: {
+            nodes: Array<{
+              checkoutChargeAmount: Pick<
+                StorefrontAPI.MoneyV2,
+                'amount' | 'currencyCode'
+              >;
+              remainingBalanceChargeAmount: Pick<
+                StorefrontAPI.MoneyV2,
+                'amount' | 'currencyCode'
+              >;
+              priceAdjustments: Array<{
+                compareAtPrice: Pick<
+                  StorefrontAPI.MoneyV2,
+                  'amount' | 'currencyCode'
+                >;
+                perDeliveryPrice: Pick<
+                  StorefrontAPI.MoneyV2,
+                  'amount' | 'currencyCode'
+                >;
+                price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+              }>;
+              sellingPlan: Pick<
+                StorefrontAPI.SellingPlan,
+                'id' | 'name' | 'recurringDeliveries'
+              > & {
+                options: Array<
+                  Pick<StorefrontAPI.SellingPlanOption, 'name' | 'value'>
+                >;
+              };
+            }>;
+          };
         }
       >;
       adjacentVariants: Array<
@@ -1089,6 +1334,37 @@ export type ProductQuery = {
           unitPrice?: StorefrontAPI.Maybe<
             Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>
           >;
+          sellingPlanAllocations: {
+            nodes: Array<{
+              checkoutChargeAmount: Pick<
+                StorefrontAPI.MoneyV2,
+                'amount' | 'currencyCode'
+              >;
+              remainingBalanceChargeAmount: Pick<
+                StorefrontAPI.MoneyV2,
+                'amount' | 'currencyCode'
+              >;
+              priceAdjustments: Array<{
+                compareAtPrice: Pick<
+                  StorefrontAPI.MoneyV2,
+                  'amount' | 'currencyCode'
+                >;
+                perDeliveryPrice: Pick<
+                  StorefrontAPI.MoneyV2,
+                  'amount' | 'currencyCode'
+                >;
+                price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+              }>;
+              sellingPlan: Pick<
+                StorefrontAPI.SellingPlan,
+                'id' | 'name' | 'recurringDeliveries'
+              > & {
+                options: Array<
+                  Pick<StorefrontAPI.SellingPlanOption, 'name' | 'value'>
+                >;
+              };
+            }>;
+          };
         }
       >;
       seo: Pick<StorefrontAPI.Seo, 'description' | 'title'>;
@@ -1363,7 +1639,7 @@ interface GeneratedQueryTypes {
     return: PoliciesQuery;
     variables: PoliciesQueryVariables;
   };
-  '#graphql\n  query Product(\n    $country: CountryCode\n    $handle: String!\n    $language: LanguageCode\n    $selectedOptions: [SelectedOptionInput!]!\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $handle) {\n      ...Product\n    }\n  }\n  #graphql\n  fragment Product on Product {\n    id\n    title\n    tags\n    vendor\n    handle\n    descriptionHtml\n    description\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    originMetafield: metafield(namespace: "custom", key: "origin") {\n      value\n    }\n    formatMetafield: metafield(namespace: "custom", key: "format") {\n      value\n    }\n    coffeeMetafield: metafield(namespace: "custom", key: "coffee") {\n      value\n    }\n    taglineMetafield: metafield(namespace: "custom", key: "tagline") {\n      value\n    }\n    tintColorMetafield: metafield(namespace: "custom", key: "tint_color") {\n      value\n    }\n    primaryColorMetafield: metafield(namespace: "custom", key: "primary_color") {\n      value\n    }\n    encodedVariantExistence\n    encodedVariantAvailability\n    options {\n      name\n      optionValues {\n        name\n        firstSelectableVariant {\n          ...ProductVariant\n        }\n        swatch {\n          color\n          image {\n            previewImage {\n              url\n            }\n          }\n        }\n      }\n    }\n    selectedOrFirstAvailableVariant(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {\n      ...ProductVariant\n    }\n    adjacentVariants (selectedOptions: $selectedOptions) {\n      ...ProductVariant\n    }\n    seo {\n      description\n      title\n    }\n  }\n  #graphql\n  fragment ProductVariant on ProductVariant {\n    availableForSale\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    id\n    image {\n      __typename\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n    selectedOptions {\n      name\n      value\n    }\n    sku\n    title\n    unitPrice {\n      amount\n      currencyCode\n    }\n  }\n\n\n': {
+  '#graphql\n  query Product(\n    $country: CountryCode\n    $handle: String!\n    $language: LanguageCode\n    $selectedOptions: [SelectedOptionInput!]!\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $handle) {\n      ...Product\n    }\n  }\n  #graphql\n  fragment Product on Product {\n    id\n    title\n    tags\n    vendor\n    handle\n    descriptionHtml\n    description\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    originMetafield: metafield(namespace: "custom", key: "origin") {\n      value\n    }\n    formatMetafield: metafield(namespace: "custom", key: "format") {\n      value\n    }\n    coffeeMetafield: metafield(namespace: "custom", key: "coffee") {\n      value\n    }\n    taglineMetafield: metafield(namespace: "custom", key: "tagline") {\n      value\n    }\n    tintColorMetafield: metafield(namespace: "custom", key: "tint_color") {\n      value\n    }\n    primaryColorMetafield: metafield(namespace: "custom", key: "primary_color") {\n      value\n    }\n    encodedVariantExistence\n    encodedVariantAvailability\n    options {\n      name\n      optionValues {\n        name\n        firstSelectableVariant {\n          ...ProductVariant\n        }\n        swatch {\n          color\n          image {\n            previewImage {\n              url\n            }\n          }\n        }\n      }\n    }\n    selectedOrFirstAvailableVariant(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {\n      ...ProductVariant\n    }\n    adjacentVariants (selectedOptions: $selectedOptions) {\n      ...ProductVariant\n    }\n    seo {\n      description\n      title\n    }\n  }\n  #graphql\n  fragment ProductVariant on ProductVariant {\n    availableForSale\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    id\n    image {\n      __typename\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n    selectedOptions {\n      name\n      value\n    }\n    sku\n    title\n    unitPrice {\n      amount\n      currencyCode\n    }\n    sellingPlanAllocations(first: 10) {\n      nodes {\n        ...ProductSellingPlanAllocation\n      }\n    }\n  }\n  fragment ProductSellingPlanAllocation on SellingPlanAllocation {\n    checkoutChargeAmount {\n      amount\n      currencyCode\n    }\n    remainingBalanceChargeAmount {\n      amount\n      currencyCode\n    }\n    priceAdjustments {\n      compareAtPrice {\n        amount\n        currencyCode\n      }\n      perDeliveryPrice {\n        amount\n        currencyCode\n      }\n      price {\n        amount\n        currencyCode\n      }\n    }\n    sellingPlan {\n      id\n      name\n      options {\n        name\n        value\n      }\n      recurringDeliveries\n    }\n  }\n\n\n': {
     return: ProductQuery;
     variables: ProductQueryVariables;
   };

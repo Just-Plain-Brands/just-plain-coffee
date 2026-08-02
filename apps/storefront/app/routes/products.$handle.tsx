@@ -7,14 +7,21 @@ import {
   getAdjacentAndFirstAvailableVariants,
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
-import {Link, useLoaderData} from 'react-router';
+import {Link, useLoaderData, useSearchParams} from 'react-router';
 
 import {CartonIllustration} from '~/components/catalog/carton-illustration/carton-illustration';
 import {ProductForm} from '~/components/product/ProductForm';
 import {ProductPrice} from '~/components/product/ProductPrice';
 import {buttonVariants} from '~/components/ui/button';
-import {getProductPresentation} from '~/lib/coffee/presentation';
+import {
+  getProductPresentation,
+  isBundleProduct,
+} from '~/lib/coffee/presentation';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {
+  SELLING_PLAN_PARAM,
+  type PurchaseSelection,
+} from '~/lib/shopify/subscriptions';
 
 import type {Route} from './+types/products.$handle';
 
@@ -87,6 +94,7 @@ function loadDeferredData({context, params}: Route.LoaderArgs) {
 
 export default function Product() {
   const {product} = useLoaderData<typeof loader>();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -105,6 +113,32 @@ export default function Product() {
   });
 
   const {title, descriptionHtml} = product;
+  const sellingPlanAllocations = isBundleProduct(product.tags)
+    ? []
+    : (selectedVariant?.sellingPlanAllocations.nodes ?? []);
+  const selectedSellingPlanId = searchParams.get(SELLING_PLAN_PARAM);
+  const selectedSellingPlanAllocation =
+    sellingPlanAllocations.find(
+      (allocation) => allocation.sellingPlan.id === selectedSellingPlanId,
+    ) ?? null;
+  const purchaseSelection: PurchaseSelection = selectedSellingPlanAllocation
+    ? {kind: 'subscription', allocation: selectedSellingPlanAllocation}
+    : {kind: 'one-time'};
+
+  const handlePurchaseSelectionChange = (sellingPlanId: string | null) => {
+    const nextSearchParams = new URLSearchParams(searchParams);
+    if (sellingPlanId) {
+      nextSearchParams.set(SELLING_PLAN_PARAM, sellingPlanId);
+    } else {
+      nextSearchParams.delete(SELLING_PLAN_PARAM);
+    }
+
+    setSearchParams(nextSearchParams, {
+      preventScrollReset: true,
+      replace: true,
+    });
+  };
+
   const presentation = getProductPresentation({
     title,
     tags: product.tags,
@@ -156,6 +190,7 @@ export default function Product() {
             <ProductPrice
               compareAtPrice={selectedVariant?.compareAtPrice}
               price={selectedVariant?.price}
+              sellingPlanAllocation={selectedSellingPlanAllocation}
             />
           </div>
           <p className="mt-6 max-w-xl text-xl leading-relaxed text-neutral-700">
@@ -164,7 +199,10 @@ export default function Product() {
 
           <div className="mt-9 rounded-3xl bg-neutral-100 p-6 md:p-8">
             <ProductForm
+              onPurchaseSelectionChange={handlePurchaseSelectionChange}
               productOptions={productOptions}
+              purchaseSelection={purchaseSelection}
+              sellingPlanAllocations={sellingPlanAllocations}
               selectedVariant={selectedVariant}
             />
             <p className="mt-4 text-center text-sm text-neutral-600">
@@ -268,6 +306,44 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
     unitPrice {
       amount
       currencyCode
+    }
+    sellingPlanAllocations(first: 10) {
+      nodes {
+        ...ProductSellingPlanAllocation
+      }
+    }
+  }
+  fragment ProductSellingPlanAllocation on SellingPlanAllocation {
+    checkoutChargeAmount {
+      amount
+      currencyCode
+    }
+    remainingBalanceChargeAmount {
+      amount
+      currencyCode
+    }
+    priceAdjustments {
+      compareAtPrice {
+        amount
+        currencyCode
+      }
+      perDeliveryPrice {
+        amount
+        currencyCode
+      }
+      price {
+        amount
+        currencyCode
+      }
+    }
+    sellingPlan {
+      id
+      name
+      options {
+        name
+        value
+      }
+      recurringDeliveries
     }
   }
 ` as const;

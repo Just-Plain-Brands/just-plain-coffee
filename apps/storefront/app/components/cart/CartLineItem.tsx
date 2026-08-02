@@ -6,6 +6,7 @@ import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
 import type {CartLayout, LineItemChildrenMap} from '~/components/cart/CartMain';
 import {ProductPrice} from '~/components/product/ProductPrice';
+import {getSellingPlanLabel} from '~/lib/shopify/subscriptions';
 import {useVariantUrl} from '~/lib/variants';
 
 export type CartLine = OptimisticCartLine<CartApiQueryFragment>;
@@ -25,7 +26,7 @@ export function CartLineItem({
   line: CartLine;
   childrenMap: LineItemChildrenMap;
 }) {
-  const {id, merchandise} = line;
+  const {id, merchandise, sellingPlanAllocation} = line;
   const {product, title, image, selectedOptions} = merchandise;
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
   const {close} = useAside();
@@ -64,6 +65,12 @@ export function CartLineItem({
             <ProductPrice price={line?.cost?.totalAmount} />
           </div>
           <ul className="mt-1 text-xs text-neutral-600">
+            {sellingPlanAllocation ? (
+              <li className="font-bold text-orange-700">
+                Subscription ·{' '}
+                {getSellingPlanLabel(sellingPlanAllocation.sellingPlan)}
+              </li>
+            ) : null}
             {selectedOptions.map((option) => (
               <li key={option.name}>
                 {option.name}: {option.value}
