@@ -5,6 +5,7 @@ import {ProductCard} from '~/components/catalog/product-card';
 import {HomeHero} from '~/components/marketing/home-hero';
 import {buttonVariants} from '~/components/ui/button';
 import {
+  getProductPresentation,
   getRoastPresentation,
   ROAST_IDS,
   ROAST_PRESENTATIONS,
@@ -131,9 +132,12 @@ export default function Homepage() {
           {products.map((product) => (
             <ProductCard
               key={product.id}
-              presentation={getRoastPresentation({
+              presentation={getProductPresentation({
                 title: product.title,
                 tags: product.tags,
+                tagline: product.taglineMetafield?.value,
+                tintColor: product.tintColorMetafield?.value,
+                primaryColor: product.primaryColorMetafield?.value,
               })}
               product={product}
             />

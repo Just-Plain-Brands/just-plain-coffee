@@ -8,7 +8,7 @@ import {AddToCartButton} from '~/components/cart/AddToCartButton';
 import {CartonIllustration} from '~/components/catalog/carton-illustration/carton-illustration';
 import {buttonVariants} from '~/components/ui/button';
 import {
-  getRoastPresentation,
+  getProductPresentation,
   ROAST_IDS,
   type RoastPresentation,
 } from '~/lib/coffee/presentation';
@@ -23,9 +23,12 @@ export function HomeHero({products}: {products: CoffeeProductCardFragment[]}) {
   const selections = products
     .map((product) => ({
       product,
-      presentation: getRoastPresentation({
+      presentation: getProductPresentation({
         title: product.title,
         tags: product.tags,
+        tagline: product.taglineMetafield?.value,
+        tintColor: product.tintColorMetafield?.value,
+        primaryColor: product.primaryColorMetafield?.value,
       }),
     }))
     .sort(
@@ -102,7 +105,7 @@ function HomeHeroContent({
         <div
           aria-hidden="true"
           className="absolute inset-0 grid place-items-center font-display text-[clamp(5.25rem,22vw,13rem)] leading-none select-none"
-          style={{color: presentation.wordColor}}
+          style={{color: presentation.primaryColor}}
         >
           {presentation.shortName}.
         </div>
@@ -121,8 +124,7 @@ function HomeHeroContent({
         </div>
       </div>
       <p className="mx-auto mt-5 mb-5 max-w-[56ch] text-lg text-neutral-700">
-        {presentation.description} Specialty grade, single origin. Roasted to
-        order.
+        {presentation.tagline} Specialty grade, single origin. Roasted to order.
       </p>
       <div className="flex flex-wrap justify-center gap-3">
         <AddToCartButton

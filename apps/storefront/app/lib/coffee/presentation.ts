@@ -5,64 +5,64 @@ export type RoastId = (typeof ROAST_IDS)[number];
 export interface RoastPresentation {
   id: RoastId;
   shortName: string;
-  description: string;
+  tagline: string;
   origin: string;
   capColor: string;
   inkColor: string;
   sideLabel: string;
   subline: string;
   tintColor: string;
-  wordColor: string;
+  primaryColor: string;
 }
 
 export const ROAST_PRESENTATIONS = {
   light: {
     id: 'light',
     shortName: 'Light',
-    description: 'Light roast. Bright, not aggressive.',
+    tagline: 'Light roast. Bright, not aggressive.',
     origin: 'Huila, Colombia',
     capColor: '#d9a35f',
     inkColor: '#402310',
     sideLabel: 'morning',
     subline: 'ORGANIC COFFEE — LIGHT ROAST',
     tintColor: '#fff2eb',
-    wordColor: '#ffc6a5',
+    primaryColor: '#ffc6a5',
   },
   medium: {
     id: 'medium',
     shortName: 'Medium',
-    description: 'Medium roast. The one most people want.',
+    tagline: 'Medium roast. The one most people want.',
     origin: 'Nariño, Colombia',
     capColor: '#c67139',
     inkColor: '#f9f4ed',
     sideLabel: 'hello',
     subline: 'ORGANIC COFFEE — MEDIUM ROAST',
     tintColor: '#ffe1d0',
-    wordColor: '#f6a06b',
+    primaryColor: '#f6a06b',
   },
   dark: {
     id: 'dark',
     shortName: 'Dark',
-    description: 'Dark roast. Strong. Not burnt.',
+    tagline: 'Dark roast. Strong. Not burnt.',
     origin: 'Sul de Minas, Brazil',
     capColor: '#2e2b25',
     inkColor: '#f9f4ed',
     sideLabel: 'strong.',
     subline: 'ORGANIC COFFEE — DARK ROAST',
     tintColor: '#eee7db',
-    wordColor: '#c0b6a5',
+    primaryColor: '#c0b6a5',
   },
   decaf: {
     id: 'decaf',
     shortName: 'Decaf',
-    description: 'Decaf. Same coffee, later in the day.',
+    tagline: 'Decaf. Same coffee, later in the day.',
     origin: 'Chiapas, Mexico',
     capColor: '#8fa073',
     inkColor: '#272e1b',
     sideLabel: 'later',
     subline: 'ORGANIC COFFEE — DECAF',
     tintColor: '#e1eecc',
-    wordColor: '#aebf92',
+    primaryColor: '#aebf92',
   },
 } satisfies Record<RoastId, RoastPresentation>;
 
@@ -81,7 +81,27 @@ export function getRoastPresentation({
   return ROAST_PRESENTATIONS[roastId ?? fallback];
 }
 
-export function getRoastPresentationByIndex(index: number): RoastPresentation {
-  const roastId = ROAST_IDS[index % ROAST_IDS.length] ?? 'medium';
-  return ROAST_PRESENTATIONS[roastId];
+export function getProductPresentation({
+  title,
+  tags = [],
+  fallback = 'medium',
+  tagline,
+  tintColor,
+  primaryColor,
+}: {
+  title: string;
+  tags?: string[];
+  fallback?: RoastId;
+  tagline?: string | null;
+  tintColor?: string | null;
+  primaryColor?: string | null;
+}): RoastPresentation {
+  const fallbackPresentation = getRoastPresentation({title, tags, fallback});
+
+  return {
+    ...fallbackPresentation,
+    tagline: tagline ?? fallbackPresentation.tagline,
+    tintColor: tintColor ?? fallbackPresentation.tintColor,
+    primaryColor: primaryColor ?? fallbackPresentation.primaryColor,
+  };
 }

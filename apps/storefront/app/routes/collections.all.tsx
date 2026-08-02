@@ -4,7 +4,7 @@ import type {CoffeeProductCardFragment} from 'storefrontapi.generated';
 
 import {ProductCard} from '~/components/catalog/product-card';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
-import {getRoastPresentation} from '~/lib/coffee/presentation';
+import {getProductPresentation} from '~/lib/coffee/presentation';
 import {COFFEE_PRODUCT_CARD_FRAGMENT} from '~/lib/shopify/catalog-fragments';
 
 import type {Route} from './+types/collections.all';
@@ -61,9 +61,12 @@ export default function AllProducts() {
           {({node: product}) => (
             <ProductCard
               key={product.id}
-              presentation={getRoastPresentation({
+              presentation={getProductPresentation({
                 title: product.title,
                 tags: product.tags,
+                tagline: product.taglineMetafield?.value,
+                tintColor: product.tintColorMetafield?.value,
+                primaryColor: product.primaryColorMetafield?.value,
               })}
               product={product}
             />

@@ -13,7 +13,7 @@ import {CartonIllustration} from '~/components/catalog/carton-illustration/carto
 import {ProductForm} from '~/components/product/ProductForm';
 import {ProductPrice} from '~/components/product/ProductPrice';
 import {buttonVariants} from '~/components/ui/button';
-import {getRoastPresentation} from '~/lib/coffee/presentation';
+import {getProductPresentation} from '~/lib/coffee/presentation';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 import type {Route} from './+types/products.$handle';
@@ -105,9 +105,12 @@ export default function Product() {
   });
 
   const {title, descriptionHtml} = product;
-  const presentation = getRoastPresentation({
+  const presentation = getProductPresentation({
     title,
     tags: product.tags,
+    tagline: product.taglineMetafield?.value,
+    tintColor: product.tintColorMetafield?.value,
+    primaryColor: product.primaryColorMetafield?.value,
   });
   const productDetails = [
     ['Origin', product.originMetafield?.value ?? presentation.origin],
@@ -125,7 +128,7 @@ export default function Product() {
           <div
             aria-hidden="true"
             className="absolute -rotate-8 font-display text-[clamp(6rem,16vw,12rem)] leading-none"
-            style={{color: presentation.wordColor}}
+            style={{color: presentation.primaryColor}}
           >
             {presentation.shortName}.
           </div>
@@ -156,7 +159,7 @@ export default function Product() {
             />
           </div>
           <p className="mt-6 max-w-xl text-xl leading-relaxed text-neutral-700">
-            {presentation.description} One ingredient. Nothing performed.
+            {presentation.tagline} One ingredient. Nothing performed.
           </p>
 
           <div className="mt-9 rounded-3xl bg-neutral-100 p-6 md:p-8">
@@ -292,6 +295,15 @@ const PRODUCT_FRAGMENT = `#graphql
       value
     }
     coffeeMetafield: metafield(namespace: "custom", key: "coffee") {
+      value
+    }
+    taglineMetafield: metafield(namespace: "custom", key: "tagline") {
+      value
+    }
+    tintColorMetafield: metafield(namespace: "custom", key: "tint_color") {
+      value
+    }
+    primaryColorMetafield: metafield(namespace: "custom", key: "primary_color") {
       value
     }
     encodedVariantExistence

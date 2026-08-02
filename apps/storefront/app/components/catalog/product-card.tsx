@@ -42,9 +42,7 @@ export function ProductCard({product, presentation}: ProductCardProps) {
             <Money data={product.priceRange.minVariantPrice} />
           </strong>
         </div>
-        <p className="mt-1 text-sm text-neutral-700">
-          {presentation.description}
-        </p>
+        <p className="mt-1 text-sm text-neutral-700">{presentation.tagline}</p>
       </div>
       <AddToCartButton
         className="mt-auto h-11 w-full"
