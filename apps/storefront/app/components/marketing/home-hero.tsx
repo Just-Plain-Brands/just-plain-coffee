@@ -1,3 +1,4 @@
+import {Image} from '@shopify/hydrogen';
 import {useState} from 'react';
 import {Link} from 'react-router';
 import type {CoffeeProductCardFragment} from 'storefrontapi.generated';
@@ -7,7 +8,8 @@ import {AddToCartButton} from '~/components/cart/AddToCartButton';
 import {CartonIllustration} from '~/components/catalog/carton-illustration/carton-illustration';
 import {buttonVariants} from '~/components/ui/button';
 import {
-  getRoastPresentationByIndex,
+  getRoastPresentation,
+  ROAST_IDS,
   type RoastPresentation,
 } from '~/lib/coffee/presentation';
 import {cn} from '~/lib/utils';
@@ -18,12 +20,24 @@ interface HeroSelection {
 }
 
 export function HomeHero({products}: {products: CoffeeProductCardFragment[]}) {
-  const selections = products.map((product, index) => ({
-    product,
-    presentation: getRoastPresentationByIndex(index),
-  }));
+  const selections = products
+    .map((product) => ({
+      product,
+      presentation: getRoastPresentation({
+        title: product.title,
+        tags: product.tags,
+      }),
+    }))
+    .sort(
+      (left, right) =>
+        ROAST_IDS.indexOf(left.presentation.id) -
+        ROAST_IDS.indexOf(right.presentation.id),
+    );
+  const mediumIndex = selections.findIndex(
+    ({presentation}) => presentation.id === 'medium',
+  );
   const [selectedIndex, setSelectedIndex] = useState(
-    Math.min(1, Math.max(0, selections.length - 1)),
+    mediumIndex >= 0 ? mediumIndex : 0,
   );
   const selected = selections[selectedIndex] ?? null;
 
@@ -93,7 +107,17 @@ function HomeHeroContent({
           {presentation.shortName}.
         </div>
         <div className="relative h-[375px] w-[255px] animate-carton-bob">
-          <CartonIllustration className="origin-top-left scale-75" />
+          {product.featuredImage ? (
+            <Image
+              alt={product.featuredImage.altText ?? product.title}
+              className="h-full w-full object-contain"
+              data={product.featuredImage}
+              loading="eager"
+              sizes="255px"
+            />
+          ) : (
+            <CartonIllustration className="origin-top-left scale-75" />
+          )}
         </div>
       </div>
       <p className="mx-auto mt-5 mb-5 max-w-[56ch] text-lg text-neutral-700">

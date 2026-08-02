@@ -1,6 +1,7 @@
 import {
   getSelectedProductOptions,
   Analytics,
+  Image,
   useOptimisticVariant,
   getProductOptions,
   getAdjacentAndFirstAvailableVariants,
@@ -108,6 +109,11 @@ export default function Product() {
     title,
     tags: product.tags,
   });
+  const productDetails = [
+    ['Origin', product.originMetafield?.value ?? presentation.origin],
+    ['Format', product.formatMetafield?.value ?? '12 oz carton'],
+    ['Coffee', product.coffeeMetafield?.value ?? 'Whole bean'],
+  ] as const;
 
   return (
     <main>
@@ -124,7 +130,17 @@ export default function Product() {
             {presentation.shortName}.
           </div>
           <div className="relative h-[490px] w-[333px] rotate-2">
-            <CartonIllustration className="origin-top-left scale-[0.98]" />
+            {product.featuredImage ? (
+              <Image
+                alt={product.featuredImage.altText ?? title}
+                className="h-full w-full object-contain"
+                data={product.featuredImage}
+                loading="eager"
+                sizes="(min-width: 64rem) 333px, 80vw"
+              />
+            ) : (
+              <CartonIllustration className="origin-top-left scale-[0.98]" />
+            )}
           </div>
         </div>
 
@@ -154,11 +170,7 @@ export default function Product() {
           </div>
 
           <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-3xl bg-neutral-300 sm:grid-cols-3">
-            {[
-              ['Origin', presentation.origin],
-              ['Format', '12 oz carton'],
-              ['Coffee', 'Whole bean'],
-            ].map(([label, value]) => (
+            {productDetails.map(([label, value]) => (
               <div className="bg-neutral-100 p-5" key={label}>
                 <dt className="text-xs font-bold tracking-[0.12em] text-neutral-600 uppercase">
                   {label}
@@ -266,6 +278,22 @@ const PRODUCT_FRAGMENT = `#graphql
     handle
     descriptionHtml
     description
+    featuredImage {
+      id
+      altText
+      url
+      width
+      height
+    }
+    originMetafield: metafield(namespace: "custom", key: "origin") {
+      value
+    }
+    formatMetafield: metafield(namespace: "custom", key: "format") {
+      value
+    }
+    coffeeMetafield: metafield(namespace: "custom", key: "coffee") {
+      value
+    }
     encodedVariantExistence
     encodedVariantAvailability
     options {

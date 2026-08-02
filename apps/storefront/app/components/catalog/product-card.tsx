@@ -1,4 +1,4 @@
-import {Money} from '@shopify/hydrogen';
+import {Image, Money} from '@shopify/hydrogen';
 import {Link} from 'react-router';
 import type {CoffeeProductCardFragment} from 'storefrontapi.generated';
 
@@ -24,7 +24,16 @@ export function ProductCard({product, presentation}: ProductCardProps) {
         prefetch="intent"
         to={`/products/${product.handle}`}
       >
-        <CartonIllustration className="origin-bottom scale-[0.48] transition duration-300 group-hover:scale-[0.55]" />
+        {product.featuredImage ? (
+          <Image
+            alt={product.featuredImage.altText ?? product.title}
+            className="h-full w-full object-contain p-4 transition duration-300 group-hover:scale-105"
+            data={product.featuredImage}
+            sizes="(min-width: 64rem) 20vw, (min-width: 40rem) 45vw, 90vw"
+          />
+        ) : (
+          <CartonIllustration className="origin-bottom scale-[0.48] transition duration-300 group-hover:scale-[0.55]" />
+        )}
       </Link>
       <div>
         <div className="flex items-baseline justify-between gap-2">

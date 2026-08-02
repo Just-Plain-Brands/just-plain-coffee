@@ -5,7 +5,8 @@ import {ProductCard} from '~/components/catalog/product-card';
 import {HomeHero} from '~/components/marketing/home-hero';
 import {buttonVariants} from '~/components/ui/button';
 import {
-  getRoastPresentationByIndex,
+  getRoastPresentation,
+  ROAST_IDS,
   ROAST_PRESENTATIONS,
 } from '~/lib/coffee/presentation';
 import {COFFEE_PRODUCT_CARD_FRAGMENT} from '~/lib/shopify/catalog-fragments';
@@ -23,8 +24,20 @@ export const meta: Route.MetaFunction = () => [
 
 export async function loader({context}: Route.LoaderArgs) {
   const {products} = await context.storefront.query(HOME_PRODUCTS_QUERY);
+  const orderedProducts = [...products.nodes].sort((left, right) => {
+    const leftRoast = getRoastPresentation({
+      title: left.title,
+      tags: left.tags,
+    });
+    const rightRoast = getRoastPresentation({
+      title: right.title,
+      tags: right.tags,
+    });
 
-  return {products: products.nodes};
+    return ROAST_IDS.indexOf(leftRoast.id) - ROAST_IDS.indexOf(rightRoast.id);
+  });
+
+  return {products: orderedProducts};
 }
 
 export default function Homepage() {
@@ -115,10 +128,13 @@ export default function Homepage() {
           quiz.
         </p>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {products.map((product, index) => (
+          {products.map((product) => (
             <ProductCard
               key={product.id}
-              presentation={getRoastPresentationByIndex(index)}
+              presentation={getRoastPresentation({
+                title: product.title,
+                tags: product.tags,
+              })}
               product={product}
             />
           ))}
@@ -237,7 +253,7 @@ export default function Homepage() {
 const HOME_PRODUCTS_QUERY = `#graphql
   query HomeProducts($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
-    products(first: 4, sortKey: BEST_SELLING) {
+    products(first: 4, sortKey: TITLE) {
       nodes {
         ...CoffeeProductCard
       }
