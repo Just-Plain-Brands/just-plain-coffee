@@ -173,37 +173,41 @@ function GalleryCarouselContent({
 
   return (
     <>
-      <CarouselContent className="ml-0">
-        {items.map((item, index) => (
-          <CarouselItem
-            aria-label={`${index + 1} of ${items.length}: ${item.label}`}
-            className="pl-0"
-            key={item.id}
-          >
-            <div className="relative grid aspect-square min-h-0 place-items-center overflow-hidden rounded-2xl bg-surface sm:min-h-80">
-              <div className="grid h-full w-full place-items-center overflow-hidden [&_img]:max-h-full [&_img]:max-w-full [&_img]:object-contain [&_svg]:max-h-full [&_svg]:max-w-full">
-                {item.media}
-              </div>
-              <span className="absolute top-5 right-5 rounded-full border border-neutral-900/15 bg-neutral-100/85 px-3 py-2 text-xs font-bold shadow-soft backdrop-blur-sm">
-                {index + 1} / {items.length}
-              </span>
-              <span
-                aria-live="polite"
-                className="absolute bottom-5 left-5 rounded-full bg-neutral-900 px-4 py-2 text-xs font-bold text-neutral-100"
-              >
-                {item.label}
-              </span>
-            </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-
-      <div className="mt-4 grid grid-cols-[44px_minmax(0,1fr)_44px] items-stretch gap-2">
+      <div className="relative">
         <CarouselPrevious
           aria-label="Previous product image"
-          className="static my-0 h-auto min-h-28 w-11 rounded-2xl border-neutral-300 bg-neutral-100 hover:border-neutral-900 hover:bg-neutral-200 disabled:cursor-default"
+          className="absolute top-1/2 left-2 z-20 my-0 hidden size-10 rounded-full border-none bg-surface/20 backdrop-blur-md transition hover:bg-surface/50 disabled:cursor-default lg:flex"
         />
-
+        <CarouselContent className="ml-0">
+          {items.map((item, index) => (
+            <CarouselItem
+              aria-label={`${index + 1} of ${items.length}: ${item.label}`}
+              className="pl-0"
+              key={item.id}
+            >
+              <div className="relative grid aspect-square min-h-0 place-items-center overflow-hidden rounded-2xl bg-surface sm:min-h-80">
+                <div className="grid h-full w-full place-items-center overflow-hidden [&_img]:max-h-full [&_img]:max-w-full [&_img]:object-contain [&_svg]:max-h-full [&_svg]:max-w-full">
+                  {item.media}
+                </div>
+                <span className="absolute top-5 right-5 rounded-full border border-neutral-900/15 bg-neutral-100/85 px-3 py-2 text-xs font-bold shadow-soft backdrop-blur-sm">
+                  {index + 1} / {items.length}
+                </span>
+                <span
+                  aria-live="polite"
+                  className="absolute bottom-5 left-5 rounded-full bg-neutral-900 px-4 py-2 text-xs font-bold text-neutral-100"
+                >
+                  {item.label}
+                </span>
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselNext
+          aria-label="Next product image"
+          className="absolute top-1/2 right-2 z-20 my-0 hidden size-10 rounded-full border-none bg-surface/20 backdrop-blur-md transition hover:bg-surface/50 disabled:cursor-default lg:flex"
+        />
+      </div>
+      <div className="mt-4 gap-2">
         <div className="flex snap-x gap-2 overflow-x-auto overscroll-x-contain pb-1">
           {items.map((item, index) => {
             const isSelected = item.id === selectedItem.id;
@@ -235,10 +239,15 @@ function GalleryCarouselContent({
             );
           })}
         </div>
-
+      </div>
+      <div className="flex justify-end gap-2 lg:hidden">
+        <CarouselPrevious
+          aria-label="Previous product image"
+          className="static my-0 size-11 rounded-full border-neutral-300 bg-neutral-100 hover:border-neutral-900 hover:bg-neutral-200 disabled:cursor-default"
+        />
         <CarouselNext
           aria-label="Next product image"
-          className="static my-0 h-auto min-h-28 w-11 rounded-2xl border-neutral-300 bg-neutral-100 hover:border-neutral-900 hover:bg-neutral-200 disabled:cursor-default"
+          className="static my-0 size-11 rounded-full border-neutral-300 bg-neutral-100 hover:border-neutral-900 hover:bg-neutral-200 disabled:cursor-default"
         />
       </div>
     </>
