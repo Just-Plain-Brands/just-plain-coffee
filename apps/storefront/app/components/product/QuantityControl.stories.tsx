@@ -1,7 +1,7 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
 import {useState} from 'react';
 
-import {QuantityControl} from './QuantityControl';
+import {QuantityControl, QuantityControlLoading} from './QuantityControl';
 
 function StatefulQuantity({
   initialValue,
@@ -41,4 +41,8 @@ export const Incremented = {
 
 export const Maximum = {
   render: () => <StatefulQuantity initialValue={5} max={5} />,
+} satisfies Story;
+
+export const Loading = {
+  render: () => <QuantityControlLoading />,
 } satisfies Story;

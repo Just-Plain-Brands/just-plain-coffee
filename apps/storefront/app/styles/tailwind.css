@@ -71,6 +71,7 @@
 
   --animate-marquee: marquee 26s linear infinite;
   --animate-carton-bob: carton-bob 5.5s ease-in-out infinite;
+  --animate-skeleton-shimmer: skeleton-shimmer 1.8s ease-in-out infinite;
 }
 
 :root {
@@ -170,6 +171,12 @@
 
   50% {
     transform: translateY(-12px);
+  }
+}
+
+@keyframes skeleton-shimmer {
+  to {
+    transform: translateX(200%);
   }
 }
 

@@ -1,7 +1,11 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
 import {useState} from 'react';
 
-import {GalleryCarousel, type GalleryCarouselItem} from './GalleryCarousel';
+import {
+  GalleryCarousel,
+  GalleryCarouselLoading,
+  type GalleryCarouselItem,
+} from './GalleryCarousel';
 import {ProductStoryArtwork} from './storybook/ProductStoryArtwork';
 
 function DetailArtwork({
@@ -164,6 +168,10 @@ export const Empty = {
   },
 } satisfies Story;
 
+export const Loading = {
+  render: () => <GalleryCarouselLoading />,
+} satisfies Story;
+
 export const SelectedDetail = {
   render: () => (
     <StatefulGallery initialSelectedId="print-detail" items={APPAREL_MEDIA} />
@@ -190,4 +198,11 @@ export const MobileFilmstrip = {
   render: () => (
     <StatefulGallery initialSelectedId="front" items={EXTENDED_MEDIA} />
   ),
+} satisfies Story;
+
+export const MobileLoading = {
+  globals: {
+    viewport: {value: 'mobile1', isRotated: false},
+  },
+  render: () => <GalleryCarouselLoading />,
 } satisfies Story;

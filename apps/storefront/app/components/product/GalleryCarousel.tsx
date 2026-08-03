@@ -10,6 +10,7 @@ import {
   useCarousel,
 } from '~/components/ui/carousel';
 import {EmptyState} from '~/components/ui/empty-state';
+import {Skeleton} from '~/components/ui/skeleton';
 import {cn} from '~/lib/utils';
 
 export interface GalleryCarouselItem {
@@ -25,6 +26,65 @@ interface GalleryCarouselProps {
   items: readonly GalleryCarouselItem[];
   onSelectedIdChange: (id: string) => void;
   selectedId: string;
+}
+
+const GALLERY_LOADING_THUMBNAILS = [
+  {id: 'first', delayClassName: ''},
+  {
+    id: 'second',
+    delayClassName: '[animation-delay:120ms] before:[animation-delay:120ms]',
+  },
+  {
+    id: 'third',
+    delayClassName: '[animation-delay:240ms] before:[animation-delay:240ms]',
+  },
+] as const;
+
+export function GalleryCarouselLoading({
+  ariaLabel = 'Product media',
+  className,
+}: Pick<GalleryCarouselProps, 'ariaLabel' | 'className'>) {
+  return (
+    <div
+      aria-busy="true"
+      aria-label={ariaLabel}
+      className={cn('min-w-0', className)}
+      role="region"
+    >
+      <span className="sr-only">Loading product media.</span>
+      <div className="relative grid aspect-square min-h-0 place-items-center overflow-hidden rounded-4xl bg-surface p-7 sm:min-h-80 sm:p-10">
+        <Skeleton className="h-4/5 w-3/5 rounded-4xl bg-neutral-200/80" />
+        <Skeleton className="absolute top-5 right-5 h-8 w-12 rounded-full bg-neutral-100/80 [animation-delay:180ms] before:[animation-delay:180ms]" />
+        <Skeleton className="absolute bottom-5 left-5 h-8 w-20 rounded-full bg-neutral-900/20 [animation-delay:300ms] before:[animation-delay:300ms]" />
+      </div>
+
+      <div className="mt-4 grid grid-cols-[44px_minmax(0,1fr)_44px] items-stretch gap-2">
+        <Skeleton className="min-h-28 w-11 rounded-2xl bg-neutral-200" />
+        <div className="flex gap-2 overflow-hidden pb-1">
+          {GALLERY_LOADING_THUMBNAILS.map((thumbnail) => (
+            <div
+              className="w-26 shrink-0 rounded-2xl border-2 border-neutral-300/60 bg-neutral-100 p-1.5 sm:w-28"
+              key={thumbnail.id}
+            >
+              <Skeleton
+                className={cn(
+                  'aspect-square rounded-xl bg-surface',
+                  thumbnail.delayClassName,
+                )}
+              />
+              <Skeleton
+                className={cn(
+                  'mx-1 mt-2 mb-1 h-3 w-3/5 rounded-full bg-neutral-300',
+                  thumbnail.delayClassName,
+                )}
+              />
+            </div>
+          ))}
+        </div>
+        <Skeleton className="min-h-28 w-11 rounded-2xl bg-neutral-200 [animation-delay:300ms] before:[animation-delay:300ms]" />
+      </div>
+    </div>
+  );
 }
 
 export function GalleryCarousel({
@@ -48,7 +108,7 @@ export function GalleryCarousel({
         role="region"
       >
         <EmptyState
-          className="aspect-square min-h-80 rounded-4xl bg-surface"
+          className="aspect-square min-h-0 rounded-4xl bg-surface sm:min-h-80"
           description="Images and videos will appear here when available."
           icon={<ImageOffIcon />}
           title="No product media available."
@@ -120,7 +180,7 @@ function GalleryCarouselContent({
             className="pl-0"
             key={item.id}
           >
-            <div className="relative grid aspect-square min-h-80 place-items-center overflow-hidden rounded-4xl bg-surface p-7 sm:p-10">
+            <div className="relative grid aspect-square min-h-0 place-items-center overflow-hidden rounded-4xl bg-surface p-7 sm:min-h-80 sm:p-10">
               <div className="grid h-full w-full place-items-center overflow-hidden [&_img]:max-h-full [&_img]:max-w-full [&_img]:object-contain [&_svg]:max-h-full [&_svg]:max-w-full">
                 {item.media}
               </div>

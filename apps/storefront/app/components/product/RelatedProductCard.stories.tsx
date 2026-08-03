@@ -1,7 +1,10 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
 import {MemoryRouter} from 'react-router';
 
-import {RelatedProductCard} from './RelatedProductCard';
+import {
+  RelatedProductCard,
+  RelatedProductCardLoading,
+} from './RelatedProductCard';
 import {ProductStoryArtwork} from './storybook/ProductStoryArtwork';
 import {RELATED_PRODUCT_STORY_FIXTURES} from './storybook/RelatedProductStoryFixtures';
 
@@ -44,6 +47,10 @@ export const Unavailable = {
       availability: {kind: 'unavailable', label: 'Sold out'},
     },
   },
+} satisfies Story;
+
+export const Loading = {
+  render: () => <RelatedProductCardLoading />,
 } satisfies Story;
 
 export const LongTitle = {

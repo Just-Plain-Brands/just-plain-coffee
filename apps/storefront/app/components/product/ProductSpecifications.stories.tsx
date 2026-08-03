@@ -1,6 +1,9 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
 
-import {ProductSpecifications} from './ProductSpecifications';
+import {
+  ProductSpecifications,
+  ProductSpecificationsLoading,
+} from './ProductSpecifications';
 
 const APPAREL_SPECIFICATIONS = [
   {id: 'material', label: 'Material', value: '100% garment-dyed cotton'},
@@ -68,6 +71,10 @@ export const Empty = {
   args: {
     items: [],
   },
+} satisfies Story;
+
+export const Loading = {
+  render: () => <ProductSpecificationsLoading />,
 } satisfies Story;
 
 export const LongValues = {

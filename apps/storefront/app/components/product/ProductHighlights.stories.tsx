@@ -8,7 +8,7 @@ import {
   TruckIcon,
 } from 'lucide-react';
 
-import {ProductHighlights} from './ProductHighlights';
+import {ProductHighlights, ProductHighlightsLoading} from './ProductHighlights';
 
 const MERCH_HIGHLIGHTS = [
   {
@@ -90,6 +90,10 @@ export const Empty = {
   args: {
     items: [],
   },
+} satisfies Story;
+
+export const Loading = {
+  render: () => <ProductHighlightsLoading />,
 } satisfies Story;
 
 export const LongCopy = {

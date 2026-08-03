@@ -2,6 +2,7 @@ import {ArrowUpRightIcon} from 'lucide-react';
 import type {ReactNode} from 'react';
 import {Link} from 'react-router';
 
+import {Skeleton} from '~/components/ui/skeleton';
 import {cn} from '~/lib/utils';
 
 export type RelatedProductPrice =
@@ -25,6 +26,34 @@ export interface RelatedProduct {
 interface RelatedProductCardProps {
   className?: string;
   product: RelatedProduct;
+}
+
+export function RelatedProductCardLoading({
+  className,
+}: Pick<RelatedProductCardProps, 'className'>) {
+  return (
+    <div
+      aria-busy="true"
+      aria-label="Loading related product"
+      className={cn('min-w-0', className)}
+      role="status"
+    >
+      <div className="relative grid aspect-[4/5] place-items-center overflow-hidden rounded-4xl bg-neutral-200 p-7">
+        <Skeleton className="absolute top-5 left-5 h-8 w-20 rounded-full bg-neutral-100/90" />
+        <Skeleton className="h-1/2 w-2/3 rounded-[45%] bg-neutral-300/80 [animation-delay:140ms] before:[animation-delay:140ms]" />
+        <Skeleton className="absolute right-5 bottom-5 size-12 rounded-full bg-neutral-900/20 [animation-delay:280ms] before:[animation-delay:280ms]" />
+      </div>
+
+      <div className="flex items-start justify-between gap-4 px-1 pt-5">
+        <div className="min-w-0 flex-1">
+          <Skeleton className="h-6 w-4/5 rounded-full bg-neutral-300" />
+          <Skeleton className="mt-2 h-6 w-3/5 rounded-full bg-neutral-300 [animation-delay:100ms] before:[animation-delay:100ms]" />
+          <Skeleton className="mt-3 h-3 w-20 rounded-full bg-neutral-200 [animation-delay:200ms] before:[animation-delay:200ms]" />
+        </div>
+        <Skeleton className="h-5 w-10 shrink-0 rounded-full bg-neutral-300 [animation-delay:260ms] before:[animation-delay:260ms]" />
+      </div>
+    </div>
+  );
 }
 
 export function RelatedProductCard({

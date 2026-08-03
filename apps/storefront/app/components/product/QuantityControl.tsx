@@ -2,6 +2,7 @@ import {MinusIcon, PlusIcon} from 'lucide-react';
 
 import {Button} from '~/components/ui/button';
 import {ButtonGroup, ButtonGroupText} from '~/components/ui/button-group';
+import {Skeleton} from '~/components/ui/skeleton';
 import {cn} from '~/lib/utils';
 
 interface QuantityControlProps {
@@ -11,6 +12,27 @@ interface QuantityControlProps {
   min?: number;
   onChange: (value: number) => void;
   value: number;
+}
+
+export function QuantityControlLoading({
+  ariaLabel = 'Quantity',
+  className,
+}: Pick<QuantityControlProps, 'ariaLabel' | 'className'>) {
+  return (
+    <div
+      aria-busy="true"
+      aria-label={`${ariaLabel} is loading`}
+      className={cn(
+        'flex h-14 w-full min-w-36 items-center justify-between rounded-full border border-neutral-300 bg-neutral-100 px-2 sm:w-36',
+        className,
+      )}
+      role="status"
+    >
+      <Skeleton className="size-9 rounded-full bg-neutral-200" />
+      <Skeleton className="h-5 w-5 rounded-full bg-neutral-300 [animation-delay:120ms] before:[animation-delay:120ms]" />
+      <Skeleton className="size-9 rounded-full bg-neutral-200 [animation-delay:240ms] before:[animation-delay:240ms]" />
+    </div>
+  );
 }
 
 export function QuantityControl({

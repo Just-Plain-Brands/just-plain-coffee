@@ -1,7 +1,7 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
 import {MemoryRouter} from 'react-router';
 
-import {RelatedProducts} from './RelatedProducts';
+import {RelatedProducts, RelatedProductsLoading} from './RelatedProducts';
 import {RELATED_PRODUCT_STORY_FIXTURES} from './storybook/RelatedProductStoryFixtures';
 
 const meta = {
@@ -50,6 +50,10 @@ export const Empty = {
   },
 } satisfies Story;
 
+export const Loading = {
+  render: () => <RelatedProductsLoading />,
+} satisfies Story;
+
 export const MobileOverflow = {
   decorators: [
     (Story) => (
@@ -61,4 +65,11 @@ export const MobileOverflow = {
   globals: {
     viewport: {value: 'mobile1', isRotated: false},
   },
+} satisfies Story;
+
+export const MobileLoading = {
+  globals: {
+    viewport: {value: 'mobile1', isRotated: false},
+  },
+  render: () => <RelatedProductsLoading />,
 } satisfies Story;

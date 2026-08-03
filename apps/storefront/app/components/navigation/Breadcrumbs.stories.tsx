@@ -1,7 +1,7 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
 import {MemoryRouter} from 'react-router';
 
-import {Breadcrumbs} from './Breadcrumbs';
+import {Breadcrumbs, BreadcrumbsLoading} from './Breadcrumbs';
 
 const meta = {
   title: 'Navigation/Breadcrumbs',
@@ -41,6 +41,10 @@ export const Empty = {
   args: {
     items: [],
   },
+} satisfies Story;
+
+export const Loading = {
+  render: () => <BreadcrumbsLoading />,
 } satisfies Story;
 
 export const LongTrail = {

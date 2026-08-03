@@ -11,6 +11,7 @@ import {
   ProductPurchasePanelActions,
   ProductPurchasePanelFooter,
   ProductPurchasePanelHeader,
+  ProductPurchasePanelLoading,
   ProductPurchasePanelSection,
 } from './ProductPurchasePanel';
 import {QuantityControl} from './QuantityControl';
@@ -233,6 +234,10 @@ export const LongDescription = {
   ),
 } satisfies Story;
 
+export const Loading = {
+  render: () => <ProductPurchasePanelLoading />,
+} satisfies Story;
+
 export const Mobile = {
   globals: {
     viewport: {value: 'mobile1', isRotated: false},
@@ -241,4 +246,14 @@ export const Mobile = {
     layout: 'fullscreen',
   },
   render: () => <ApparelPanel />,
+} satisfies Story;
+
+export const MobileLoading = {
+  globals: {
+    viewport: {value: 'mobile1', isRotated: false},
+  },
+  parameters: {
+    layout: 'fullscreen',
+  },
+  render: () => <ProductPurchasePanelLoading />,
 } satisfies Story;
