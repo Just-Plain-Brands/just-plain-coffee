@@ -4,6 +4,7 @@ import type {
   MoneyV2,
   ProductOptionValueSwatch,
 } from '@shopify/hydrogen/storefront-api-types';
+import {useId} from 'react';
 import {Link, useNavigate} from 'react-router';
 import type {
   ProductFragment,
@@ -12,6 +13,17 @@ import type {
 
 import {useAside} from '~/components/Aside';
 import {AddToCartButton} from '~/components/cart/AddToCartButton';
+import {Button, buttonVariants} from '~/components/ui/button';
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+  FieldTitle,
+} from '~/components/ui/field';
+import {RadioGroup, RadioGroupItem} from '~/components/ui/radio-group';
 import {
   getDefaultSellingPlanAllocation,
   getSellingPlanLabel,
@@ -79,7 +91,10 @@ export function ProductForm({
                   return (
                     <Link
                       className={cn(
-                        'min-w-20 rounded-full border px-4 py-2 text-center text-sm font-bold transition',
+                        buttonVariants({
+                          variant: selected ? 'default' : 'outline',
+                        }),
+                        'h-10 min-w-20 rounded-full px-4 text-center font-bold',
                         selected
                           ? 'border-neutral-900 bg-neutral-900 text-neutral-100'
                           : 'border-neutral-300 bg-background hover:border-neutral-900',
@@ -101,10 +116,11 @@ export function ProductForm({
                   // the variant so that SEO bots do not index these as
                   // duplicated links
                   return (
-                    <button
+                    <Button
+                      aria-pressed={selected}
                       type="button"
                       className={cn(
-                        'min-w-20 rounded-full border px-4 py-2 text-sm font-bold transition',
+                        'h-10 min-w-20 rounded-full px-4 font-bold',
                         selected
                           ? 'border-neutral-900 bg-neutral-900 text-neutral-100'
                           : 'border-neutral-300 bg-background hover:border-neutral-900',
@@ -112,6 +128,7 @@ export function ProductForm({
                       )}
                       key={option.name + name}
                       disabled={!exists}
+                      variant={selected ? 'default' : 'outline'}
                       onClick={() => {
                         if (!selected) {
                           void navigate(`?${variantUriQuery}`, {
@@ -122,7 +139,7 @@ export function ProductForm({
                       }}
                     >
                       <ProductOptionSwatch swatch={swatch} name={name} />
-                    </button>
+                    </Button>
                   );
                 }
               })}
@@ -167,6 +184,7 @@ function PurchaseOptions({
   selection: PurchaseSelection;
   variantPrice: MoneyV2;
 }) {
+  const purchaseOptionId = useId();
   const defaultAllocation = getDefaultSellingPlanAllocation(allocations);
   if (!defaultAllocation) return null;
 
@@ -177,103 +195,117 @@ function PurchaseOptions({
   const subscriptionPrice = getSellingPlanPrice(selectedAllocation);
   const savings = getSellingPlanSavingsPercentage(selectedAllocation);
   const isSubscription = selection.kind === 'subscription';
+  const purchaseOption = isSubscription ? 'subscription' : 'one-time';
 
   return (
-    <fieldset className="mb-6">
-      <legend className="mb-3 text-sm font-bold tracking-[0.1em] uppercase">
+    <FieldSet className="mb-6 gap-3">
+      <FieldLegend
+        className="mb-0 text-sm font-bold tracking-[0.1em] uppercase"
+        variant="label"
+      >
         Purchase option
-      </legend>
-      <div className="grid gap-3">
-        <label
+      </FieldLegend>
+      <RadioGroup
+        className="gap-3"
+        onValueChange={(value) => {
+          onChange(
+            value === 'subscription' ? defaultAllocation.sellingPlan.id : null,
+          );
+        }}
+        value={purchaseOption}
+      >
+        <Field
           className={cn(
-            'flex cursor-pointer items-center justify-between gap-4 rounded-2xl border bg-background p-4 transition',
+            'items-center rounded-2xl border bg-background p-4 transition',
             !isSubscription
               ? 'border-neutral-900 ring-1 ring-neutral-900'
               : 'border-neutral-300 hover:border-neutral-500',
           )}
+          orientation="horizontal"
         >
-          <span className="flex items-center gap-3">
-            <input
-              checked={!isSubscription}
-              className="size-4 accent-neutral-900"
-              name="purchase-option"
-              onChange={() => onChange(null)}
-              type="radio"
-              value="one-time"
-            />
-            <span className="font-bold">One-time purchase</span>
-          </span>
-          <Money className="font-bold" data={variantPrice} />
-        </label>
+          <RadioGroupItem
+            id={`${purchaseOptionId}-one-time`}
+            value="one-time"
+          />
+          <FieldLabel
+            className="min-w-0 flex-1 cursor-pointer items-center justify-between gap-4"
+            htmlFor={`${purchaseOptionId}-one-time`}
+          >
+            <FieldContent>
+              <FieldTitle className="font-bold">One-time purchase</FieldTitle>
+            </FieldContent>
+            <Money className="font-bold" data={variantPrice} />
+          </FieldLabel>
+        </Field>
 
-        <label
+        <Field
           className={cn(
-            'flex cursor-pointer items-center justify-between gap-4 rounded-2xl border bg-background p-4 transition',
+            'items-center rounded-2xl border bg-background p-4 transition',
             isSubscription
               ? 'border-orange-700 ring-1 ring-orange-700'
               : 'border-neutral-300 hover:border-orange-500',
           )}
+          orientation="horizontal"
         >
-          <span className="flex items-center gap-3">
-            <input
-              checked={isSubscription}
-              className="size-4 accent-orange-700"
-              name="purchase-option"
-              onChange={() => onChange(defaultAllocation.sellingPlan.id)}
-              type="radio"
-              value="subscription"
-            />
-            <span>
-              <span className="block font-bold">Subscribe &amp; save</span>
-              <span className="text-sm text-neutral-600">
+          <RadioGroupItem
+            className="data-checked:border-orange-700 data-checked:bg-orange-700"
+            id={`${purchaseOptionId}-subscription`}
+            value="subscription"
+          />
+          <FieldLabel
+            className="min-w-0 flex-1 cursor-pointer items-center justify-between gap-4"
+            htmlFor={`${purchaseOptionId}-subscription`}
+          >
+            <FieldContent>
+              <FieldTitle className="font-bold">
+                Subscribe &amp; save
+              </FieldTitle>
+              <FieldDescription className="text-neutral-600">
                 {savings ? `${savings}% off every order` : 'Recurring delivery'}
+              </FieldDescription>
+            </FieldContent>
+            {subscriptionPrice ? (
+              <span className="shrink-0 text-right">
+                <Money className="block font-bold" data={subscriptionPrice} />
+                <s className="text-sm text-neutral-500">
+                  <Money data={variantPrice} />
+                </s>
               </span>
-            </span>
-          </span>
-          {subscriptionPrice ? (
-            <span className="text-right">
-              <Money className="block font-bold" data={subscriptionPrice} />
-              <s className="text-sm text-neutral-500">
-                <Money data={variantPrice} />
-              </s>
-            </span>
-          ) : null}
-        </label>
-      </div>
+            ) : null}
+          </FieldLabel>
+        </Field>
+      </RadioGroup>
 
       {isSubscription ? (
-        <div className="mt-4">
-          <p className="mb-2 text-sm font-bold">Deliver it</p>
-          <div className="grid grid-cols-3 gap-2">
+        <FieldSet className="mt-1 gap-2">
+          <FieldLegend className="mb-0 text-sm font-bold" variant="label">
+            Deliver it
+          </FieldLegend>
+          <RadioGroup
+            className="grid grid-cols-3 gap-2"
+            onValueChange={onChange}
+            value={selection.allocation.sellingPlan.id}
+          >
             {allocations.map((allocation) => {
               const sellingPlanId = allocation.sellingPlan.id;
-              const isSelected =
-                selection.allocation.sellingPlan.id === sellingPlanId;
 
               return (
-                <button
-                  aria-pressed={isSelected}
-                  className={cn(
-                    'rounded-full border px-3 py-2 text-sm font-bold transition',
-                    isSelected
-                      ? 'border-neutral-900 bg-neutral-900 text-neutral-100'
-                      : 'border-neutral-300 bg-background hover:border-neutral-900',
-                  )}
+                <RadioGroupItem
+                  className="aspect-auto h-10 w-full min-w-0 cursor-pointer items-center justify-center rounded-full border border-neutral-300 bg-background px-3 text-center text-sm font-bold transition after:inset-0 hover:border-neutral-900 data-checked:border-neutral-900 data-checked:bg-neutral-900 data-checked:text-neutral-100 [&_[data-slot=radio-group-indicator]]:hidden"
                   key={sellingPlanId}
-                  onClick={() => onChange(sellingPlanId)}
-                  type="button"
+                  value={sellingPlanId}
                 >
                   {getSellingPlanLabel(allocation.sellingPlan)}
-                </button>
+                </RadioGroupItem>
               );
             })}
-          </div>
-          <p className="mt-3 text-sm text-neutral-600">
+          </RadioGroup>
+          <FieldDescription className="mt-1 text-neutral-600">
             Renews automatically. Cancel from your account.
-          </p>
-        </div>
+          </FieldDescription>
+        </FieldSet>
       ) : null}
-    </fieldset>
+    </FieldSet>
   );
 }
 

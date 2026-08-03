@@ -6,6 +6,8 @@ import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
 import type {CartLayout, LineItemChildrenMap} from '~/components/cart/CartMain';
 import {ProductPrice} from '~/components/product/ProductPrice';
+import {Button} from '~/components/ui/button';
+import {ButtonGroup} from '~/components/ui/button-group';
 import {getSellingPlanLabel} from '~/lib/shopify/subscriptions';
 import {useVariantUrl} from '~/lib/variants';
 
@@ -112,24 +114,29 @@ export function CartLineItem({
  */
 function CartLineQuantity({line}: {line: CartLine}) {
   if (!line || typeof line?.quantity === 'undefined') return null;
-  const {id: lineId, quantity, isOptimistic} = line;
+  const {id: lineId, isOptimistic, merchandise, quantity} = line;
   const prevQuantity = Number(Math.max(0, quantity - 1).toFixed(0));
   const nextQuantity = Number((quantity + 1).toFixed(0));
 
   return (
-    <div className="mt-3 flex items-center gap-2">
+    <ButtonGroup
+      aria-label={`Quantity for ${merchandise.product.title}`}
+      className="mt-3 items-center gap-2"
+    >
       <span className="sr-only">Quantity: {quantity}</span>
       <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
-        <button
+        <Button
           aria-label="Decrease quantity"
-          className="grid size-8 place-items-center rounded-full border border-neutral-300 transition hover:border-neutral-900 disabled:opacity-35"
+          className="size-8 rounded-full border-neutral-300 hover:border-neutral-900 disabled:opacity-35"
           disabled={quantity <= 1 || !!isOptimistic}
           name="decrease-quantity"
+          size="icon"
           type="submit"
           value={prevQuantity}
+          variant="outline"
         >
           <span>&#8722;</span>
-        </button>
+        </Button>
       </CartLineUpdateButton>
       <span
         aria-hidden="true"
@@ -138,19 +145,21 @@ function CartLineQuantity({line}: {line: CartLine}) {
         {quantity}
       </span>
       <CartLineUpdateButton lines={[{id: lineId, quantity: nextQuantity}]}>
-        <button
+        <Button
           aria-label="Increase quantity"
-          className="grid size-8 place-items-center rounded-full border border-neutral-300 transition hover:border-neutral-900 disabled:opacity-35"
+          className="size-8 rounded-full border-neutral-300 hover:border-neutral-900 disabled:opacity-35"
           name="increase-quantity"
+          size="icon"
           type="submit"
           value={nextQuantity}
           disabled={!!isOptimistic}
+          variant="outline"
         >
           <span>&#43;</span>
-        </button>
+        </Button>
       </CartLineUpdateButton>
       <CartLineRemoveButton lineIds={[lineId]} disabled={!!isOptimistic} />
-    </div>
+    </ButtonGroup>
   );
 }
 
@@ -173,13 +182,15 @@ function CartLineRemoveButton({
       action={CartForm.ACTIONS.LinesRemove}
       inputs={{lineIds}}
     >
-      <button
-        className="ml-2 text-xs font-bold text-neutral-600 underline underline-offset-4 hover:text-foreground disabled:opacity-35"
+      <Button
+        className="ml-2 h-auto px-0 text-xs font-bold text-neutral-600 disabled:opacity-35"
         disabled={disabled}
+        size="sm"
         type="submit"
+        variant="link"
       >
         Remove
-      </button>
+      </Button>
     </CartForm>
   );
 }

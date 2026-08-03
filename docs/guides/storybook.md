@@ -31,5 +31,16 @@ the component with `satisfies Meta<typeof Component>`. Add component-specific
 decorators only when the component needs application context such as routing or
 the cart aside provider.
 
+Set a story's responsive viewport with Storybook globals so the preview iframe
+uses the intended width and CSS media queries run against that width:
+
+```ts
+export const Mobile = {
+  globals: {
+    viewport: {value: 'mobile1', isRotated: false},
+  },
+} satisfies Story;
+```
+
 The shared Storybook configuration loads the storefront's Tailwind stylesheet,
 public assets, and `~` import alias.
