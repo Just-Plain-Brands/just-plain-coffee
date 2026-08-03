@@ -180,7 +180,7 @@ function GalleryCarouselContent({
             className="pl-0"
             key={item.id}
           >
-            <div className="relative grid aspect-square min-h-0 place-items-center overflow-hidden rounded-4xl bg-surface p-7 sm:min-h-80 sm:p-10">
+            <div className="relative grid aspect-square min-h-0 place-items-center overflow-hidden rounded-2xl bg-surface sm:min-h-80">
               <div className="grid h-full w-full place-items-center overflow-hidden [&_img]:max-h-full [&_img]:max-w-full [&_img]:object-contain [&_svg]:max-h-full [&_svg]:max-w-full">
                 {item.media}
               </div>
@@ -213,9 +213,9 @@ function GalleryCarouselContent({
                 aria-label={`Show product image: ${item.label}`}
                 aria-pressed={isSelected}
                 className={cn(
-                  'w-26 shrink-0 snap-center overflow-hidden rounded-2xl border-2 bg-neutral-100 p-1.5 text-left transition sm:w-28',
+                  'w-26 shrink-0 snap-center overflow-hidden rounded-lg border-2 bg-neutral-100 p-1.5 text-left transition sm:w-28',
                   isSelected
-                    ? 'border-neutral-900'
+                    ? 'border-neutral-300'
                     : 'border-transparent hover:border-neutral-300',
                 )}
                 key={item.id}
@@ -227,12 +227,9 @@ function GalleryCarouselContent({
               >
                 <span
                   aria-hidden="true"
-                  className="grid aspect-square place-items-center overflow-hidden rounded-xl bg-surface [&_img]:h-full [&_img]:w-full [&_img]:object-cover [&_svg]:h-full [&_svg]:w-full"
+                  className="grid aspect-square place-items-center overflow-hidden rounded-md bg-surface [&_img]:h-full [&_img]:w-full [&_img]:object-cover [&_svg]:h-full [&_svg]:w-full"
                 >
                   {item.thumbnail ?? item.media}
-                </span>
-                <span className="block truncate px-1 pt-2 pb-1 text-xs font-bold">
-                  {item.label}
                 </span>
               </button>
             );
