@@ -8,7 +8,7 @@ import {
   TruckIcon,
 } from 'lucide-react';
 
-import {ProductHighlights, ProductHighlightsLoading} from './ProductHighlights';
+import {HighlightGrid, HighlightGridLoading} from './highlight-grid';
 
 const MERCH_HIGHLIGHTS = [
   {
@@ -32,8 +32,8 @@ const MERCH_HIGHLIGHTS = [
 ] as const;
 
 const meta = {
-  title: 'Product/Product Highlights',
-  component: ProductHighlights,
+  title: 'Marketing/Highlight Grid',
+  component: HighlightGrid,
   args: {
     items: MERCH_HIGHLIGHTS,
   },
@@ -47,7 +47,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof ProductHighlights>;
+} satisfies Meta<typeof HighlightGrid>;
 
 export default meta;
 
@@ -93,7 +93,7 @@ export const Empty = {
 } satisfies Story;
 
 export const Loading = {
-  render: () => <ProductHighlightsLoading />,
+  render: () => <HighlightGridLoading />,
 } satisfies Story;
 
 export const LongCopy = {

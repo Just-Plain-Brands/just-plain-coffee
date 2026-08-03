@@ -1,9 +1,6 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
 
-import {
-  ProductSpecifications,
-  ProductSpecificationsLoading,
-} from './ProductSpecifications';
+import {FactSheet, FactSheetLoading} from './fact-sheet';
 
 const APPAREL_SPECIFICATIONS = [
   {id: 'material', label: 'Material', value: '100% garment-dyed cotton'},
@@ -13,8 +10,8 @@ const APPAREL_SPECIFICATIONS = [
 ] as const;
 
 const meta = {
-  title: 'Product/Product Specifications',
-  component: ProductSpecifications,
+  title: 'Marketing/Fact Sheet',
+  component: FactSheet,
   args: {
     description:
       'Dense cotton, a relaxed shape, and a small chest print. Wash it, wear it, repeat.',
@@ -32,7 +29,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof ProductSpecifications>;
+} satisfies Meta<typeof FactSheet>;
 
 export default meta;
 
@@ -74,7 +71,7 @@ export const Empty = {
 } satisfies Story;
 
 export const Loading = {
-  render: () => <ProductSpecificationsLoading />,
+  render: () => <FactSheetLoading />,
 } satisfies Story;
 
 export const LongValues = {

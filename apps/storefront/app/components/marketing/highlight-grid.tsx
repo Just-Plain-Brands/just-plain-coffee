@@ -5,26 +5,26 @@ import {EmptyState} from '~/components/ui/empty-state';
 import {Skeleton} from '~/components/ui/skeleton';
 import {cn} from '~/lib/utils';
 
-export interface ProductHighlightItem {
+export interface HighlightGridItem {
   description: ReactNode;
   icon: ReactNode;
   id: string;
   label: ReactNode;
 }
 
-interface ProductHighlightProps {
+interface HighlightCardProps {
   className?: string;
   description: ReactNode;
   icon: ReactNode;
   label: ReactNode;
 }
 
-interface ProductHighlightsProps {
+interface HighlightGridProps {
   className?: string;
-  items: readonly ProductHighlightItem[];
+  items: readonly HighlightGridItem[];
 }
 
-const PRODUCT_HIGHLIGHT_LOADING_ITEMS = [
+const HIGHLIGHT_GRID_LOADING_ITEMS = [
   {id: 'first', delayClassName: ''},
   {
     id: 'second',
@@ -36,20 +36,20 @@ const PRODUCT_HIGHLIGHT_LOADING_ITEMS = [
   },
 ] as const;
 
-export function ProductHighlightsLoading({
+export function HighlightGridLoading({
   className,
-}: Pick<ProductHighlightsProps, 'className'>) {
+}: Pick<HighlightGridProps, 'className'>) {
   return (
     <div
       aria-busy="true"
-      aria-label="Loading product highlights"
+      aria-label="Loading highlights"
       className={cn(
         'grid gap-px overflow-hidden rounded-3xl bg-neutral-300 sm:[grid-template-columns:repeat(auto-fit,minmax(10rem,1fr))]',
         className,
       )}
       role="status"
     >
-      {PRODUCT_HIGHLIGHT_LOADING_ITEMS.map((item) => (
+      {HIGHLIGHT_GRID_LOADING_ITEMS.map((item) => (
         <div className="bg-neutral-100 p-4 text-center" key={item.id}>
           <Skeleton
             className={cn(
@@ -75,12 +75,12 @@ export function ProductHighlightsLoading({
   );
 }
 
-export function ProductHighlight({
+function HighlightCard({
   className,
   description,
   icon,
   label,
-}: ProductHighlightProps) {
+}: HighlightCardProps) {
   return (
     <div className={cn('bg-neutral-100 p-4 text-center', className)}>
       <span className="mx-auto grid size-8 place-items-center [&_svg]:size-5">
@@ -94,14 +94,14 @@ export function ProductHighlight({
   );
 }
 
-export function ProductHighlights({className, items}: ProductHighlightsProps) {
+export function HighlightGrid({className, items}: HighlightGridProps) {
   if (items.length === 0) {
     return (
       <EmptyState
         className={cn('min-h-40', className)}
         description="Highlights will appear here when available."
         icon={<SparklesIcon />}
-        title="No product highlights available."
+        title="No highlights available."
       />
     );
   }
@@ -114,7 +114,7 @@ export function ProductHighlights({className, items}: ProductHighlightsProps) {
       )}
     >
       {items.map((item) => (
-        <ProductHighlight
+        <HighlightCard
           description={item.description}
           icon={item.icon}
           key={item.id}

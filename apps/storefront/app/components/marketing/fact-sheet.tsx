@@ -4,21 +4,21 @@ import {EmptyState} from '~/components/ui/empty-state';
 import {Skeleton} from '~/components/ui/skeleton';
 import {cn} from '~/lib/utils';
 
-export interface ProductSpecification {
+export interface FactSheetItem {
   id: string;
   label: ReactNode;
   value: ReactNode;
 }
 
-interface ProductSpecificationsProps {
+interface FactSheetProps {
   className?: string;
   description: ReactNode;
   eyebrow?: ReactNode;
-  items: readonly ProductSpecification[];
+  items: readonly FactSheetItem[];
   title: ReactNode;
 }
 
-const PRODUCT_SPECIFICATION_LOADING_ITEMS = [
+const FACT_SHEET_LOADING_ITEMS = [
   {id: 'first', delayClassName: ''},
   {
     id: 'second',
@@ -34,13 +34,13 @@ const PRODUCT_SPECIFICATION_LOADING_ITEMS = [
   },
 ] as const;
 
-export function ProductSpecificationsLoading({
+export function FactSheetLoading({
   className,
-}: Pick<ProductSpecificationsProps, 'className'>) {
+}: Pick<FactSheetProps, 'className'>) {
   return (
     <section
       aria-busy="true"
-      aria-label="Loading product specifications"
+      aria-label="Loading facts"
       className={cn(
         'grid overflow-hidden rounded-4xl bg-green-900 text-green-100 md:grid-cols-[1.1fr_0.9fr]',
         className,
@@ -61,7 +61,7 @@ export function ProductSpecificationsLoading({
       </div>
 
       <div className="grid grid-cols-2 border-t border-green-100/15 md:border-t-0 md:border-l">
-        {PRODUCT_SPECIFICATION_LOADING_ITEMS.map((item) => (
+        {FACT_SHEET_LOADING_ITEMS.map((item) => (
           <div
             className="border-r border-b border-green-100/15 p-6 md:p-8"
             key={item.id}
@@ -91,13 +91,13 @@ export function ProductSpecificationsLoading({
   );
 }
 
-export function ProductSpecifications({
+export function FactSheet({
   className,
   description,
   eyebrow,
   items,
   title,
-}: ProductSpecificationsProps) {
+}: FactSheetProps) {
   return (
     <section
       className={cn(
@@ -127,8 +127,8 @@ export function ProductSpecifications({
       {items.length === 0 ? (
         <EmptyState
           className="min-h-64 rounded-none border-0 border-t border-green-100/15 bg-green-950/20 text-green-100 md:border-t-0 md:border-l"
-          description="Product details will appear here when available."
-          title="No specifications available."
+          description="Facts will appear here when available."
+          title="No facts available."
         />
       ) : (
         <dl className="grid grid-cols-2 border-t border-green-100/15 md:border-t-0 md:border-l">

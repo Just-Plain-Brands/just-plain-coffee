@@ -2,10 +2,10 @@ import type {Meta, StoryObj} from '@storybook/react-vite';
 import {RulerIcon, ShieldCheckIcon, TruckIcon} from 'lucide-react';
 import {useState} from 'react';
 
+import {HighlightGrid} from '~/components/marketing/highlight-grid';
 import {Button} from '~/components/ui/button';
 import {cn} from '~/lib/utils';
 
-import {ProductHighlights} from './ProductHighlights';
 import {
   ProductPurchasePanel,
   ProductPurchasePanelActions,
@@ -188,7 +188,7 @@ function ApparelPanel({
       </ProductPurchasePanelSection>
       <PurchaseActions label="Add to cart · $38" />
       <ProductPurchasePanelFooter>
-        <ProductHighlights items={MERCH_HIGHLIGHTS} />
+        <HighlightGrid items={MERCH_HIGHLIGHTS} />
       </ProductPurchasePanelFooter>
     </ProductPurchasePanel>
   );
