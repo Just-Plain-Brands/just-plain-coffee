@@ -13,6 +13,7 @@ import type {
 
 import {useAside} from '~/components/Aside';
 import {AddToCartButton} from '~/components/cart/AddToCartButton';
+import {QuantityControl} from '~/components/product/QuantityControl';
 import {Button, buttonVariants} from '~/components/ui/button';
 import {
   Field,
@@ -36,12 +37,19 @@ import {cn} from '~/lib/utils';
 export function ProductForm({
   productOptions,
   purchaseSelection,
+  quantity,
   sellingPlanAllocations,
   selectedVariant,
   onPurchaseSelectionChange,
 }: {
   productOptions: MappedProductOptions[];
   purchaseSelection: PurchaseSelection;
+  quantity?: {
+    max?: number;
+    min?: number;
+    onChange: (value: number) => void;
+    value: number;
+  };
   sellingPlanAllocations: ProductSellingPlanAllocationFragment[];
   selectedVariant: ProductFragment['selectedOrFirstAvailableVariant'];
   onPurchaseSelectionChange: (sellingPlanId: string | null) => void;
@@ -51,7 +59,7 @@ export function ProductForm({
   const addToCartLine = selectedVariant
     ? {
         merchandiseId: selectedVariant.id,
-        quantity: 1,
+        quantity: quantity?.value ?? 1,
         selectedVariant,
         ...(purchaseSelection.kind === 'subscription'
           ? {sellingPlanId: purchaseSelection.allocation.sellingPlan.id}
@@ -65,10 +73,15 @@ export function ProductForm({
         // If there is only a single value in the option values, don't display the option
         if (option.optionValues.length === 1) return null;
 
+        const selectedValue = option.optionValues.find(
+          (value) => value.selected,
+        )?.name;
+
         return (
           <fieldset className="mb-6" key={option.name}>
             <legend className="mb-3 text-sm font-bold tracking-[0.1em] uppercase">
               {option.name}
+              {selectedValue ? ` — ${selectedValue}` : null}
             </legend>
             <div className="flex flex-wrap gap-2">
               {option.optionValues.map((value) => {
@@ -155,20 +168,30 @@ export function ProductForm({
           variantPrice={selectedVariant.price}
         />
       ) : null}
-      <AddToCartButton
-        className="h-13 w-full text-base"
-        disabled={!selectedVariant || !selectedVariant.availableForSale}
-        onClick={() => {
-          open('cart');
-        }}
-        lines={addToCartLine ? [addToCartLine] : []}
-      >
-        {selectedVariant?.availableForSale
-          ? purchaseSelection.kind === 'subscription'
-            ? 'Subscribe'
-            : 'Add to cart'
-          : 'Sold out'}
-      </AddToCartButton>
+      <div className={cn(quantity && 'flex flex-col gap-3 sm:flex-row')}>
+        {quantity ? (
+          <QuantityControl
+            max={quantity.max}
+            min={quantity.min}
+            onChange={quantity.onChange}
+            value={quantity.value}
+          />
+        ) : null}
+        <AddToCartButton
+          className={cn('h-13 w-full text-base', quantity && 'flex-1')}
+          disabled={!selectedVariant || !selectedVariant.availableForSale}
+          onClick={() => {
+            open('cart');
+          }}
+          lines={addToCartLine ? [addToCartLine] : []}
+        >
+          {selectedVariant?.availableForSale
+            ? purchaseSelection.kind === 'subscription'
+              ? 'Subscribe'
+              : 'Add to cart'
+            : 'Sold out'}
+        </AddToCartButton>
+      </div>
     </div>
   );
 }

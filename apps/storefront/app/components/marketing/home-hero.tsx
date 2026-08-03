@@ -9,7 +9,6 @@ import {CartonIllustration} from '~/components/catalog/carton-illustration/carto
 import {buttonVariants} from '~/components/ui/button';
 import {
   getProductPresentation,
-  ROAST_IDS,
   type RoastPresentation,
 } from '~/lib/coffee/presentation';
 import {cn} from '~/lib/utils';
@@ -20,22 +19,16 @@ interface HeroSelection {
 }
 
 export function HomeHero({products}: {products: CoffeeProductCardFragment[]}) {
-  const selections = products
-    .map((product) => ({
-      product,
-      presentation: getProductPresentation({
-        title: product.title,
-        tags: product.tags,
-        tagline: product.taglineMetafield?.value,
-        tintColor: product.tintColorMetafield?.value,
-        primaryColor: product.primaryColorMetafield?.value,
-      }),
-    }))
-    .sort(
-      (left, right) =>
-        ROAST_IDS.indexOf(left.presentation.id) -
-        ROAST_IDS.indexOf(right.presentation.id),
-    );
+  const selections = products.map((product) => ({
+    product,
+    presentation: getProductPresentation({
+      title: product.title,
+      tags: product.tags,
+      tagline: product.taglineMetafield?.value,
+      tintColor: product.tintColorMetafield?.value,
+      primaryColor: product.primaryColorMetafield?.value,
+    }),
+  }));
   const mediumIndex = selections.findIndex(
     ({presentation}) => presentation.id === 'medium',
   );

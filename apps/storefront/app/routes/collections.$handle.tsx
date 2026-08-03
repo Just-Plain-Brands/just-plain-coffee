@@ -9,7 +9,17 @@ import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import type {Route} from './+types/collections.$handle';
 
 export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
+  const title = data?.collection.title ?? 'Collection';
+
+  return [
+    {title: `${title} | Just Plain Coffee`},
+    {
+      name: 'description',
+      content:
+        data?.collection.description ||
+        `Shop ${title.toLowerCase()} from Just Plain Coffee.`,
+    },
+  ];
 };
 
 export async function loader(args: Route.LoaderArgs) {
@@ -69,23 +79,42 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
+  const isMerch = collection.handle === 'merch';
 
   return (
-    <div className="collection">
-      <h1>{collection.title}</h1>
-      <p className="collection-description">{collection.description}</p>
-      <PaginatedResourceSection<ProductItemFragment>
-        connection={collection.products}
-        resourcesClassName="products-grid"
-      >
-        {({node: product, index}) => (
-          <ProductItem
-            key={product.id}
-            product={product}
-            loading={index < 8 ? 'eager' : undefined}
-          />
-        )}
-      </PaginatedResourceSection>
+    <div>
+      <section className="mx-auto max-w-7xl px-5 pt-14 pb-12 md:px-10 md:pt-20 md:pb-16">
+        <p className="text-sm font-bold tracking-[0.14em] text-orange-700 uppercase">
+          {isMerch ? 'Just Plain Goods' : 'The collection'}
+        </p>
+        <h1 className="mt-4 max-w-[11ch] text-6xl leading-none md:text-8xl">
+          {collection.title}
+        </h1>
+        <p className="mt-6 max-w-2xl text-xl leading-relaxed text-neutral-700 md:text-2xl">
+          {collection.description ||
+            (isMerch
+              ? 'Useful things, plainly made. No lifestyle transformation required.'
+              : 'Everything in one place. Pick the one you want.')}
+        </p>
+      </section>
+
+      <section className="border-t border-neutral-300 bg-neutral-100 px-5 py-14 md:px-10 md:py-20">
+        <div className="mx-auto max-w-7xl">
+          <PaginatedResourceSection<ProductItemFragment>
+            ariaLabel={`${collection.title} products`}
+            connection={collection.products}
+            resourcesClassName="grid gap-x-5 gap-y-12 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {({node: product, index}) => (
+              <ProductItem
+                key={product.id}
+                product={product}
+                loading={index < 6 ? 'eager' : 'lazy'}
+              />
+            )}
+          </PaginatedResourceSection>
+        </div>
+      </section>
       <Analytics.CollectionView
         data={{
           collection: {
@@ -104,8 +133,10 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
     currencyCode
   }
   fragment ProductItem on Product {
+    availableForSale
     id
     handle
+    productType
     title
     featuredImage {
       id
@@ -121,6 +152,9 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
       maxVariantPrice {
         ...MoneyProductItem
       }
+    }
+    tintColorMetafield: metafield(namespace: "custom", key: "tint_color") {
+      value
     }
   }
 ` as const;
