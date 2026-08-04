@@ -1,6 +1,19 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
 import type {CSSProperties} from 'react';
 
+import {
+  Body,
+  Caption,
+  CardTitle,
+  Display,
+  Eyebrow,
+  Hero,
+  Lead,
+  PageTitle,
+  SectionTitle,
+  Supporting,
+} from '~/components/ui/text';
+
 type FontFamily = {
   name: string;
   role: string;
@@ -376,6 +389,98 @@ function TypographyOverview() {
   );
 }
 
+function TypographyHelpers() {
+  return (
+    <main className="min-h-screen bg-background px-5 py-10 text-foreground sm:px-8 lg:px-12 lg:py-14">
+      <div className="mx-auto max-w-7xl space-y-10">
+        <header className="max-w-3xl space-y-4">
+          <Eyebrow className="text-primary">Just Plain Coffee</Eyebrow>
+          <PageTitle>Typography helpers</PageTitle>
+          <Lead className="text-muted-foreground">
+            Intent-based components pair a generic variant with its usual HTML
+            element. Use Text directly whenever the document hierarchy needs a
+            different element.
+          </Lead>
+        </header>
+
+        <div className="space-y-4">
+          <article className="space-y-3 rounded-xl border bg-card p-6 shadow-sm">
+            <Caption className="font-mono text-muted-foreground">
+              Hero · h1 · display-2xl
+            </Caption>
+            <Hero>Coffee without the theater.</Hero>
+          </article>
+
+          <article className="space-y-3 rounded-xl border bg-card p-6 shadow-sm">
+            <Caption className="font-mono text-muted-foreground">
+              Display · h2 · display-xl
+            </Caption>
+            <Display>Really good coffee.</Display>
+          </article>
+
+          <article className="space-y-8 rounded-xl border bg-card p-6 shadow-sm">
+            <div className="space-y-3">
+              <Caption className="font-mono text-muted-foreground">
+                PageTitle · h1 · display-lg
+              </Caption>
+              <PageTitle>Shop all coffee</PageTitle>
+            </div>
+            <div className="space-y-3">
+              <Caption className="font-mono text-muted-foreground">
+                SectionTitle · h2 · display-md
+              </Caption>
+              <SectionTitle>Made for everyday drinking</SectionTitle>
+            </div>
+            <div className="space-y-3">
+              <Caption className="font-mono text-muted-foreground">
+                CardTitle · h3 · display-sm
+              </Caption>
+              <CardTitle>The Daily Driver</CardTitle>
+            </div>
+          </article>
+
+          <article className="space-y-6 rounded-xl border bg-card p-6 shadow-sm">
+            <div className="space-y-3">
+              <Caption className="font-mono text-muted-foreground">
+                Lead · p · body-lg
+              </Caption>
+              <Lead>
+                A balanced, easy-drinking roast made for every morning.
+              </Lead>
+            </div>
+            <div className="space-y-3">
+              <Caption className="font-mono text-muted-foreground">
+                Body · p · body-md
+              </Caption>
+              <Body>Chocolate, toasted almond, and a soft caramel finish.</Body>
+            </div>
+            <div className="space-y-3">
+              <Caption className="font-mono text-muted-foreground">
+                Supporting · p · body-sm
+              </Caption>
+              <Supporting>
+                Roasted every weekday and packed to order.
+              </Supporting>
+            </div>
+            <div className="space-y-3">
+              <Caption className="font-mono text-muted-foreground">
+                Caption · span · body-xs
+              </Caption>
+              <Caption>Ships in 1–2 business days.</Caption>
+            </div>
+            <div className="space-y-3">
+              <Caption className="font-mono text-muted-foreground">
+                Eyebrow · p · package-sm
+              </Caption>
+              <Eyebrow>Whole bean · 12 oz · Roasted fresh</Eyebrow>
+            </div>
+          </article>
+        </div>
+      </div>
+    </main>
+  );
+}
+
 const meta = {
   title: 'Foundations/Typography',
   component: TypographyOverview,
@@ -389,3 +494,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Overview = {} satisfies Story;
+
+export const Helpers = {
+  render: () => <TypographyHelpers />,
+} satisfies Story;
