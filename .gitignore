@@ -19,3 +19,6 @@ apps/storefront/.graphql/
 tmp/
 docs/.local/
 assets/inspiration/
+
+# temporary ignoring this
+assets/
