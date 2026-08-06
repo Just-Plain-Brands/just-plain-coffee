@@ -16,3 +16,6 @@ apps/storefront/.graphql/
 *.tsbuildinfo
 .DS_Store
 .idea/
+tmp/
+docs/.local/
+assets/inspiration/
