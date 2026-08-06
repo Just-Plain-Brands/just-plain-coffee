@@ -1,3 +1,5 @@
+import {useEffect, useMemo, useState} from 'react';
+
 import {Text} from '~/components/ui/text';
 import type {JournalHeading} from '~/lib/journal/types';
 import {cn} from '~/lib/utils';
@@ -7,10 +9,14 @@ export function ArticleTableOfContents({
 }: {
   headings: readonly JournalHeading[];
 }) {
-  if (headings.length === 0) return null;
+  const items = useMemo(() => condenseTrailingQuestions(headings), [headings]);
+  const firstTopLevelHeading = items.find((heading) => heading.level === 2);
+  const activeHeadingId = useActiveHeadingId(
+    items,
+    firstTopLevelHeading?.id ?? items[0]?.id,
+  );
 
-  const items = condenseTrailingQuestions(headings);
-  const firstTopLevelIndex = items.findIndex((heading) => heading.level === 2);
+  if (items.length === 0) return null;
 
   return (
     <nav aria-label="On this page" className="lg:sticky lg:top-32">
@@ -18,12 +24,15 @@ export function ArticleTableOfContents({
         On this page
       </Text>
       <ol className="mt-4 border-l border-green-700/45">
-        {items.map((heading, index) => (
+        {items.map((heading) => (
           <li className={cn(heading.level === 3 && 'pl-3')} key={heading.id}>
             <a
+              aria-current={
+                activeHeadingId === heading.id ? 'location' : undefined
+              }
               className={cn(
                 'relative block py-2.5 pl-4 text-xs leading-tight text-neutral-700 before:absolute before:top-1/2 before:left-[-4px] before:size-[7px] before:-translate-y-1/2 before:rounded-full before:border before:border-green-700 hover:text-primary',
-                index === firstTopLevelIndex
+                activeHeadingId === heading.id
                   ? 'before:bg-green-700'
                   : 'before:bg-background',
               )}
@@ -36,6 +45,59 @@ export function ArticleTableOfContents({
       </ol>
     </nav>
   );
+}
+
+function useActiveHeadingId(
+  headings: readonly JournalHeading[],
+  fallbackHeadingId: string | undefined,
+): string | undefined {
+  const [activeHeadingId, setActiveHeadingId] = useState(fallbackHeadingId);
+
+  useEffect(() => {
+    let animationFrameId: number | undefined;
+
+    const updateActiveHeading = () => {
+      animationFrameId = undefined;
+      let nextActiveHeadingId = fallbackHeadingId;
+
+      for (const heading of headings) {
+        const element = document.getElementById(heading.id);
+        if (!element) continue;
+
+        const scrollMarginTop = Number.parseFloat(
+          window.getComputedStyle(element).scrollMarginTop,
+        );
+        const activationOffset = Number.isFinite(scrollMarginTop)
+          ? scrollMarginTop
+          : 0;
+        const headingTop = element.getBoundingClientRect().top;
+
+        if (headingTop > activationOffset) break;
+        nextActiveHeadingId = heading.id;
+      }
+
+      setActiveHeadingId(nextActiveHeadingId);
+    };
+
+    const scheduleUpdate = () => {
+      if (animationFrameId !== undefined) return;
+      animationFrameId = window.requestAnimationFrame(updateActiveHeading);
+    };
+
+    updateActiveHeading();
+    window.addEventListener('scroll', scheduleUpdate, {passive: true});
+    window.addEventListener('resize', scheduleUpdate);
+
+    return () => {
+      if (animationFrameId !== undefined) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
+      window.removeEventListener('scroll', scheduleUpdate);
+      window.removeEventListener('resize', scheduleUpdate);
+    };
+  }, [fallbackHeadingId, headings]);
+
+  return activeHeadingId;
 }
 
 function condenseTrailingQuestions(
