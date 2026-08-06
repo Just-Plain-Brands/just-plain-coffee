@@ -115,7 +115,7 @@ export function RelatedProducts({
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             {eyebrow ? (
-              <p className="text-sm font-bold tracking-[0.14em] text-orange-700 uppercase">
+              <p className="text-sm font-bold tracking-[0.14em] text-primary uppercase">
                 {eyebrow}
               </p>
             ) : null}

@@ -1,5 +1,12 @@
 import {Text} from '~/components/ui/text';
 import type {JournalSummary} from '~/lib/journal/types';
+import {cn} from '~/lib/utils';
+
+const CARD_TONE_CLASSES = {
+  cream: 'bg-neutral-100',
+  olive: 'bg-green-500 text-green-900',
+  orange: 'bg-orange-200',
+} as const;
 
 export function ArticleHero({entry}: {entry: JournalSummary}) {
   const {articleImage} = entry;
@@ -7,7 +14,12 @@ export function ArticleHero({entry}: {entry: JournalSummary}) {
   return (
     <div className="mx-auto max-w-7xl px-5 md:px-10">
       <figure>
-        <div className="relative min-h-72 overflow-hidden rounded-lg border border-ink/30 bg-green-200 md:aspect-[2/1] md:min-h-0">
+        <div
+          className={cn(
+            'relative min-h-72 overflow-hidden rounded-lg border border-ink/30 md:aspect-[2/1] md:min-h-0',
+            CARD_TONE_CLASSES[entry.cardTone],
+          )}
+        >
           <div
             aria-hidden="true"
             className="absolute inset-0 [background-image:radial-gradient(var(--green-700)_0.7px,transparent_0.8px)] [background-size:7px_7px] opacity-15"

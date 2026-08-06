@@ -9,7 +9,7 @@ export function RecipeFacts({facts}: {facts: RecipeFactsValue}) {
     <aside className="rounded-lg border border-orange-600/50 bg-orange-100/70 p-3 lg:sticky lg:top-32">
       <Text
         as="p"
-        className="px-2 pt-1 text-xs text-orange-700"
+        className="px-2 pt-1 text-xs text-primary"
         variant="package-sm"
       >
         The short version

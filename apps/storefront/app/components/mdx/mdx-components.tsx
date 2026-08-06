@@ -67,7 +67,7 @@ export const JOURNAL_MDX_COMPONENTS = {
   a: ({children, className, ...props}) => (
     <a
       className={cn(
-        'font-semibold text-orange-700 underline decoration-orange-600/40 underline-offset-4 hover:decoration-orange-700',
+        'font-semibold text-primary underline decoration-orange-600/40 underline-offset-4 hover:decoration-orange-700',
         className,
       )}
       {...props}

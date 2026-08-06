@@ -115,9 +115,7 @@ export function RelatedProductCard({
           <p className="mt-2 text-sm text-neutral-700">{product.category}</p>
         </div>
         <div className="shrink-0 text-right font-bold">
-          <span
-            className={cn(product.price.kind === 'sale' && 'text-orange-700')}
-          >
+          <span className={cn(product.price.kind === 'sale' && 'text-primary')}>
             {product.price.price}
           </span>
           {product.price.kind === 'sale' ? (

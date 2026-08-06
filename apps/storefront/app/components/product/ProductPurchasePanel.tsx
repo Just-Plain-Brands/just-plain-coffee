@@ -132,7 +132,7 @@ export function ProductPurchasePanelHeader({
   return (
     <header className={cn('pb-8', className)}>
       {eyebrow ? (
-        <p className="text-sm font-bold tracking-[0.14em] text-orange-700 uppercase">
+        <p className="text-sm font-bold tracking-[0.14em] text-primary uppercase">
           {eyebrow}
         </p>
       ) : null}

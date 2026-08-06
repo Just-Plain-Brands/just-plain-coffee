@@ -43,7 +43,7 @@ export function ArticleHeader({canonicalUrl, entry}: ArticleHeaderProps) {
       <div className="mx-auto max-w-5xl px-5 pb-10 text-center md:px-10 md:pb-14">
         <div className="flex justify-center">
           <JournalCategory
-            className="border-orange-600 bg-transparent px-4 py-1 font-bold tracking-[0.12em] text-orange-700 uppercase"
+            className="border-orange-600 bg-transparent px-4 py-1 font-bold tracking-[0.12em] text-primary uppercase"
             kind={entry.kind}
           />
         </div>

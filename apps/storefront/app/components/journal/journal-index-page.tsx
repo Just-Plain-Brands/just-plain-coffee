@@ -22,14 +22,9 @@ export function JournalIndexPage({
   return (
     <div>
       <section className="mx-auto max-w-7xl px-5 py-10 md:px-10 md:py-16">
-        <Breadcrumbs
-          className="mb-8"
-          items={[{kind: 'current', label: 'Journal'}]}
-        />
-
         <div className="grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
           <div>
-            <Eyebrow className="text-orange-700">
+            <Eyebrow className="text-primary">
               Stories, recipes & useful bits
             </Eyebrow>
             <h1 className="mt-5 max-w-[10ch] text-6xl leading-[0.9] md:text-8xl">

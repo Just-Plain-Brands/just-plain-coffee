@@ -29,7 +29,7 @@ export function FeaturedArticleCard({entry}: {entry: JournalSummary}) {
           className="mt-5 max-w-[15ch] leading-[0.98] text-balance"
           variant="display-lg"
         >
-          <Link className="hover:text-orange-700" to={`/journal/${entry.slug}`}>
+          <Link className="hover:text-primary" to={`/journal/${entry.slug}`}>
             {entry.title}
           </Link>
         </Text>
@@ -99,7 +99,7 @@ export function ArticleCard({entry}: {entry: JournalSummary}) {
           )}
           variant="display-md"
         >
-          <Link className="hover:text-orange-700" to={`/journal/${entry.slug}`}>
+          <Link className="hover:text-primary" to={`/journal/${entry.slug}`}>
             {title}
             {hasAccentPeriod ? (
               <span className="text-orange-600">.</span>

@@ -84,7 +84,7 @@ export default function Collection() {
   return (
     <div>
       <section className="mx-auto max-w-7xl px-5 pt-14 pb-12 md:px-10 md:pt-20 md:pb-16">
-        <p className="text-sm font-bold tracking-[0.14em] text-orange-700 uppercase">
+        <p className="text-sm font-bold tracking-[0.14em] text-primary uppercase">
           {isMerch ? 'Just Plain Goods' : 'The collection'}
         </p>
         <h1 className="mt-4 max-w-[11ch] text-6xl leading-none md:text-8xl">

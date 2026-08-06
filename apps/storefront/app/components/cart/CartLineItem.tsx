@@ -68,7 +68,7 @@ export function CartLineItem({
           </div>
           <ul className="mt-1 text-xs text-neutral-600">
             {sellingPlanAllocation ? (
-              <li className="font-bold text-orange-700">
+              <li className="font-bold text-primary">
                 Subscription ·{' '}
                 {getSellingPlanLabel(sellingPlanAllocation.sellingPlan)}
               </li>

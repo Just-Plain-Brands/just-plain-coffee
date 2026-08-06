@@ -22,7 +22,7 @@ export function ArticleTableOfContents({
           <li className={cn(heading.level === 3 && 'pl-3')} key={heading.id}>
             <a
               className={cn(
-                'relative block py-2.5 pl-4 text-xs leading-tight text-neutral-700 before:absolute before:top-1/2 before:left-[-4px] before:size-[7px] before:-translate-y-1/2 before:rounded-full before:border before:border-green-700 hover:text-orange-700',
+                'relative block py-2.5 pl-4 text-xs leading-tight text-neutral-700 before:absolute before:top-1/2 before:left-[-4px] before:size-[7px] before:-translate-y-1/2 before:rounded-full before:border before:border-green-700 hover:text-primary',
                 index === firstTopLevelIndex
                   ? 'before:bg-green-700'
                   : 'before:bg-background',
