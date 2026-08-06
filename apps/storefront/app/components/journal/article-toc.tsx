@@ -33,7 +33,7 @@ export function ArticleTableOfContents({
               className={cn(
                 'relative block py-2.5 pl-4 text-xs leading-tight text-neutral-700 before:absolute before:top-1/2 before:left-[-4px] before:size-[7px] before:-translate-y-1/2 before:rounded-full before:border before:border-green-700 hover:text-primary',
                 activeHeadingId === heading.id
-                  ? 'before:bg-green-700'
+                  ? 'font-bold before:bg-green-700'
                   : 'before:bg-background',
               )}
               href={`#${heading.id}`}
