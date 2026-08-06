@@ -59,6 +59,9 @@ export function HeaderMenu({viewport}: {viewport: Viewport}) {
       <NavLink onClick={close} to="/#the-box">
         The box
       </NavLink>
+      <NavLink onClick={close} prefetch="intent" to="/journal">
+        Journal
+      </NavLink>
     </nav>
   );
 }

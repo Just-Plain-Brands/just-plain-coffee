@@ -7,6 +7,7 @@ import type {
 
 import {SearchForm} from '~/components/SearchForm';
 import {SearchResults} from '~/components/SearchResults';
+import {getJournalIndex} from '~/lib/journal/content';
 import {
   type RegularSearchReturn,
   type PredictiveSearchReturn,
@@ -65,11 +66,11 @@ export default function SearchPage() {
         <SearchResults.Empty />
       ) : (
         <SearchResults result={result} term={term}>
-          {({articles, pages, products, term}) => (
+          {({journal, pages, products, term}) => (
             <div>
+              <SearchResults.Journal entries={journal} />
               <SearchResults.Products products={products} term={term} />
               <SearchResults.Pages pages={pages} term={term} />
-              <SearchResults.Articles articles={articles} term={term} />
             </div>
           )}
         </SearchResults>
@@ -134,16 +135,6 @@ const SEARCH_PAGE_FRAGMENT = `#graphql
   }
 ` as const;
 
-const SEARCH_ARTICLE_FRAGMENT = `#graphql
-  fragment SearchArticle on Article {
-    __typename
-    handle
-    id
-    title
-    trackingParameters
-  }
-` as const;
-
 const PAGE_INFO_FRAGMENT = `#graphql
   fragment PageInfoFragment on PageInfo {
     hasNextPage
@@ -164,17 +155,6 @@ export const SEARCH_QUERY = `#graphql
     $term: String!
     $startCursor: String
   ) @inContext(country: $country, language: $language) {
-    articles: search(
-      query: $term,
-      types: [ARTICLE],
-      first: $first,
-    ) {
-      nodes {
-        ...on Article {
-          ...SearchArticle
-        }
-      }
-    }
     pages: search(
       query: $term,
       types: [PAGE],
@@ -208,7 +188,6 @@ export const SEARCH_QUERY = `#graphql
   }
   ${SEARCH_PRODUCT_FRAGMENT}
   ${SEARCH_PAGE_FRAGMENT}
-  ${SEARCH_ARTICLE_FRAGMENT}
   ${PAGE_INFO_FRAGMENT}
 ` as const;
 
@@ -249,32 +228,20 @@ async function regularSearch({
     ? errors.map(({message}: {message: string}) => message).join(', ')
     : undefined;
 
-  return {type: 'regular', term, error, result: {total, items}};
+  const journal = searchJournal({term, limit: 8});
+
+  return {
+    type: 'regular',
+    term,
+    error,
+    result: {total: total + journal.length, items, journal},
+  };
 }
 
 /**
  * Predictive search query and fragments
  * (adjust as needed)
  */
-const PREDICTIVE_SEARCH_ARTICLE_FRAGMENT = `#graphql
-  fragment PredictiveArticle on Article {
-    __typename
-    id
-    title
-    handle
-    blog {
-      handle
-    }
-    image {
-      url
-      altText
-      width
-      height
-    }
-    trackingParameters
-  }
-` as const;
-
 const PREDICTIVE_SEARCH_COLLECTION_FRAGMENT = `#graphql
   fragment PredictiveCollection on Collection {
     __typename
@@ -353,9 +320,6 @@ const PREDICTIVE_SEARCH_QUERY = `#graphql
       query: $term,
       types: $types,
     ) {
-      articles {
-        ...PredictiveArticle
-      }
       collections {
         ...PredictiveCollection
       }
@@ -370,7 +334,6 @@ const PREDICTIVE_SEARCH_QUERY = `#graphql
       }
     }
   }
-  ${PREDICTIVE_SEARCH_ARTICLE_FRAGMENT}
   ${PREDICTIVE_SEARCH_COLLECTION_FRAGMENT}
   ${PREDICTIVE_SEARCH_PAGE_FRAGMENT}
   ${PREDICTIVE_SEARCH_PRODUCT_FRAGMENT}
@@ -424,5 +387,28 @@ async function predictiveSearch({
     0,
   );
 
-  return {type, term, result: {items, total}};
+  const journal = searchJournal({term, limit: Math.min(limit, 4)});
+
+  return {type, term, result: {items, journal, total: total + journal.length}};
+}
+
+function searchJournal({limit, term}: {limit: number; term: string}) {
+  const terms = term.toLocaleLowerCase('en-US').split(/\s+/).filter(Boolean);
+
+  if (terms.length === 0) return [];
+
+  return getJournalIndex()
+    .filter((entry) => {
+      const haystack = [
+        entry.title,
+        entry.description,
+        entry.kind,
+        ...entry.tags,
+      ]
+        .join(' ')
+        .toLocaleLowerCase('en-US');
+
+      return terms.every((searchTerm) => haystack.includes(searchTerm));
+    })
+    .slice(0, limit);
 }

@@ -1,13 +1,46 @@
 import {fileURLToPath} from 'node:url';
 
+import mdx from '@mdx-js/rollup';
 import {reactRouter} from '@react-router/dev/vite';
 import {hydrogen} from '@shopify/hydrogen/vite';
 import {oxygen} from '@shopify/mini-oxygen/vite';
 import tailwindcss from '@tailwindcss/vite';
-import {defineConfig} from 'vite';
+import rehypeSlug from 'rehype-slug';
+import remarkFrontmatter from 'remark-frontmatter';
+import remarkGfm from 'remark-gfm';
+import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
+import {defineConfig, type Plugin} from 'vite';
+
+function journalMdxPlugin(): Plugin {
+  const plugin = mdx({
+    remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm],
+    rehypePlugins: [rehypeSlug],
+  });
+  const transform = plugin.transform;
+
+  if (typeof transform !== 'function') {
+    throw new Error('Expected the MDX plugin to provide a transform hook.');
+  }
+
+  return {
+    ...plugin,
+    enforce: 'pre',
+    transform(source, id) {
+      if (/[?&]raw(?:&|$)/.test(id)) return null;
+
+      return transform.call(this, source, id);
+    },
+  };
+}
 
 export default defineConfig({
-  plugins: [tailwindcss(), hydrogen(), oxygen(), reactRouter()],
+  plugins: [
+    journalMdxPlugin(),
+    tailwindcss(),
+    hydrogen(),
+    oxygen(),
+    reactRouter(),
+  ],
   resolve: {
     alias: {
       // Vite's native tsconfig path resolver does not cover JavaScript

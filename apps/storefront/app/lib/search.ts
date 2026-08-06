@@ -3,11 +3,17 @@ import type {
   RegularSearchQuery,
 } from 'storefrontapi.generated';
 
+import type {JournalSummary} from '~/lib/journal/types';
+
 type ResultWithItems<Type extends 'predictive' | 'regular', Items> = {
   type: Type;
   term: string;
   error?: string;
-  result: {total: number; items: Items};
+  result: {
+    total: number;
+    items: Items;
+    journal: readonly JournalSummary[];
+  };
 };
 
 export type RegularSearchReturn = ResultWithItems<
@@ -25,8 +31,8 @@ export type PredictiveSearchReturn = ResultWithItems<
 export function getEmptyPredictiveSearchResult(): PredictiveSearchReturn['result'] {
   return {
     total: 0,
+    journal: [],
     items: {
-      articles: [],
       collections: [],
       products: [],
       pages: [],

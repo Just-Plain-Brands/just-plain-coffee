@@ -2,6 +2,7 @@ import {Image, Money} from '@shopify/hydrogen';
 import React, {useRef, useEffect} from 'react';
 import {Link, useFetcher, type Fetcher} from 'react-router';
 
+import type {JournalSummary} from '~/lib/journal/types';
 import {
   getEmptyPredictiveSearchResult,
   urlWithTrackingParams,
@@ -13,16 +14,17 @@ import {useAside} from './Aside';
 type PredictiveSearchItems = PredictiveSearchReturn['result']['items'];
 
 type UsePredictiveSearchReturn = {
-  term: React.MutableRefObject<string>;
+  term: string;
   total: number;
   inputRef: React.MutableRefObject<HTMLInputElement | null>;
   items: PredictiveSearchItems;
+  journal: readonly JournalSummary[];
   fetcher: Fetcher<PredictiveSearchReturn>;
 };
 
 type SearchResultsPredictiveArgs = Pick<
   UsePredictiveSearchReturn,
-  'term' | 'total' | 'inputRef' | 'items'
+  'term' | 'total' | 'inputRef' | 'items' | 'journal'
 > & {
   state: Fetcher['state'];
   closeSearch: () => void;
@@ -45,7 +47,8 @@ export function SearchResultsPredictive({
   children,
 }: SearchResultsPredictiveProps) {
   const aside = useAside();
-  const {term, inputRef, fetcher, total, items} = usePredictiveSearch();
+  const {term, inputRef, fetcher, total, items, journal} =
+    usePredictiveSearch();
 
   /*
    * Utility that resets the search input
@@ -67,6 +70,7 @@ export function SearchResultsPredictive({
 
   return children({
     items,
+    journal,
     closeSearch,
     inputRef,
     state: fetcher.state,
@@ -75,49 +79,35 @@ export function SearchResultsPredictive({
   });
 }
 
-SearchResultsPredictive.Articles = SearchResultsPredictiveArticles;
+SearchResultsPredictive.Journal = SearchResultsPredictiveJournal;
 SearchResultsPredictive.Collections = SearchResultsPredictiveCollections;
 SearchResultsPredictive.Pages = SearchResultsPredictivePages;
 SearchResultsPredictive.Products = SearchResultsPredictiveProducts;
 SearchResultsPredictive.Queries = SearchResultsPredictiveQueries;
 SearchResultsPredictive.Empty = SearchResultsPredictiveEmpty;
 
-function SearchResultsPredictiveArticles({
-  term,
-  articles,
+function SearchResultsPredictiveJournal({
   closeSearch,
-}: PartialPredictiveSearchResult<'articles'>) {
-  if (!articles.length) return null;
+  journal,
+}: Pick<SearchResultsPredictiveArgs, 'closeSearch' | 'journal'>) {
+  if (journal.length === 0) return null;
 
   return (
-    <div className="predictive-search-result" key="articles">
-      <h5>Articles</h5>
+    <div className="predictive-search-result" key="journal">
+      <h5>Journal</h5>
       <ul>
-        {articles.map((article) => {
-          const articleUrl = urlWithTrackingParams({
-            baseUrl: `/blogs/${article.blog.handle}/${article.handle}`,
-            trackingParams: article.trackingParameters,
-            term: term.current ?? '',
-          });
-
-          return (
-            <li className="predictive-search-result-item" key={article.id}>
-              <Link onClick={closeSearch} to={articleUrl}>
-                {article.image?.url && (
-                  <Image
-                    alt={article.image.altText ?? ''}
-                    src={article.image.url}
-                    width={50}
-                    height={50}
-                  />
-                )}
-                <div>
-                  <span>{article.title}</span>
-                </div>
-              </Link>
-            </li>
-          );
-        })}
+        {journal.map((entry) => (
+          <li className="predictive-search-result-item" key={entry.slug}>
+            <Link onClick={closeSearch} to={`/journal/${entry.slug}`}>
+              <div>
+                <span>{entry.title}</span>
+                <small className="block text-neutral-600">
+                  {entry.kind === 'recipe' ? 'Recipe' : 'Story'}
+                </small>
+              </div>
+            </Link>
+          </li>
+        ))}
       </ul>
     </div>
   );
@@ -138,7 +128,7 @@ function SearchResultsPredictiveCollections({
           const collectionUrl = urlWithTrackingParams({
             baseUrl: `/collections/${collection.handle}`,
             trackingParams: collection.trackingParameters,
-            term: term.current,
+            term,
           });
 
           return (
@@ -179,7 +169,7 @@ function SearchResultsPredictivePages({
           const pageUrl = urlWithTrackingParams({
             baseUrl: `/pages/${page.handle}`,
             trackingParams: page.trackingParameters,
-            term: term.current,
+            term,
           });
 
           return (
@@ -212,7 +202,7 @@ function SearchResultsPredictiveProducts({
           const productUrl = urlWithTrackingParams({
             baseUrl: `/products/${product.handle}`,
             trackingParams: product.trackingParameters,
-            term: term.current,
+            term,
           });
 
           const price = product?.selectedOrFirstAvailableVariant?.price;
@@ -260,18 +250,14 @@ function SearchResultsPredictiveQueries({
   );
 }
 
-function SearchResultsPredictiveEmpty({
-  term,
-}: {
-  term: React.MutableRefObject<string>;
-}) {
-  if (!term.current) {
+function SearchResultsPredictiveEmpty({term}: {term: string}) {
+  if (!term) {
     return null;
   }
 
   return (
     <p>
-      No results found for <q>{term.current}</q>
+      No results found for <q>{term}</q>
     </p>
   );
 }
@@ -285,12 +271,11 @@ function SearchResultsPredictiveEmpty({
  **/
 function usePredictiveSearch(): UsePredictiveSearchReturn {
   const fetcher = useFetcher<PredictiveSearchReturn>({key: 'search'});
-  const term = useRef<string>('');
   const inputRef = useRef<HTMLInputElement | null>(null);
-
-  if (fetcher?.state === 'loading') {
-    term.current = String(fetcher.formData?.get('q') || '');
-  }
+  const term =
+    fetcher.state === 'loading'
+      ? String(fetcher.formData?.get('q') || '')
+      : (fetcher.data?.term ?? '');
 
   // capture the search input element as a ref
   useEffect(() => {
@@ -299,8 +284,8 @@ function usePredictiveSearch(): UsePredictiveSearchReturn {
     }
   }, []);
 
-  const {items, total} =
+  const {items, journal, total} =
     fetcher?.data?.result ?? getEmptyPredictiveSearchResult();
 
-  return {items, total, inputRef, term, fetcher};
+  return {items, journal, total, inputRef, term, fetcher};
 }
