@@ -5,3 +5,10 @@
 
 // Enhance TypeScript's built-in typings.
 import '@total-typescript/ts-reset';
+
+declare global {
+  interface Env {
+    PRIVATE_ADMIN_API_TOKEN?: string;
+    PRIVATE_ADMIN_STORE_DOMAIN?: string;
+  }
+}

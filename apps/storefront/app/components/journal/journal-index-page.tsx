@@ -1,19 +1,32 @@
+import type {FormEventHandler} from 'react';
+
 import {
   ArticleCard,
   FeaturedArticleCard,
 } from '~/components/journal/journal-card';
 import {JournalMastheadArtwork} from '~/components/journal/journal-masthead-artwork';
-import {Breadcrumbs} from '~/components/navigation/Breadcrumbs';
-import {Button} from '~/components/ui/button';
-import {Input} from '~/components/ui/input';
-import {Body, Eyebrow, Text} from '~/components/ui/text';
+import {NewsletterSignup} from '~/components/marketing/newsletter-signup';
+import {Eyebrow} from '~/components/ui/text';
 import type {JournalSummary} from '~/lib/journal/types';
+import type {NewsletterSignupActionResponse} from '~/lib/newsletter';
+
+export type JournalNewsletterSignup = {
+  onSubmit: FormEventHandler<HTMLFormElement>;
+  response?: NewsletterSignupActionResponse;
+  submitting: boolean;
+};
 
 export function JournalIndexPage({
   entries,
+  newsletter,
 }: {
   entries: readonly JournalSummary[];
+  newsletter?: JournalNewsletterSignup;
 }) {
+  const response = newsletter?.response;
+  const isSubmitting = newsletter?.submitting ?? false;
+  const isSubscribed = response?.kind === 'success';
+  const isNewsletterDisabled = !newsletter || isSubmitting || isSubscribed;
   const featured = entries.find((entry) => entry.featured) ?? entries[0];
   const remaining = featured
     ? entries.filter((entry) => entry.slug !== featured.slug)
@@ -62,55 +75,40 @@ export function JournalIndexPage({
         ) : null}
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 pb-6 md:px-10">
-        <div className="grid overflow-hidden rounded-lg border border-ink/30 bg-neutral-100 md:grid-cols-[0.66fr_1.34fr]">
-          <div className="relative min-h-52 overflow-hidden bg-orange-100 md:min-h-64">
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 [background-image:radial-gradient(var(--orange-600)_0.7px,transparent_0.8px)] [background-size:7px_7px] opacity-15"
-            />
-            <img
-              alt=""
-              className="absolute -bottom-16 left-1/2 z-10 h-64 w-auto -translate-x-1/2 object-contain md:-bottom-20 md:h-80"
-              src="/carton-mascots/straight-talker.webp"
-            />
-          </div>
-          <div className="flex flex-col justify-center p-6 md:px-8 md:py-7 lg:px-10">
-            <Text
-              as="h2"
-              className="leading-none md:text-4xl"
-              variant="display-md"
-            >
+      <div className="mx-auto max-w-7xl px-5 pb-6 md:px-10">
+        <NewsletterSignup
+          description="New recipes, helpful guides, and the odd bag drop. No fluff. No spam. Just the good stuff."
+          feedback={response}
+          formProps={{
+            'aria-label': 'Newsletter signup',
+            method: 'post',
+            onSubmit: newsletter?.onSubmit,
+          }}
+          image={{
+            alt: '',
+            src: '/carton-mascots/straight-talker.webp',
+          }}
+          input={{
+            'aria-invalid': response?.kind === 'error' || undefined,
+            disabled: isNewsletterDisabled,
+            label: 'Email address',
+          }}
+          submitButton={{
+            disabled: isNewsletterDisabled,
+            label: isSubmitting
+              ? 'Signing up…'
+              : isSubscribed
+                ? "You're in"
+                : 'Sign me up',
+          }}
+          title={
+            <>
               One useful email. Occasionally
               <span className="text-orange-600">.</span>
-            </Text>
-            <Body className="mt-3 max-w-[42ch] text-neutral-700">
-              New recipes, helpful guides, and the odd bag drop. No fluff. No
-              spam. Just the good stuff.
-            </Body>
-            <div
-              aria-label="Newsletter signup coming soon"
-              className="mt-5 flex max-w-2xl"
-              role="group"
-            >
-              <Input
-                aria-label="Email address"
-                className="h-11 rounded-l-full rounded-r-none border-ink/20 bg-neutral-100 px-5 disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:opacity-100"
-                disabled
-                placeholder="Email address"
-                type="email"
-              />
-              <Button
-                className="h-11 rounded-l-none rounded-r-full bg-orange-600 px-7 text-neutral-100 hover:bg-orange-700 disabled:bg-orange-600 disabled:opacity-100"
-                disabled
-                type="button"
-              >
-                Sign me up
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+            </>
+          }
+        />
+      </div>
     </div>
   );
 }
