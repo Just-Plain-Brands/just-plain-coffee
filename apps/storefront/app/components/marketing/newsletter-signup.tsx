@@ -93,7 +93,7 @@ export function NewsletterSignup({
     >
       <div
         className={cn(
-          'relative min-h-52 overflow-hidden bg-orange-100 md:min-h-64',
+          'relative hidden min-h-52 overflow-hidden bg-orange-100 md:block md:min-h-64',
           imageContainerClassName,
         )}
       >

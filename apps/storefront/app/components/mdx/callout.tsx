@@ -35,7 +35,7 @@ export function MascotTip({children}: {children: ReactNode}) {
           alt=""
           className="h-28 w-28 object-contain"
           loading="lazy"
-          src="/journal/masthead/carton-mascot-thumbs-up.svg"
+          src="/mascots/carton-mascot-thumbs-up.svg"
         />
       </div>
       <div className="self-center py-4 pr-5 pl-1 sm:pl-2">
