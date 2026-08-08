@@ -35,7 +35,7 @@ type SubscriptionProductImage = Pick<
   'id' | 'altText' | 'height' | 'url' | 'width'
 >;
 
-export interface SubscriptionProductVariant {
+interface SubscriptionProductVariant {
   availableForSale: boolean;
   id: string;
   price: MoneyV2;
@@ -49,12 +49,9 @@ export interface SubscriptionProductVariant {
 export interface SubscriptionBuilderProduct {
   availableForSale: boolean;
   featuredImage?: SubscriptionProductImage | null;
-  handle: string;
   id: string;
   presentation: ProductPresentation;
   selectedOrFirstAvailableVariant?: SubscriptionProductVariant | null;
-  tags: string[];
-  title: string;
 }
 
 export type SubscriptionBuilderSelection =
@@ -97,7 +94,7 @@ export function SubscriptionBuilder({
     () => getDefaultAllocation(defaultProduct)?.sellingPlan.id ?? '',
   );
   const [quantity, setQuantity] = useState(() =>
-    clampQuantity(initialQuantity, MAX_QUANTITY),
+    clampQuantity(initialQuantity),
   );
 
   const selectedProduct =
@@ -199,15 +196,33 @@ export function SubscriptionBuilder({
             intervalWeeks={intervalWeeks}
             quantity={quantity}
           />
-          <BuilderCheckout
-            currentPrice={currentPrice}
-            presentation={presentation}
-            quantity={quantity}
-            renderAction={renderAction}
-            savings={savings}
-            selectedAllocation={selectedAllocation}
-            selection={selection}
-          />
+          <div className="my-5 rounded-3xl bg-green-900 p-5 text-green-100 sm:flex sm:items-center sm:justify-between sm:gap-6 sm:p-6">
+            <div className="mb-5 sm:mb-0">
+              <p className="text-[0.68rem] font-bold tracking-[0.12em] text-green-300 uppercase">
+                Your recurring order
+              </p>
+              <p className="mt-1 text-sm font-bold">
+                {quantity} × {presentation.shortName} ·{' '}
+                {selectedAllocation
+                  ? getSellingPlanLabel(selectedAllocation.sellingPlan)
+                  : 'Schedule unavailable'}
+              </p>
+              {savings ? (
+                <p className="mt-1 text-xs text-green-300">
+                  Save {savings}% on every shipment
+                </p>
+              ) : null}
+            </div>
+            <div className="grid min-w-56 gap-3 sm:grid-cols-[auto_minmax(150px,1fr)] sm:items-center">
+              <div className="sm:text-right">
+                <strong className="block font-display text-3xl font-normal">
+                  {currentPrice ? <Money data={currentPrice} /> : '—'}
+                </strong>
+                <span className="text-xs text-green-300">per shipment</span>
+              </div>
+              {renderAction(selection)}
+            </div>
+          </div>
           <p className="px-2 pb-8 text-center text-xs leading-relaxed text-neutral-600">
             Renews automatically at the selected interval. Skip or cancel from
             your account.
@@ -249,11 +264,7 @@ function BuilderPreview({
           aria-live="polite"
           className="mt-2 max-w-[13ch] text-4xl leading-[0.94] sm:text-5xl"
         >
-          {getPreviewTitle({
-            frequency,
-            quantity,
-            roast: presentation.shortName,
-          })}
+          {`${presentation.shortName}. ${getCartonLabel(quantity)}. ${frequency}.`}
         </h2>
 
         <div
@@ -515,54 +526,6 @@ function PlanInsight({
   );
 }
 
-function BuilderCheckout({
-  currentPrice,
-  presentation,
-  quantity,
-  renderAction,
-  savings,
-  selectedAllocation,
-  selection,
-}: {
-  currentPrice: MoneyV2 | null;
-  presentation: ProductPresentation;
-  quantity: number;
-  renderAction: SubscriptionBuilderProps['renderAction'];
-  savings: number | null;
-  selectedAllocation: ProductSellingPlanAllocationFragment | null;
-  selection: SubscriptionBuilderSelection;
-}) {
-  return (
-    <div className="my-5 rounded-3xl bg-green-900 p-5 text-green-100 sm:flex sm:items-center sm:justify-between sm:gap-6 sm:p-6">
-      <div className="mb-5 sm:mb-0">
-        <p className="text-[0.68rem] font-bold tracking-[0.12em] text-green-300 uppercase">
-          Your recurring order
-        </p>
-        <p className="mt-1 text-sm font-bold">
-          {quantity} × {presentation.shortName} ·{' '}
-          {selectedAllocation
-            ? getSellingPlanLabel(selectedAllocation.sellingPlan)
-            : 'Schedule unavailable'}
-        </p>
-        {savings ? (
-          <p className="mt-1 text-xs text-green-300">
-            Save {savings}% on every shipment
-          </p>
-        ) : null}
-      </div>
-      <div className="grid min-w-56 gap-3 sm:grid-cols-[auto_minmax(150px,1fr)] sm:items-center">
-        <div className="sm:text-right">
-          <strong className="block font-display text-3xl font-normal">
-            {currentPrice ? <Money data={currentPrice} /> : '—'}
-          </strong>
-          <span className="text-xs text-green-300">per shipment</span>
-        </div>
-        {renderAction(selection)}
-      </div>
-    </div>
-  );
-}
-
 function EmptySubscriptionBuilder({
   renderAction,
 }: Pick<SubscriptionBuilderProps, 'renderAction'>) {
@@ -740,27 +703,15 @@ function getCartonLabel(quantity: number): string {
   return `${quantity} ${quantity === 1 ? 'carton' : 'cartons'}`;
 }
 
-function getPreviewTitle({
-  frequency,
-  quantity,
-  roast,
-}: {
-  frequency: string;
-  quantity: number;
-  roast: string;
-}): string {
-  return `${roast}. ${getCartonLabel(quantity)}. ${frequency}.`;
-}
-
 function getShortTagline(presentation: ProductPresentation): string {
   return presentation.tagline
     .replace(new RegExp(`^${presentation.shortName} roast\\.\\s*`, 'i'), '')
     .replace(/^Decaf\.\s*/i, '');
 }
 
-function clampQuantity(quantity: number, max: number): number {
+function clampQuantity(quantity: number): number {
   if (!Number.isFinite(quantity)) return 1;
-  return Math.min(Math.max(Math.round(quantity), 1), max);
+  return Math.min(Math.max(Math.round(quantity), 1), MAX_QUANTITY);
 }
 
 function multiplyMoneyAmount(amount: string, quantity: number): string {

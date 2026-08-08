@@ -46,7 +46,6 @@ const PRODUCTS = Object.values(ROAST_PRESENTATIONS).map((presentation) => {
   return {
     availableForSale: true,
     featuredImage: null,
-    handle: `${presentation.id}-roast`,
     id: `gid://shopify/Product/${presentation.id}`,
     presentation: {
       ...presentation,
@@ -68,8 +67,6 @@ const PRODUCTS = Object.values(ROAST_PRESENTATIONS).map((presentation) => {
         ],
       },
     },
-    tags: [presentation.id, 'coffee'],
-    title,
   } satisfies SubscriptionBuilderProduct;
 });
 
