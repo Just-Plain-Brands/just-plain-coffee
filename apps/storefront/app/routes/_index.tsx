@@ -3,6 +3,7 @@ import {Link, useLoaderData} from 'react-router';
 import {CartonIllustration} from '~/components/catalog/carton-illustration/carton-illustration';
 import {ProductCard} from '~/components/catalog/product-card';
 import {HomeHero} from '~/components/marketing/home-hero';
+import {Blockquote} from '~/components/sections/blockquote';
 import {buttonVariants} from '~/components/ui/button';
 import {
   getProductPresentation,
@@ -138,17 +139,10 @@ export default function Homepage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-5xl px-5 py-16 md:px-10 md:py-24">
-        <figure className="-rotate-1 rounded-4xl bg-orange-600 px-8 py-14 text-center text-neutral-100 shadow-soft md:px-16 md:py-20">
-          <blockquote className="font-display text-3xl leading-tight md:text-5xl">
-            “We&apos;re not going to tell you it tastes like blackcurrant and
-            honeysuckle. It tastes like coffee. Exceptionally good coffee.”
-          </blockquote>
-          <figcaption className="mt-8 text-sm font-bold tracking-[0.14em] uppercase">
-            — The entire marketing department
-          </figcaption>
-        </figure>
-      </section>
+      <Blockquote
+        caption="— The entire marketing department"
+        quote="“We're not going to tell you it tastes like blackcurrant and honeysuckle. It tastes like coffee. Exceptionally good coffee.”"
+      />
 
       <section
         className="mx-auto max-w-7xl scroll-mt-36 px-5 py-16 md:px-10 md:py-24"
