@@ -200,7 +200,7 @@ export default function Homepage() {
                 'h-12 rounded-full bg-green-100 px-7 text-base text-green-900 hover:bg-green-200',
             })}
             prefetch="intent"
-            to="/collections/all"
+            to="/subscribe"
           >
             Pick your coffee
           </Link>

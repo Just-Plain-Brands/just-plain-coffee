@@ -1658,6 +1658,181 @@ export type PredictiveSearchQuery = {
   }>;
 };
 
+export type SubscriptionProductsQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type SubscriptionProductsQuery = {
+  shop: {
+    coreRoasts?: StorefrontAPI.Maybe<{
+      references?: StorefrontAPI.Maybe<{
+        nodes: Array<
+          | {
+              __typename:
+                | 'Article'
+                | 'Collection'
+                | 'GenericFile'
+                | 'MediaImage'
+                | 'Metaobject'
+                | 'Model3d'
+                | 'Page'
+                | 'ProductVariant'
+                | 'Video';
+            }
+          | ({__typename: 'Product'} & Pick<
+              StorefrontAPI.Product,
+              'availableForSale' | 'id' | 'handle' | 'title' | 'tags'
+            > & {
+                taglineMetafield?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.Metafield, 'value'>
+                >;
+                tintColorMetafield?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.Metafield, 'value'>
+                >;
+                primaryColorMetafield?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.Metafield, 'value'>
+                >;
+                featuredImage?: StorefrontAPI.Maybe<
+                  Pick<
+                    StorefrontAPI.Image,
+                    'id' | 'altText' | 'url' | 'width' | 'height'
+                  >
+                >;
+                selectedOrFirstAvailableVariant?: StorefrontAPI.Maybe<
+                  Pick<
+                    StorefrontAPI.ProductVariant,
+                    'availableForSale' | 'id'
+                  > & {
+                    price: Pick<
+                      StorefrontAPI.MoneyV2,
+                      'amount' | 'currencyCode'
+                    >;
+                    product: Pick<StorefrontAPI.Product, 'handle' | 'title'>;
+                    selectedOptions: Array<
+                      Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+                    >;
+                    sellingPlanAllocations: {
+                      nodes: Array<{
+                        checkoutChargeAmount: Pick<
+                          StorefrontAPI.MoneyV2,
+                          'amount' | 'currencyCode'
+                        >;
+                        remainingBalanceChargeAmount: Pick<
+                          StorefrontAPI.MoneyV2,
+                          'amount' | 'currencyCode'
+                        >;
+                        priceAdjustments: Array<{
+                          compareAtPrice: Pick<
+                            StorefrontAPI.MoneyV2,
+                            'amount' | 'currencyCode'
+                          >;
+                          perDeliveryPrice: Pick<
+                            StorefrontAPI.MoneyV2,
+                            'amount' | 'currencyCode'
+                          >;
+                          price: Pick<
+                            StorefrontAPI.MoneyV2,
+                            'amount' | 'currencyCode'
+                          >;
+                        }>;
+                        sellingPlan: Pick<
+                          StorefrontAPI.SellingPlan,
+                          'id' | 'name' | 'recurringDeliveries'
+                        > & {
+                          options: Array<
+                            Pick<
+                              StorefrontAPI.SellingPlanOption,
+                              'name' | 'value'
+                            >
+                          >;
+                        };
+                      }>;
+                    };
+                  }
+                >;
+              })
+        >;
+      }>;
+    }>;
+  };
+};
+
+export type SubscriptionProductFragment = Pick<
+  StorefrontAPI.Product,
+  'availableForSale' | 'id' | 'handle' | 'title' | 'tags'
+> & {
+  taglineMetafield?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'value'>
+  >;
+  tintColorMetafield?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'value'>
+  >;
+  primaryColorMetafield?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metafield, 'value'>
+  >;
+  featuredImage?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
+  >;
+  selectedOrFirstAvailableVariant?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.ProductVariant, 'availableForSale' | 'id'> & {
+      price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+      product: Pick<StorefrontAPI.Product, 'handle' | 'title'>;
+      selectedOptions: Array<
+        Pick<StorefrontAPI.SelectedOption, 'name' | 'value'>
+      >;
+      sellingPlanAllocations: {
+        nodes: Array<{
+          checkoutChargeAmount: Pick<
+            StorefrontAPI.MoneyV2,
+            'amount' | 'currencyCode'
+          >;
+          remainingBalanceChargeAmount: Pick<
+            StorefrontAPI.MoneyV2,
+            'amount' | 'currencyCode'
+          >;
+          priceAdjustments: Array<{
+            compareAtPrice: Pick<
+              StorefrontAPI.MoneyV2,
+              'amount' | 'currencyCode'
+            >;
+            perDeliveryPrice: Pick<
+              StorefrontAPI.MoneyV2,
+              'amount' | 'currencyCode'
+            >;
+            price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+          }>;
+          sellingPlan: Pick<
+            StorefrontAPI.SellingPlan,
+            'id' | 'name' | 'recurringDeliveries'
+          > & {
+            options: Array<
+              Pick<StorefrontAPI.SellingPlanOption, 'name' | 'value'>
+            >;
+          };
+        }>;
+      };
+    }
+  >;
+};
+
+export type SubscriptionSellingPlanAllocationFragment = {
+  checkoutChargeAmount: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+  remainingBalanceChargeAmount: Pick<
+    StorefrontAPI.MoneyV2,
+    'amount' | 'currencyCode'
+  >;
+  priceAdjustments: Array<{
+    compareAtPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+    perDeliveryPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+    price: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
+  }>;
+  sellingPlan: Pick<
+    StorefrontAPI.SellingPlan,
+    'id' | 'name' | 'recurringDeliveries'
+  > & {options: Array<Pick<StorefrontAPI.SellingPlanOption, 'name' | 'value'>>};
+};
+
 interface GeneratedQueryTypes {
   '#graphql\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n  }\n  query Header(\n    $country: CountryCode\n    $headerMenuHandle: String!\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    shop {\n      ...Shop\n    }\n    menu(handle: $headerMenuHandle) {\n      ...Menu\n    }\n  }\n  #graphql\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n': {
     return: HeaderQuery;
@@ -1710,6 +1885,10 @@ interface GeneratedQueryTypes {
   '#graphql\n  query PredictiveSearch(\n    $country: CountryCode\n    $language: LanguageCode\n    $limit: Int!\n    $limitScope: PredictiveSearchLimitScope!\n    $term: String!\n    $types: [PredictiveSearchType!]\n  ) @inContext(country: $country, language: $language) {\n    predictiveSearch(\n      limit: $limit,\n      limitScope: $limitScope,\n      query: $term,\n      types: $types,\n    ) {\n      collections {\n        ...PredictiveCollection\n      }\n      pages {\n        ...PredictivePage\n      }\n      products {\n        ...PredictiveProduct\n      }\n      queries {\n        ...PredictiveQuery\n      }\n    }\n  }\n  #graphql\n  fragment PredictiveCollection on Collection {\n    __typename\n    id\n    title\n    handle\n    image {\n      url\n      altText\n      width\n      height\n    }\n    trackingParameters\n  }\n\n  #graphql\n  fragment PredictivePage on Page {\n    __typename\n    id\n    title\n    handle\n    trackingParameters\n  }\n\n  #graphql\n  fragment PredictiveProduct on Product {\n    __typename\n    id\n    title\n    handle\n    trackingParameters\n    selectedOrFirstAvailableVariant(\n      selectedOptions: []\n      ignoreUnknownOptions: true\n      caseInsensitiveMatch: true\n    ) {\n      id\n      image {\n        url\n        altText\n        width\n        height\n      }\n      price {\n        amount\n        currencyCode\n      }\n    }\n  }\n\n  #graphql\n  fragment PredictiveQuery on SearchQuerySuggestion {\n    __typename\n    text\n    styledText\n    trackingParameters\n  }\n\n': {
     return: PredictiveSearchQuery;
     variables: PredictiveSearchQueryVariables;
+  };
+  '#graphql\n  query SubscriptionProducts(\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    shop {\n      coreRoasts: metafield(namespace: "custom", key: "core_roasts") {\n        references(first: 5) {\n          nodes {\n            __typename\n            ... on Product {\n              ...SubscriptionProduct\n            }\n          }\n        }\n      }\n    }\n  }\n\n  fragment SubscriptionProduct on Product {\n    availableForSale\n    id\n    handle\n    title\n    tags\n    taglineMetafield: metafield(namespace: "custom", key: "tagline") {\n      value\n    }\n    tintColorMetafield: metafield(namespace: "custom", key: "tint_color") {\n      value\n    }\n    primaryColorMetafield: metafield(namespace: "custom", key: "primary_color") {\n      value\n    }\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    selectedOrFirstAvailableVariant {\n      availableForSale\n      id\n      price {\n        amount\n        currencyCode\n      }\n      product {\n        handle\n        title\n      }\n      selectedOptions {\n        name\n        value\n      }\n      sellingPlanAllocations(first: 10) {\n        nodes {\n          ...SubscriptionSellingPlanAllocation\n        }\n      }\n    }\n  }\n\n  fragment SubscriptionSellingPlanAllocation on SellingPlanAllocation {\n    checkoutChargeAmount {\n      amount\n      currencyCode\n    }\n    remainingBalanceChargeAmount {\n      amount\n      currencyCode\n    }\n    priceAdjustments {\n      compareAtPrice {\n        amount\n        currencyCode\n      }\n      perDeliveryPrice {\n        amount\n        currencyCode\n      }\n      price {\n        amount\n        currencyCode\n      }\n    }\n    sellingPlan {\n      id\n      name\n      options {\n        name\n        value\n      }\n      recurringDeliveries\n    }\n  }\n': {
+    return: SubscriptionProductsQuery;
+    variables: SubscriptionProductsQueryVariables;
   };
 }
 
