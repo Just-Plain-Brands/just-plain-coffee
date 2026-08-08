@@ -20,24 +20,30 @@ export function AddToCartButton({
   className?: string;
 }) {
   return (
-    <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
-      {(fetcher: FetcherWithComponents<unknown>) => (
-        <>
-          <input
-            name="analytics"
-            type="hidden"
-            value={JSON.stringify(analytics)}
-          />
-          <Button
-            className={cn('rounded-full', className)}
-            type="submit"
-            onClick={onClick}
-            disabled={disabled ?? fetcher.state !== 'idle'}
-          >
-            {children}
-          </Button>
-        </>
-      )}
-    </CartForm>
+    <div className="w-full">
+      <CartForm
+        route="/cart"
+        inputs={{lines}}
+        action={CartForm.ACTIONS.LinesAdd}
+      >
+        {(fetcher: FetcherWithComponents<unknown>) => (
+          <>
+            <input
+              name="analytics"
+              type="hidden"
+              value={JSON.stringify(analytics)}
+            />
+            <Button
+              className={cn('rounded-full', className)}
+              type="submit"
+              onClick={onClick}
+              disabled={disabled ?? fetcher.state !== 'idle'}
+            >
+              {children}
+            </Button>
+          </>
+        )}
+      </CartForm>
+    </div>
   );
 }

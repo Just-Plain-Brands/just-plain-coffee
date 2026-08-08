@@ -18,6 +18,7 @@ export function Footer() {
           <Link to="/collections/all">Decaf</Link>
         </FooterColumn>
         <FooterColumn title="Company">
+          <Link to="/journal">Journal</Link>
           <Link to="/#sourcing">Sourcing documentation</Link>
           <Link to="/policies">Organic certification</Link>
           <Link to="/policies">Shipping and returns</Link>

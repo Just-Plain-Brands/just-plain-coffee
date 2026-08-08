@@ -3,7 +3,10 @@ import {RadioGroup as RadioGroupPrimitive} from '@base-ui/react/radio-group';
 
 import {cn} from '~/lib/utils';
 
-function RadioGroup({className, ...props}: RadioGroupPrimitive.Props) {
+function RadioGroup<Value>({
+  className,
+  ...props
+}: RadioGroupPrimitive.Props<Value>) {
   return (
     <RadioGroupPrimitive
       data-slot="radio-group"
@@ -13,7 +16,11 @@ function RadioGroup({className, ...props}: RadioGroupPrimitive.Props) {
   );
 }
 
-function RadioGroupItem({className, ...props}: RadioPrimitive.Root.Props) {
+function RadioGroupItem<Value>({
+  children,
+  className,
+  ...props
+}: RadioPrimitive.Root.Props<Value>) {
   return (
     <RadioPrimitive.Root
       data-slot="radio-group-item"
@@ -29,6 +36,7 @@ function RadioGroupItem({className, ...props}: RadioPrimitive.Root.Props) {
       >
         <span className="absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-foreground" />
       </RadioPrimitive.Indicator>
+      {children}
     </RadioPrimitive.Root>
   );
 }

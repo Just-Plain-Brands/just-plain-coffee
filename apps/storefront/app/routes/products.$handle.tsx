@@ -10,6 +10,7 @@ import {
 import {Link, useLoaderData, useSearchParams} from 'react-router';
 
 import {CartonIllustration} from '~/components/catalog/carton-illustration/carton-illustration';
+import {MerchProductPage} from '~/components/product/MerchProductPage';
 import {ProductForm} from '~/components/product/ProductForm';
 import {ProductPrice} from '~/components/product/ProductPrice';
 import {buttonVariants} from '~/components/ui/button';
@@ -27,7 +28,7 @@ import type {Route} from './+types/products.$handle';
 
 export const meta: Route.MetaFunction = ({data}) => {
   return [
-    {title: `${data?.product.title ?? 'Coffee'} | Just Plain Coffee`},
+    {title: `${data?.product.title ?? 'Product'} | Just Plain Coffee`},
     {
       name: 'description',
       content: data?.product.seo.description ?? data?.product.description,
@@ -40,11 +41,12 @@ export const meta: Route.MetaFunction = ({data}) => {
 };
 
 export async function loader(args: Route.LoaderArgs) {
-  // Start fetching non-critical data without blocking time to first byte
-  const deferredData = loadDeferredData(args);
-
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
+  const deferredData = loadDeferredData(args, {
+    isMerch: isMerchProduct(criticalData.product),
+    productId: criticalData.product.id,
+  });
 
   return {...deferredData, ...criticalData};
 }
@@ -85,15 +87,29 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
  * fetched after the initial page load. If it's unavailable, the page should still 200.
  * Make sure to not throw any errors here, as it will cause the page to 500.
  */
-function loadDeferredData({context, params}: Route.LoaderArgs) {
-  // Put any API calls that is not critical to be available on first page render
-  // For example: product reviews, product recommendations, social feeds.
+function loadDeferredData(
+  {context}: Route.LoaderArgs,
+  {isMerch, productId}: {isMerch: boolean; productId: string},
+) {
+  if (!isMerch) {
+    return {recommendations: Promise.resolve([])};
+  }
 
-  return {};
+  const recommendations = context.storefront
+    .query(PRODUCT_RECOMMENDATIONS_QUERY, {
+      variables: {productId},
+    })
+    .then(({productRecommendations}) => productRecommendations ?? [])
+    .catch((error: Error) => {
+      console.error('Unable to load product recommendations', error);
+      return [];
+    });
+
+  return {recommendations};
 }
 
 export default function Product() {
-  const {product} = useLoaderData<typeof loader>();
+  const {product, recommendations} = useLoaderData<typeof loader>();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Optimistically selects a variant with given available variant information
@@ -111,6 +127,35 @@ export default function Product() {
     ...product,
     selectedOrFirstAvailableVariant: selectedVariant,
   });
+
+  if (isMerchProduct(product)) {
+    return (
+      <>
+        <MerchProductPage
+          key={product.id}
+          product={product}
+          productOptions={productOptions}
+          recommendations={recommendations}
+          selectedVariant={selectedVariant}
+        />
+        <Analytics.ProductView
+          data={{
+            products: [
+              {
+                id: product.id,
+                price: selectedVariant?.price.amount || '0',
+                quantity: 1,
+                title: product.title,
+                variantId: selectedVariant?.id || '',
+                variantTitle: selectedVariant?.title || '',
+                vendor: product.vendor,
+              },
+            ],
+          }}
+        />
+      </>
+    );
+  }
 
   const {title, descriptionHtml} = product;
   const sellingPlanAllocations = isBundleProduct(product.tags)
@@ -182,7 +227,7 @@ export default function Product() {
         </div>
 
         <div className="py-3 lg:py-8">
-          <p className="text-sm font-bold tracking-[0.14em] text-orange-700 uppercase">
+          <p className="text-sm font-bold tracking-[0.14em] text-primary uppercase">
             {presentation.eyebrow}
           </p>
           <h1 className="mt-4 text-6xl leading-none md:text-8xl">{title}</h1>
@@ -350,19 +395,43 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
 
 const PRODUCT_FRAGMENT = `#graphql
   fragment Product on Product {
+    availableForSale
     id
     title
     tags
     vendor
     handle
+    productType
     descriptionHtml
     description
+    collections(first: 20) {
+      nodes {
+        handle
+        title
+      }
+    }
     featuredImage {
       id
       altText
       url
       width
       height
+    }
+    media(first: 20) {
+      nodes {
+        __typename
+        ... on MediaImage {
+          id
+          alt
+          image {
+            id
+            altText
+            url
+            width
+            height
+          }
+        }
+      }
     }
     originMetafield: metafield(namespace: "custom", key: "origin") {
       value
@@ -380,6 +449,33 @@ const PRODUCT_FRAGMENT = `#graphql
       value
     }
     primaryColorMetafield: metafield(namespace: "custom", key: "primary_color") {
+      value
+    }
+    pageTypeMetafield: metafield(namespace: "custom", key: "product_page_type") {
+      value
+    }
+    eyebrowMetafield: metafield(namespace: "custom", key: "pdp_eyebrow") {
+      value
+    }
+    factSheetEyebrowMetafield: metafield(namespace: "custom", key: "fact_sheet_eyebrow") {
+      value
+    }
+    factSheetTitleMetafield: metafield(namespace: "custom", key: "fact_sheet_title") {
+      value
+    }
+    factSheetDescriptionMetafield: metafield(namespace: "custom", key: "fact_sheet_description") {
+      value
+    }
+    materialMetafield: metafield(namespace: "custom", key: "material") {
+      value
+    }
+    fabricWeightMetafield: metafield(namespace: "custom", key: "fabric_weight") {
+      value
+    }
+    fitMetafield: metafield(namespace: "custom", key: "fit") {
+      value
+    }
+    careMetafield: metafield(namespace: "custom", key: "care") {
       value
     }
     encodedVariantExistence
@@ -428,3 +524,53 @@ const PRODUCT_QUERY = `#graphql
   }
   ${PRODUCT_FRAGMENT}
 ` as const;
+
+const PRODUCT_RECOMMENDATIONS_QUERY = `#graphql
+  query ProductRecommendations(
+    $country: CountryCode
+    $language: LanguageCode
+    $productId: ID!
+  ) @inContext(country: $country, language: $language) {
+    productRecommendations(productId: $productId, intent: RELATED) {
+      availableForSale
+      compareAtPriceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+      }
+      featuredImage {
+        id
+        altText
+        url
+        width
+        height
+      }
+      handle
+      id
+      priceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+      }
+      productType
+      tintColorMetafield: metafield(namespace: "custom", key: "tint_color") {
+        value
+      }
+      title
+    }
+  }
+` as const;
+
+function isMerchProduct(product: {
+  collections: {nodes: Array<{handle: string}>};
+  pageTypeMetafield?: {value: string} | null;
+}) {
+  return (
+    product.pageTypeMetafield?.value.toLowerCase() === 'merch' ||
+    product.collections.nodes.some(
+      (collection) => collection.handle === 'merch',
+    )
+  );
+}

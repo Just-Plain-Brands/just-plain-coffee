@@ -3,13 +3,13 @@ import {Link, useLoaderData} from 'react-router';
 import {CartonIllustration} from '~/components/catalog/carton-illustration/carton-illustration';
 import {ProductCard} from '~/components/catalog/product-card';
 import {HomeHero} from '~/components/marketing/home-hero';
+import {Blockquote} from '~/components/sections/blockquote';
 import {buttonVariants} from '~/components/ui/button';
 import {
   getProductPresentation,
-  getRoastPresentation,
-  ROAST_IDS,
   ROAST_PRESENTATIONS,
 } from '~/lib/coffee/presentation';
+import {getCompleteRoastRange} from '~/lib/coffee/roast-range';
 import {COFFEE_PRODUCT_CARD_FRAGMENT} from '~/lib/shopify/catalog-fragments';
 
 import type {Route} from './+types/_index';
@@ -24,34 +24,28 @@ export const meta: Route.MetaFunction = () => [
 ];
 
 export async function loader({context}: Route.LoaderArgs) {
-  const {products} = await context.storefront.query(HOME_PRODUCTS_QUERY);
-  const orderedProducts = [...products.nodes].sort((left, right) => {
-    const leftRoast = getRoastPresentation({
-      title: left.title,
-      tags: left.tags,
-    });
-    const rightRoast = getRoastPresentation({
-      title: right.title,
-      tags: right.tags,
-    });
+  const {shop} = await context.storefront.query(HOME_PRODUCTS_QUERY);
+  const coreRoasts = getCompleteRoastRange(
+    getReferencedProducts(shop.coreRoasts),
+  );
+  const featuredRoasts = getCompleteRoastRange(
+    getReferencedProducts(shop.featuredRoasts),
+  );
 
-    return ROAST_IDS.indexOf(leftRoast.id) - ROAST_IDS.indexOf(rightRoast.id);
-  });
-
-  return {products: orderedProducts};
+  return {coreRoasts, featuredRoasts};
 }
 
 export default function Homepage() {
-  const {products} = useLoaderData<typeof loader>();
+  const {coreRoasts, featuredRoasts} = useLoaderData<typeof loader>();
 
   return (
     <main>
-      <HomeHero products={products} />
+      <HomeHero products={coreRoasts} />
 
       <section className="mx-auto max-w-7xl px-5 py-16 md:px-10 md:py-24">
         <div className="grid overflow-hidden rounded-4xl bg-neutral-100 shadow-soft lg:grid-cols-[1.05fr_0.95fr]">
           <div className="flex flex-col items-start justify-center p-8 md:p-14">
-            <p className="mb-4 text-sm font-bold tracking-[0.14em] text-orange-700 uppercase">
+            <p className="mb-4 text-sm font-bold tracking-[0.14em] text-primary uppercase">
               Coffee in a carton. Yes, really.
             </p>
             <h1 className="max-w-[11ch] text-5xl leading-[0.96] md:text-7xl">
@@ -129,7 +123,7 @@ export default function Homepage() {
           quiz.
         </p>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {products.map((product) => (
+          {featuredRoasts.map((product) => (
             <ProductCard
               key={product.id}
               presentation={getProductPresentation({
@@ -145,17 +139,10 @@ export default function Homepage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-5xl px-5 py-16 md:px-10 md:py-24">
-        <figure className="-rotate-1 rounded-4xl bg-orange-600 px-8 py-14 text-center text-neutral-100 shadow-soft md:px-16 md:py-20">
-          <blockquote className="font-display text-3xl leading-tight md:text-5xl">
-            “We&apos;re not going to tell you it tastes like blackcurrant and
-            honeysuckle. It tastes like coffee. Exceptionally good coffee.”
-          </blockquote>
-          <figcaption className="mt-8 text-sm font-bold tracking-[0.14em] uppercase">
-            — The entire marketing department
-          </figcaption>
-        </figure>
-      </section>
+      <Blockquote
+        caption="— The entire marketing department"
+        quote="“We're not going to tell you it tastes like blackcurrant and honeysuckle. It tastes like coffee. Exceptionally good coffee.”"
+      />
 
       <section
         className="mx-auto max-w-7xl scroll-mt-36 px-5 py-16 md:px-10 md:py-24"
@@ -257,11 +244,43 @@ export default function Homepage() {
 const HOME_PRODUCTS_QUERY = `#graphql
   query HomeProducts($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
-    products(first: 4, sortKey: TITLE) {
-      nodes {
-        ...CoffeeProductCard
+    shop {
+      coreRoasts: metafield(namespace: "custom", key: "core_roasts") {
+        references(first: 5) {
+          nodes {
+            __typename
+            ... on Product {
+              ...CoffeeProductCard
+            }
+          }
+        }
+      }
+      featuredRoasts: metafield(namespace: "custom", key: "featured_roasts") {
+        references(first: 5) {
+          nodes {
+            __typename
+            ... on Product {
+              ...CoffeeProductCard
+            }
+          }
+        }
       }
     }
   }
   ${COFFEE_PRODUCT_CARD_FRAGMENT}
 ` as const;
+
+function getReferencedProducts<Node extends {__typename?: string | undefined}>(
+  metafield:
+    | {references?: {nodes: readonly Node[]} | null | undefined}
+    | null
+    | undefined,
+): Extract<Node, {__typename: 'Product'}>[] {
+  return metafield?.references?.nodes.filter(isProductReference) ?? [];
+}
+
+function isProductReference<Node extends {__typename?: string | undefined}>(
+  node: Node,
+): node is Extract<Node, {__typename: 'Product'}> {
+  return node.__typename === 'Product';
+}

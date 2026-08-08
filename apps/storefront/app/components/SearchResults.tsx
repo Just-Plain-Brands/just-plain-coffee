@@ -1,6 +1,7 @@
 import {Image, Money, Pagination} from '@shopify/hydrogen';
 import {Link} from 'react-router';
 
+import type {JournalSummary} from '~/lib/journal/types';
 import {urlWithTrackingParams, type RegularSearchReturn} from '~/lib/search';
 
 type SearchItems = RegularSearchReturn['result']['items'];
@@ -11,7 +12,12 @@ type PartialSearchResult<ItemType extends keyof SearchItems> = Pick<
   Pick<RegularSearchReturn, 'term'>;
 
 type SearchResultsProps = RegularSearchReturn & {
-  children: (args: SearchItems & {term: string}) => React.ReactNode;
+  children: (
+    args: SearchItems & {
+      journal: readonly JournalSummary[];
+      term: string;
+    },
+  ) => React.ReactNode;
 };
 
 export function SearchResults({
@@ -23,44 +29,36 @@ export function SearchResults({
     return null;
   }
 
-  return children({...result.items, term});
+  return children({...result.items, journal: result.journal, term});
 }
 
-SearchResults.Articles = SearchResultsArticles;
+SearchResults.Journal = SearchResultsJournal;
 SearchResults.Pages = SearchResultsPages;
 SearchResults.Products = SearchResultsProducts;
 SearchResults.Empty = SearchResultsEmpty;
 
-function SearchResultsArticles({
-  term,
-  articles,
-}: PartialSearchResult<'articles'>) {
-  if (!articles?.nodes.length) {
-    return null;
-  }
+function SearchResultsJournal({entries}: {entries: readonly JournalSummary[]}) {
+  if (entries.length === 0) return null;
 
   return (
-    <div className="search-result">
-      <h2>Articles</h2>
-      <div>
-        {articles?.nodes?.map((article) => {
-          const articleUrl = urlWithTrackingParams({
-            baseUrl: `/blogs/${article.handle}`,
-            trackingParams: article.trackingParameters,
-            term,
-          });
-
-          return (
-            <div className="search-results-item" key={article.id}>
-              <Link prefetch="intent" to={articleUrl}>
-                {article.title}
-              </Link>
-            </div>
-          );
-        })}
+    <section className="mt-8">
+      <h2 className="text-3xl">Journal</h2>
+      <div className="mt-4 grid gap-3">
+        {entries.map((entry) => (
+          <Link
+            className="rounded-2xl bg-neutral-100 p-5 shadow-soft hover:bg-neutral-200"
+            key={entry.slug}
+            prefetch="intent"
+            to={`/journal/${entry.slug}`}
+          >
+            <span className="font-display text-2xl">{entry.title}</span>
+            <span className="mt-1 block text-sm text-neutral-700">
+              {entry.description}
+            </span>
+          </Link>
+        ))}
       </div>
-      <br />
-    </div>
+    </section>
   );
 }
 

@@ -108,7 +108,7 @@ export default function Cart() {
 
   return (
     <main className="mx-auto max-w-4xl px-5 py-14 md:px-10 md:py-20">
-      <p className="text-sm font-bold tracking-[0.14em] text-orange-700 uppercase">
+      <p className="text-sm font-bold tracking-[0.14em] text-primary uppercase">
         Almost coffee
       </p>
       <h1 className="mt-3 text-6xl md:text-8xl">Your cart.</h1>

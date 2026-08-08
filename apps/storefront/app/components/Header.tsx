@@ -50,11 +50,17 @@ export function HeaderMenu({viewport}: {viewport: Viewport}) {
       <NavLink onClick={close} prefetch="intent" to="/collections/all">
         Shop
       </NavLink>
+      <NavLink onClick={close} prefetch="intent" to="/collections/merch">
+        Merch
+      </NavLink>
       <NavLink onClick={close} prefetch="intent" to="/collections/all">
         Subscribe
       </NavLink>
       <NavLink onClick={close} to="/#the-box">
         The box
+      </NavLink>
+      <NavLink onClick={close} prefetch="intent" to="/journal">
+        Journal
       </NavLink>
     </nav>
   );
