@@ -1,4 +1,3 @@
-import {Money} from '@shopify/hydrogen';
 import {Link, useLoaderData} from 'react-router';
 
 import {useAside} from '~/components/Aside';
@@ -95,7 +94,7 @@ function SubscriptionCartAction({
       ]}
       onClick={() => open('cart')}
     >
-      Add subscription · <Money data={selection.totalPrice} />
+      Add subscription
     </AddToCartButton>
   );
 }

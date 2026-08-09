@@ -5,22 +5,12 @@ import type {
   Product,
   SelectedOption,
 } from '@shopify/hydrogen/storefront-api-types';
-import {CircleCheckIcon} from 'lucide-react';
-import {useState} from 'react';
+import {useId, useState} from 'react';
 import type {ProductSellingPlanAllocationFragment} from 'storefrontapi.generated';
 
 import {CartonIllustration} from '~/components/catalog/carton-illustration/carton-illustration';
 import {QuantityControl} from '~/components/product/QuantityControl';
-import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldLabel,
-  FieldLegend,
-  FieldSet,
-  FieldTitle,
-} from '~/components/ui/field';
-import {RadioGroup, RadioGroupItem} from '~/components/ui/radio-group';
+import {FieldLegend, FieldSet} from '~/components/ui/field';
 import type {ProductPresentation} from '~/lib/coffee/presentation';
 import {
   getDefaultSellingPlanAllocation,
@@ -154,66 +144,62 @@ export function SubscriptionBuilder({
   }
 
   return (
-    <section className="mx-auto w-full max-w-[1320px] px-5 pt-10 pb-20 md:px-10 md:pt-16 md:pb-28">
-      <div className="grid gap-6 pb-10 md:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)] md:items-end md:gap-12 md:pb-14">
+    <section className="mx-auto w-full max-w-[1320px] px-5 pt-6 pb-16 md:px-10 md:pt-8 md:pb-24">
+      <div className="grid gap-4 pb-6 md:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)] md:items-end md:gap-10 md:pb-8">
         <div>
-          <p className="mb-3 text-xs font-bold tracking-[0.16em] text-primary uppercase">
+          <p className="mb-2 text-xs font-bold tracking-[0.16em] text-orange-700 uppercase">
             Three choices. No mystery.
           </p>
-          <h1 className="text-6xl leading-[0.88] sm:text-7xl md:text-8xl lg:text-9xl">
+          <h1 className="text-5xl leading-[0.9] sm:text-6xl lg:text-7xl">
             Build your box.
           </h1>
         </div>
-        <p className="max-w-lg text-base leading-relaxed text-neutral-700 md:justify-self-end md:text-lg">
-          Pick the roast, set the pace, and choose how many cartons show up.
-          Your whole subscription stays in view while you build it.
+        <p className="max-w-lg text-base leading-relaxed text-neutral-700 md:justify-self-end">
+          Pick a roast, delivery pace, and carton count. We’ll update the order
+          and shipment price as you go.
         </p>
       </div>
 
-      <div className="grid overflow-hidden rounded-4xl bg-neutral-100 shadow-soft lg:grid-cols-[minmax(320px,0.82fr)_minmax(0,1.4fr)]">
+      <div className="grid rounded-4xl bg-neutral-100 shadow-soft xl:grid-cols-[minmax(320px,0.82fr)_minmax(0,1.4fr)] xl:overflow-hidden">
         <BuilderPreview
-          cupsPerWeek={cupsPerWeek}
-          currentPrice={currentPrice}
           product={selectedProduct}
           quantity={quantity}
           selectedAllocation={selectedAllocation}
         />
 
-        <div className="min-w-0 px-5 py-2 sm:px-8 lg:px-10">
-          <RoastSelectionStep
-            onSelect={selectProduct}
-            products={products}
-            selectedProductId={selectedProduct.id}
-          />
-          <FrequencySelectionStep
-            allocations={allocations}
-            onSelect={setSelectedSellingPlanId}
-            selectedAllocation={selectedAllocation}
-          />
-          <QuantitySelectionStep onChange={setQuantity} quantity={quantity} />
-          <PlanInsight
-            cupsPerWeek={cupsPerWeek}
-            intervalWeeks={intervalWeeks}
-            quantity={quantity}
-          />
-          <div className="my-5 rounded-3xl bg-green-900 p-5 text-green-100 sm:flex sm:items-center sm:justify-between sm:gap-6 sm:p-6">
-            <div className="mb-5 sm:mb-0">
+        <div className="order-1 flex min-w-0 flex-col px-5 py-2 sm:px-8 xl:order-2 xl:px-10">
+          <div className="order-2 xl:order-1">
+            <RoastSelectionStep
+              onSelect={selectProduct}
+              products={products}
+              selectedProductId={selectedProduct.id}
+            />
+            <FrequencySelectionStep
+              allocations={allocations}
+              onSelect={setSelectedSellingPlanId}
+              selectedAllocation={selectedAllocation}
+            />
+            <QuantitySelectionStep onChange={setQuantity} quantity={quantity} />
+          </div>
+
+          <div className="order-1 mt-4 rounded-3xl bg-green-900 p-4 text-green-100 sm:flex sm:items-center sm:justify-between sm:gap-5 sm:max-xl:sticky sm:max-xl:top-20 sm:max-xl:z-20 xl:order-2 xl:my-5 xl:p-6">
+            <div className="mb-3 min-w-0 sm:mb-0">
               <p className="text-[0.68rem] font-bold tracking-[0.12em] text-green-300 uppercase">
                 Your recurring order
               </p>
-              <p className="mt-1 text-sm font-bold">
-                {quantity} × {presentation.shortName} ·{' '}
+              <p className="mt-1 truncate text-sm font-bold">
+                {getCartonLabel(quantity)} · {presentation.shortName} ·{' '}
                 {selectedAllocation
                   ? getSellingPlanLabel(selectedAllocation.sellingPlan)
                   : 'Schedule unavailable'}
               </p>
-              {savings ? (
-                <p className="mt-1 text-xs text-green-300">
-                  Save {savings}% on every shipment
-                </p>
-              ) : null}
+              <p className="mt-1 text-xs text-green-300">
+                {cupsPerWeek ? `About ${cupsPerWeek} cups/week` : null}
+                {cupsPerWeek && savings ? ' · ' : null}
+                {savings ? `Save ${savings}% each shipment` : null}
+              </p>
             </div>
-            <div className="grid min-w-56 gap-3 sm:grid-cols-[auto_minmax(150px,1fr)] sm:items-center">
+            <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 sm:min-w-56 sm:grid-cols-[auto_minmax(150px,1fr)] sm:gap-2">
               <div className="sm:text-right">
                 <strong className="block font-display text-3xl font-normal">
                   {currentPrice ? <Money data={currentPrice} /> : '—'}
@@ -223,7 +209,8 @@ export function SubscriptionBuilder({
               {renderAction(selection)}
             </div>
           </div>
-          <p className="px-2 pb-8 text-center text-xs leading-relaxed text-neutral-600">
+
+          <p className="order-3 px-2 pb-8 text-center text-xs leading-relaxed text-neutral-600">
             Renews automatically at the selected interval. Skip or cancel from
             your account.
           </p>
@@ -234,14 +221,10 @@ export function SubscriptionBuilder({
 }
 
 function BuilderPreview({
-  cupsPerWeek,
-  currentPrice,
   product,
   quantity,
   selectedAllocation,
 }: {
-  cupsPerWeek: number | null;
-  currentPrice: MoneyV2 | null;
   product: SubscriptionBuilderProduct;
   quantity: number;
   selectedAllocation: ProductSellingPlanAllocationFragment | null;
@@ -253,10 +236,10 @@ function BuilderPreview({
 
   return (
     <aside
-      className="relative min-h-[570px] overflow-hidden p-6 transition-colors duration-300 sm:p-8 lg:min-h-[860px]"
+      className="order-2 min-h-[400px] overflow-hidden rounded-b-4xl p-6 transition-colors duration-300 sm:p-8 xl:order-1 xl:min-h-[720px] xl:rounded-none"
       style={{backgroundColor: presentation.tintColor}}
     >
-      <div className="flex min-h-[522px] flex-col lg:sticky lg:top-28 lg:min-h-[796px]">
+      <div className="flex min-h-[352px] flex-col xl:sticky xl:top-24 xl:min-h-[656px]">
         <p className="text-xs font-bold tracking-[0.14em] text-neutral-700 uppercase">
           Your box, live
         </p>
@@ -269,7 +252,7 @@ function BuilderPreview({
 
         <div
           aria-hidden="true"
-          className="relative my-5 min-h-64 flex-1 sm:min-h-72"
+          className="relative mt-5 min-h-64 flex-1 sm:min-h-72"
         >
           {CARTON_STACK.slice(0, quantity).map((carton) => (
             <div
@@ -292,32 +275,6 @@ function BuilderPreview({
             </div>
           ))}
         </div>
-
-        <div
-          aria-live="polite"
-          className="rounded-2xl bg-neutral-100/95 p-5 shadow-soft backdrop-blur-sm"
-        >
-          <p className="text-xs font-bold tracking-[0.13em] text-primary uppercase">
-            Current subscription
-          </p>
-          <dl className="mt-3 grid gap-2 text-sm">
-            <SummaryRow label="Roast" value={presentation.shortName} />
-            <SummaryRow label="Quantity" value={getCartonLabel(quantity)} />
-            <SummaryRow label="Ships" value={frequency} />
-            {cupsPerWeek ? (
-              <SummaryRow
-                label="Est. capacity"
-                value={`About ${cupsPerWeek} cups/week`}
-              />
-            ) : null}
-            <div className="mt-2 flex items-baseline justify-between gap-4 border-t border-neutral-300 pt-4">
-              <dt className="text-neutral-700">Per shipment</dt>
-              <dd className="font-display text-3xl">
-                {currentPrice ? <Money data={currentPrice} /> : '—'}
-              </dd>
-            </div>
-          </dl>
-        </div>
       </div>
     </aside>
   );
@@ -332,6 +289,8 @@ function RoastSelectionStep({
   products: SubscriptionBuilderProduct[];
   selectedProductId: string;
 }) {
+  const groupName = useId();
+
   return (
     <BuilderStep
       description="All specialty grade. All roasted to order."
@@ -340,53 +299,49 @@ function RoastSelectionStep({
     >
       <FieldSet>
         <FieldLegend className="sr-only">Roast</FieldLegend>
-        <RadioGroup
-          className="grid grid-cols-2 gap-2 sm:grid-cols-4"
-          onValueChange={onSelect}
-          value={selectedProductId}
-        >
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {products.map((product) => {
             const isSelected = product.id === selectedProductId;
             const isDisabled = !isSubscriptionReady(product);
 
             return (
-              <FieldLabel
+              <label
+                aria-label={`${product.presentation.shortName}. ${getShortTagline(product.presentation)}`}
                 className={cn(
-                  'h-full cursor-pointer rounded-2xl! border! bg-background p-0! transition focus-within:ring-3 focus-within:ring-ring/50',
+                  'relative flex min-h-32 w-full cursor-pointer flex-col overflow-hidden rounded-2xl border bg-background text-left transition has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50 sm:min-h-36',
                   isSelected
-                    ? 'border-neutral-900! ring-1 ring-neutral-900'
-                    : 'border-neutral-300! hover:border-neutral-600!',
-                  isDisabled && 'cursor-not-allowed',
+                    ? 'border-neutral-900 ring-1 ring-neutral-900'
+                    : 'border-neutral-300 hover:border-neutral-600',
+                  isDisabled && 'cursor-not-allowed opacity-45',
                 )}
                 key={product.id}
               >
-                <Field
-                  className={cn('min-h-28 p-4!', isDisabled && 'opacity-45')}
-                  data-disabled={isDisabled || undefined}
-                >
-                  <span className="flex items-center justify-between gap-2">
-                    <FieldTitle className="font-bold">
-                      {product.presentation.shortName}
-                    </FieldTitle>
-                    <span
-                      aria-hidden="true"
-                      className="size-3 rounded-full"
-                      style={{backgroundColor: product.presentation.capColor}}
-                    />
-                  </span>
-                  <FieldDescription className="text-xs text-neutral-700">
+                <input
+                  aria-label={`${product.presentation.shortName}. ${getShortTagline(product.presentation)}`}
+                  checked={isSelected}
+                  className="sr-only"
+                  disabled={isDisabled}
+                  name={groupName}
+                  onChange={() => onSelect(product.id)}
+                  type="radio"
+                  value={product.id}
+                />
+                <span
+                  style={{backgroundColor: product.presentation.capColor}}
+                  className="h-10 w-full"
+                ></span>
+                <span className="flex w-full flex-col p-4">
+                  <strong className="font-bold">
+                    {product.presentation.shortName}
+                  </strong>
+                  <span className="text-xs leading-normal font-normal text-neutral-700">
                     {getShortTagline(product.presentation)}
-                  </FieldDescription>
-                  <RadioGroupItem
-                    className="sr-only"
-                    disabled={isDisabled}
-                    value={product.id}
-                  />
-                </Field>
-              </FieldLabel>
+                  </span>
+                </span>
+              </label>
             );
           })}
-        </RadioGroup>
+        </div>
       </FieldSet>
     </BuilderStep>
   );
@@ -401,6 +356,8 @@ function FrequencySelectionStep({
   onSelect: (sellingPlanId: string) => void;
   selectedAllocation: ProductSellingPlanAllocationFragment | null;
 }) {
+  const groupName = useId();
+
   return (
     <BuilderStep
       description="Shorter timing suits a daily routine. Longer timing suits a slower cupboard."
@@ -410,11 +367,7 @@ function FrequencySelectionStep({
       {allocations.length > 0 ? (
         <FieldSet>
           <FieldLegend className="sr-only">Delivery frequency</FieldLegend>
-          <RadioGroup
-            className="grid gap-2 sm:grid-cols-3"
-            onValueChange={onSelect}
-            value={selectedAllocation?.sellingPlan.id ?? ''}
-          >
+          <div className="grid gap-2 sm:grid-cols-3">
             {allocations.map((allocation) => {
               const sellingPlanId = allocation.sellingPlan.id;
               const isSelected =
@@ -422,34 +375,48 @@ function FrequencySelectionStep({
               const weeks = getSellingPlanIntervalWeeks(allocation);
 
               return (
-                <FieldLabel
+                <label
+                  aria-label={`${getSellingPlanLabel(allocation.sellingPlan)}. ${getFrequencyDescription(weeks)}`}
                   className={cn(
-                    'h-full cursor-pointer rounded-2xl! border! p-0! transition focus-within:ring-3 focus-within:ring-ring/50',
+                    'relative flex min-h-40 w-full cursor-pointer rounded-2xl border px-4 py-10 text-left transition has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50 sm:min-h-44 xl:min-h-48',
                     isSelected
-                      ? 'border-green-900! bg-green-200 ring-1 ring-green-900'
-                      : 'border-neutral-300! bg-background hover:border-green-700!',
+                      ? 'border-green-900 bg-green-200 ring-1 ring-green-900'
+                      : 'border-neutral-300 bg-background hover:border-green-700',
                   )}
                   key={sellingPlanId}
                 >
-                  <Field className="relative min-h-36 p-4!">
+                  <input
+                    aria-label={`${getSellingPlanLabel(allocation.sellingPlan)}. ${getFrequencyDescription(weeks)}`}
+                    checked={isSelected}
+                    className="sr-only"
+                    name={groupName}
+                    onChange={() => onSelect(sellingPlanId)}
+                    type="radio"
+                    value={sellingPlanId}
+                  />
+                  <span className="flex w-full flex-col">
                     <span className="pr-7 text-[0.68rem] font-bold tracking-[0.11em] text-green-700 uppercase">
                       {getFrequencyKicker(weeks)}
                     </span>
-                    <FieldTitle className="mt-1 font-display text-xl font-normal">
+                    <strong className="mt-1 font-display text-xl font-normal">
                       {getSellingPlanLabel(allocation.sellingPlan)}
-                    </FieldTitle>
-                    <FieldDescription className="mt-auto text-xs text-neutral-700">
+                    </strong>
+                    <span className="mt-auto text-xs leading-normal font-normal text-neutral-700">
                       {getFrequencyDescription(weeks)}
-                    </FieldDescription>
-                    <RadioGroupItem
-                      className="absolute top-4 right-4 size-4! border-green-700 data-checked:border-green-900 data-checked:bg-green-900"
-                      value={sellingPlanId}
-                    />
-                  </Field>
-                </FieldLabel>
+                    </span>
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-4 right-4 grid size-4 place-items-center rounded-full border border-green-700"
+                  >
+                    {isSelected ? (
+                      <span className="size-2 rounded-full bg-green-900" />
+                    ) : null}
+                  </span>
+                </label>
               );
             })}
-          </RadioGroup>
+          </div>
         </FieldSet>
       ) : (
         <p className="rounded-2xl bg-orange-100 p-4 text-sm text-orange-900">
@@ -495,43 +462,12 @@ function QuantitySelectionStep({
   );
 }
 
-function PlanInsight({
-  cupsPerWeek,
-  intervalWeeks,
-  quantity,
-}: {
-  cupsPerWeek: number | null;
-  intervalWeeks: number | null;
-  quantity: number;
-}) {
-  return (
-    <div
-      aria-live="polite"
-      className="mt-7 grid grid-cols-[auto_1fr] gap-3 rounded-2xl bg-green-200 p-5 text-green-900"
-    >
-      <span className="grid size-9 place-items-center rounded-full bg-green-900 text-green-100">
-        <CircleCheckIcon className="size-5" />
-      </span>
-      <div>
-        <strong className="text-sm">
-          {getPlanInsightTitle(intervalWeeks)}
-        </strong>
-        <p className="mt-1 text-sm leading-relaxed text-green-900/75">
-          {cupsPerWeek
-            ? `${getCartonLabel(quantity)} works out to roughly ${cupsPerWeek} cups a week at this delivery pace.`
-            : 'Choose the real delivery schedule that best matches your coffee routine.'}
-        </p>
-      </div>
-    </div>
-  );
-}
-
 function EmptySubscriptionBuilder({
   renderAction,
 }: Pick<SubscriptionBuilderProps, 'renderAction'>) {
   return (
     <section className="mx-auto w-full max-w-4xl px-5 py-20 text-center md:px-10 md:py-28">
-      <p className="text-xs font-bold tracking-[0.16em] text-primary uppercase">
+      <p className="text-xs font-bold tracking-[0.16em] text-orange-700 uppercase">
         Subscriptions
       </p>
       <h1 className="mt-3 text-6xl leading-none md:text-8xl">
@@ -570,15 +506,6 @@ function BuilderStep({
       </div>
       {children}
     </section>
-  );
-}
-
-function SummaryRow({label, value}: {label: string; value: string}) {
-  return (
-    <div className="flex justify-between gap-4">
-      <dt className="text-neutral-700">{label}</dt>
-      <dd className="text-right font-bold">{value}</dd>
-    </div>
   );
 }
 
@@ -684,13 +611,6 @@ function getFrequencyDescription(weeks: number | null): string {
   if (weeks <= 4)
     return 'Good for weekends, smaller routines, or a larger box.';
   return 'Best when coffee moves slowly or the cupboard stays stocked.';
-}
-
-function getPlanInsightTitle(weeks: number | null): string {
-  if (!weeks) return 'A subscription on your terms.';
-  if (weeks <= 2) return 'A regular-brewing plan.';
-  if (weeks <= 4) return 'A slower, fewer-deliveries plan.';
-  return 'An occasional-brewing plan.';
 }
 
 function getQuantityGuidance(quantity: number): string {

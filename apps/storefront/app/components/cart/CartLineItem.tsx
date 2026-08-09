@@ -8,6 +8,7 @@ import type {CartLayout, LineItemChildrenMap} from '~/components/cart/CartMain';
 import {ProductPrice} from '~/components/product/ProductPrice';
 import {Button} from '~/components/ui/button';
 import {ButtonGroup} from '~/components/ui/button-group';
+import {getCartLineTotal} from '~/lib/cart/optimistic-cost';
 import {getSellingPlanLabel} from '~/lib/shopify/subscriptions';
 import {useVariantUrl} from '~/lib/variants';
 
@@ -64,11 +65,11 @@ export function CartLineItem({
             {product.title}
           </Link>
           <div className="mt-1 font-bold">
-            <ProductPrice price={line?.cost?.totalAmount} />
+            <ProductPrice price={getCartLineTotal(line)} />
           </div>
           <ul className="mt-1 text-xs text-neutral-600">
             {sellingPlanAllocation ? (
-              <li className="font-bold text-primary">
+              <li className="font-bold text-orange-700">
                 Subscription ·{' '}
                 {getSellingPlanLabel(sellingPlanAllocation.sellingPlan)}
               </li>

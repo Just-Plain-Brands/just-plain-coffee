@@ -9,6 +9,7 @@ import {useFetcher} from 'react-router';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 
 import type {CartLayout} from '~/components/cart/CartMain';
+import {getOptimisticCartSubtotal} from '~/lib/cart/optimistic-cost';
 
 type CartSummaryProps = {
   cart: OptimisticCart<CartApiQueryFragment | null>;
@@ -21,6 +22,19 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
       ? 'mt-8 rounded-3xl bg-neutral-100 p-6 md:p-8'
       : 'mt-5 border-t border-neutral-300 pt-5';
   const summaryId = useId();
+  const isUpdating = Boolean(cart?.isOptimistic);
+  const cartSubtotal =
+    cart?.cost?.subtotalAmount?.amount && cart.cost.subtotalAmount.currencyCode
+      ? {
+          amount: cart.cost.subtotalAmount.amount,
+          currencyCode: cart.cost.subtotalAmount.currencyCode,
+        }
+      : null;
+  const subtotal = getOptimisticCartSubtotal({
+    isOptimistic: isUpdating,
+    lines: cart?.lines?.nodes ?? [],
+    subtotal: cartSubtotal,
+  });
 
   return (
     <div aria-labelledby={summaryId} className={className}>
@@ -32,15 +46,12 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
         className="mt-5 flex items-center justify-between text-lg font-bold"
       >
         <dt>Subtotal</dt>
-        <dd>
-          {cart?.cost?.subtotalAmount?.amount ? (
-            <Money data={cart?.cost?.subtotalAmount} />
-          ) : (
-            '-'
-          )}
-        </dd>
+        <dd>{subtotal?.amount ? <Money data={subtotal} /> : '-'}</dd>
       </dl>
-      <CartCheckoutActions checkoutUrl={cart?.checkoutUrl} />
+      <CartCheckoutActions
+        checkoutUrl={cart?.checkoutUrl}
+        isUpdating={isUpdating}
+      />
     </div>
   );
 }
@@ -61,18 +72,34 @@ export function CartSummaryAsync({
   return <CartSummary cart={cart} layout={layout} />;
 }
 
-function CartCheckoutActions({checkoutUrl}: {checkoutUrl?: string}) {
+function CartCheckoutActions({
+  checkoutUrl,
+  isUpdating,
+}: {
+  checkoutUrl?: string;
+  isUpdating: boolean;
+}) {
   if (!checkoutUrl) return null;
 
   return (
     <div className="mt-5">
-      <a
-        className="flex h-12 w-full items-center justify-center rounded-full bg-primary px-6 font-bold text-primary-foreground transition hover:bg-primary/80"
-        href={checkoutUrl}
-        target="_self"
-      >
-        Continue to checkout
-      </a>
+      {isUpdating ? (
+        <div
+          aria-live="polite"
+          className="flex h-12 w-full items-center justify-center rounded-full bg-primary/65 px-6 font-bold text-primary-foreground"
+          role="status"
+        >
+          Updating cart…
+        </div>
+      ) : (
+        <a
+          className="flex h-12 w-full items-center justify-center rounded-full bg-primary px-6 font-bold text-primary-foreground transition hover:bg-primary/80"
+          href={checkoutUrl}
+          target="_self"
+        >
+          Continue to checkout
+        </a>
+      )}
     </div>
   );
 }

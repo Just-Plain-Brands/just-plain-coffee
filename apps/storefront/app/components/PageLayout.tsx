@@ -6,7 +6,7 @@ import type {
   HeaderQuery,
 } from 'storefrontapi.generated';
 
-import {Aside} from '~/components/Aside';
+import {Aside, useAside} from '~/components/Aside';
 import {CartMain} from '~/components/cart/CartMain';
 import {CartSummaryAsync} from '~/components/cart/CartSummary';
 import {Footer} from '~/components/Footer';
@@ -36,14 +36,37 @@ export function PageLayout({
 }: PageLayoutProps) {
   return (
     <Aside.Provider>
+      <PageLayoutContent cart={cart} isLoggedIn={isLoggedIn}>
+        {children}
+      </PageLayoutContent>
+    </Aside.Provider>
+  );
+}
+
+function PageLayoutContent({
+  cart,
+  children,
+  isLoggedIn,
+}: Pick<PageLayoutProps, 'cart' | 'children' | 'isLoggedIn'>) {
+  const {type} = useAside();
+  const isAsideOpen = type !== 'closed';
+
+  return (
+    <>
       <CartAside cart={cart} />
       <SearchAside />
       <MobileMenuAside />
-      <AnnouncementBar />
-      <Header cart={cart} isLoggedIn={isLoggedIn} />
-      <main className="min-h-[60vh]">{children}</main>
-      <Footer />
-    </Aside.Provider>
+      <div
+        aria-hidden={isAsideOpen || undefined}
+        data-slot="page-shell"
+        inert={isAsideOpen}
+      >
+        <AnnouncementBar />
+        <Header cart={cart} isLoggedIn={isLoggedIn} />
+        <main className="min-h-[60vh]">{children}</main>
+        <Footer />
+      </div>
+    </>
   );
 }
 

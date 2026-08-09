@@ -116,7 +116,7 @@ function SubscriptionContractCard({
     <article className="rounded-3xl bg-neutral-100 p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-bold tracking-[0.1em] text-primary uppercase">
+          <p className="text-sm font-bold tracking-[0.1em] text-orange-700 uppercase">
             {formatContractStatus(contract.status)}
           </p>
           <h3 className="mt-1 text-2xl">
