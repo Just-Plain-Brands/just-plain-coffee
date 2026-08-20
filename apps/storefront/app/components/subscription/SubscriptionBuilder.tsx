@@ -182,32 +182,34 @@ export function SubscriptionBuilder({
             <QuantitySelectionStep onChange={setQuantity} quantity={quantity} />
           </div>
 
-          <div className="order-1 mt-4 rounded-3xl bg-green-900 p-4 text-green-100 sm:flex sm:items-center sm:justify-between sm:gap-5 sm:max-xl:sticky sm:max-xl:top-20 sm:max-xl:z-20 xl:order-2 xl:my-5 xl:p-6">
-            <div className="mb-3 min-w-0 sm:mb-0">
-              <p className="text-[0.68rem] font-bold tracking-[0.12em] text-green-300 uppercase">
-                Your recurring order
-              </p>
-              <p className="mt-1 truncate text-sm font-bold">
-                {getCartonLabel(quantity)} · {presentation.shortName} ·{' '}
-                {selectedAllocation
-                  ? getSellingPlanLabel(selectedAllocation.sellingPlan)
-                  : 'Schedule unavailable'}
-              </p>
-              <p className="mt-1 text-xs text-green-300">
-                {cupsPerWeek ? `About ${cupsPerWeek} cups/week` : null}
-                {cupsPerWeek && savings ? ' · ' : null}
-                {savings ? `Save ${savings}% each shipment` : null}
-              </p>
-            </div>
-            <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 sm:min-w-56 sm:grid-cols-[auto_minmax(150px,1fr)] sm:gap-2">
-              <div className="sm:text-right">
-                <strong className="block font-display text-3xl font-normal">
-                  {currentPrice ? <Money data={currentPrice} /> : '—'}
-                </strong>
-                <span className="text-xs text-green-300">per shipment</span>
+          <div className="order-1 mt-4 flex flex-col gap-4 rounded-3xl bg-green-900 p-4 text-green-100 sm:max-xl:sticky sm:max-xl:top-20 sm:max-xl:z-20 xl:order-2 xl:my-5 xl:p-6">
+            <div className="sm:flex sm:items-center sm:justify-between sm:gap-5">
+              <div className="mb-3 min-w-0 sm:mb-0">
+                <p className="text-[0.68rem] font-bold tracking-[0.12em] text-green-300 uppercase">
+                  Your recurring order
+                </p>
+                <p className="mt-1 truncate text-sm font-bold">
+                  {getCartonLabel(quantity)} · {presentation.shortName} ·{' '}
+                  {selectedAllocation
+                    ? getSellingPlanLabel(selectedAllocation.sellingPlan)
+                    : 'Schedule unavailable'}
+                </p>
+                <p className="mt-1 text-xs text-green-300">
+                  {cupsPerWeek ? `About ${cupsPerWeek} cups/week` : null}
+                  {cupsPerWeek && savings ? ' · ' : null}
+                  {savings ? `Save ${savings}% each shipment` : null}
+                </p>
               </div>
-              {renderAction(selection)}
+              <div className="flex items-center gap-1">
+                <div className="sm:text-right">
+                  <strong className="block font-display text-3xl font-normal">
+                    {currentPrice ? <Money data={currentPrice} /> : '—'}
+                  </strong>
+                  <span className="text-xs text-green-300">per shipment</span>
+                </div>
+              </div>
             </div>
+            <div className="w-full">{renderAction(selection)}</div>
           </div>
 
           <p className="order-3 px-2 pb-8 text-center text-xs leading-relaxed text-neutral-600">
