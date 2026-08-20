@@ -1,8 +1,11 @@
 # Just Plain Coffee
-
 > [!NOTE]
 > **Work in progress.** This storefront is under active development. Some flows,
 > integrations, and documentation are incomplete or may change.
+> 
+<img width="1795" height="1097" alt="Screenshot 2026-08-19 at 5 50 51 PM" src="https://github.com/user-attachments/assets/19782015-cc05-4fb9-87ce-e5ec4451d556" />
+<img width="1577" height="1237" alt="Screenshot 2026-08-19 at 5 51 20 PM" src="https://github.com/user-attachments/assets/e869eb48-a171-46e6-be60-fd7e2a7191fc" />
+
 
 Just Plain Coffee is a headless Shopify storefront built with Hydrogen. The
 repository includes the customer-facing commerce application, an MDX journal,
