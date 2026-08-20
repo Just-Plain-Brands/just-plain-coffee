@@ -227,7 +227,7 @@ export default function Product() {
         </div>
 
         <div className="py-3 lg:py-8">
-          <p className="text-sm font-bold tracking-[0.14em] text-primary uppercase">
+          <p className="text-sm font-bold tracking-[0.14em] text-orange-700 uppercase">
             {presentation.eyebrow}
           </p>
           <h1 className="mt-4 text-6xl leading-none md:text-8xl">{title}</h1>

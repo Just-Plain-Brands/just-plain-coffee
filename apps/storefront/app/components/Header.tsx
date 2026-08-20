@@ -20,11 +20,11 @@ type Viewport = 'desktop' | 'mobile';
 
 export function Header({isLoggedIn, cart}: HeaderProps) {
   return (
-    <header className="sticky top-0 z-40 bg-background px-5 py-3 md:px-10 md:py-4">
-      <div className="mx-auto flex max-w-[1240px] items-center gap-5 rounded-full bg-neutral-100 py-2.5 pr-3 pl-6 shadow-soft">
+    <header className="sticky top-0 z-40 bg-background px-5 py-2 md:px-10">
+      <div className="mx-auto flex max-w-[1240px] items-center gap-3 rounded-full bg-neutral-100 py-1.5 pr-3 pl-4 shadow-soft sm:gap-4 sm:py-2 sm:pl-5">
         <MobileMenuToggle />
         <NavLink
-          className="mr-auto font-display text-xl leading-none no-underline md:text-[22px]"
+          className="mr-auto shrink-0 font-display text-lg leading-none whitespace-nowrap no-underline min-[400px]:text-xl md:text-[22px]"
           end
           prefetch="intent"
           to="/"
@@ -42,7 +42,7 @@ export function HeaderMenu({viewport}: {viewport: Viewport}) {
   const {close} = useAside();
   const className =
     viewport === 'desktop'
-      ? 'hidden items-center gap-6 text-sm font-semibold md:flex'
+      ? 'hidden items-center gap-5 text-sm font-semibold lg:flex'
       : 'flex flex-col gap-5 text-xl font-semibold';
 
   return (
@@ -53,7 +53,7 @@ export function HeaderMenu({viewport}: {viewport: Viewport}) {
       <NavLink onClick={close} prefetch="intent" to="/collections/merch">
         Merch
       </NavLink>
-      <NavLink onClick={close} prefetch="intent" to="/collections/all">
+      <NavLink onClick={close} prefetch="intent" to="/subscribe">
         Subscribe
       </NavLink>
       <NavLink onClick={close} to="/#the-box">
@@ -76,7 +76,7 @@ function HeaderCtas({
       className="flex items-center gap-1 md:gap-2"
     >
       <NavLink
-        className="hidden text-sm font-semibold lg:block"
+        className="hidden text-sm font-semibold xl:block"
         prefetch="intent"
         to="/account"
       >
@@ -98,7 +98,7 @@ function MobileMenuToggle() {
   return (
     <Button
       aria-label="Open menu"
-      className="md:hidden"
+      className="size-11 shrink-0 lg:hidden"
       onClick={() => open('mobile')}
       size="icon"
       variant="ghost"
@@ -114,7 +114,7 @@ function SearchToggle() {
   return (
     <Button
       aria-label="Search"
-      className="hidden sm:inline-flex"
+      className="hidden size-11 sm:inline-flex"
       onClick={() => open('search')}
       size="icon"
       variant="ghost"
@@ -131,7 +131,7 @@ function CartButton({count}: {count: number}) {
   return (
     <Button
       aria-label={`Open cart with ${count} items`}
-      className="h-10 rounded-full px-4 font-display text-sm"
+      className="h-11 rounded-full px-4 font-display text-sm"
       onClick={() => {
         open('cart');
         publish('cart_viewed', {

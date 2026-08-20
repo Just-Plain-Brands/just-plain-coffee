@@ -26,23 +26,28 @@ export function AddToCartButton({
         inputs={{lines}}
         action={CartForm.ACTIONS.LinesAdd}
       >
-        {(fetcher: FetcherWithComponents<unknown>) => (
-          <>
-            <input
-              name="analytics"
-              type="hidden"
-              value={JSON.stringify(analytics)}
-            />
-            <Button
-              className={cn('rounded-full', className)}
-              type="submit"
-              onClick={onClick}
-              disabled={disabled ?? fetcher.state !== 'idle'}
-            >
-              {children}
-            </Button>
-          </>
-        )}
+        {(fetcher: FetcherWithComponents<unknown>) => {
+          const isSubmitting = fetcher.state !== 'idle';
+
+          return (
+            <>
+              <input
+                name="analytics"
+                type="hidden"
+                value={JSON.stringify(analytics)}
+              />
+              <Button
+                aria-busy={isSubmitting || undefined}
+                className={cn('rounded-full', className)}
+                disabled={disabled ?? isSubmitting}
+                onClick={onClick}
+                type="submit"
+              >
+                {isSubmitting ? 'Adding…' : children}
+              </Button>
+            </>
+          );
+        }}
       </CartForm>
     </div>
   );

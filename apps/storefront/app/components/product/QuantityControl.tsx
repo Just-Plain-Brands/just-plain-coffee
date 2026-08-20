@@ -57,7 +57,10 @@ export function QuantityControl({
     >
       <Button
         aria-label="Decrease quantity"
-        className="size-9 rounded-full! border-0 bg-transparent p-0 hover:bg-neutral-900/10 disabled:opacity-35"
+        className={cn(
+          'size-11 rounded-full! border-0 bg-transparent p-0 hover:bg-neutral-900/10',
+          !canDecrease && 'opacity-35',
+        )}
         disabled={!canDecrease}
         onClick={() => onChange(value - 1)}
         size="icon-lg"
@@ -74,7 +77,10 @@ export function QuantityControl({
       </ButtonGroupText>
       <Button
         aria-label="Increase quantity"
-        className="size-9 rounded-full! border-0 bg-transparent p-0 hover:bg-neutral-900/10 disabled:opacity-35"
+        className={cn(
+          'size-11 rounded-full! border-0 bg-transparent p-0 hover:bg-neutral-900/10',
+          !canIncrease && 'opacity-35',
+        )}
         disabled={!canIncrease}
         onClick={() => onChange(value + 1)}
         size="icon-lg"

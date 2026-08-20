@@ -45,7 +45,7 @@ export default function Homepage() {
       <section className="mx-auto max-w-7xl px-5 py-16 md:px-10 md:py-24">
         <div className="grid overflow-hidden rounded-4xl bg-neutral-100 shadow-soft lg:grid-cols-[1.05fr_0.95fr]">
           <div className="flex flex-col items-start justify-center p-8 md:p-14">
-            <p className="mb-4 text-sm font-bold tracking-[0.14em] text-primary uppercase">
+            <p className="mb-4 text-sm font-bold tracking-[0.14em] text-orange-700 uppercase">
               Coffee in a carton. Yes, really.
             </p>
             <h1 className="max-w-[11ch] text-5xl leading-[0.96] md:text-7xl">
@@ -200,7 +200,7 @@ export default function Homepage() {
                 'h-12 rounded-full bg-green-100 px-7 text-base text-green-900 hover:bg-green-200',
             })}
             prefetch="intent"
-            to="/collections/all"
+            to="/subscribe"
           >
             Pick your coffee
           </Link>
